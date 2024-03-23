@@ -9,6 +9,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project2
 {
@@ -452,6 +453,132 @@ namespace Project2
         }
     }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            // Отримання значень з полів вибору
+            string groupName = textBox5.Text;
+            string selectedDate = dateTimePicker3.Value.ToString("dd.MM.yyyy");
+            string timeStart = GetTimeStartFromPair(comboBox2.Text);
+
+            // Складання SQL-запиту для видалення записів
+            string query = "DELETE FROM Schedule WHERE group_id = (SELECT group_id FROM Groups WHERE group_name = @groupName) " +
+                           "AND date = @selectedDate AND time_start = @timeStart";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@groupName", groupName);
+                    command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    command.Parameters.AddWithValue("@timeStart", timeStart);
+
+                    // Виконання SQL-запиту для видалення записів
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    // Перевірка кількості рядків, які були видалені
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Записи успішно видалено.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Записи не було знайдено для видалення.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                connection.Close();
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string selectedDate = dateTimePicker3.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
+
+            var connection = new SQLiteConnection(connectionString);
+            // Відкриття підключення до бази даних
+            connection.Open();
+            // Очистка DataGridView перед відображенням нових даних
+            dataGridView2.Rows.Clear();
+            for (int i = 0; i < 5; i++)
+            {
+                dataGridView2.Rows.Add();
+                dataGridView2.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+            }
+            // Запит до бази даних для отримання розкладу на обрану дату
+            string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            // Логіка для заповнення DataGridView з результатами запиту
+            if (reader.HasRows)
+            {
+                // Пройтись по всіх рядках результатів запиту
+                while (reader.Read())
+                {
+                    // Отримати ідентифікатор групи
+                    int groupId = Convert.ToInt32(reader["group_id"]);
+
+                    // Отримати ім'я групи за допомогою методу GetGroupName
+                    string groupName = GetGroupName(groupId);
+
+                    // Отримати дані про предмет, викладача, аудиторію
+                    int subjectId = Convert.ToInt32(reader["subject_id"]);
+                    int teacherId = Convert.ToInt32(reader["teacher_id"]);
+                    string classroom = reader["classroom"].ToString();
+                    string timeStart = reader["time_start"].ToString();
+
+                    // Отримати індекс стовпця, в який буде додана інформація
+                    int columnIndex = GetColumnIndex(groupName);
+
+
+                    // Отримати інформацію про предмет та викладача з відповідних таблиць
+                    if (columnIndex >= 0)
+                    {
+                        string subject = GetSubjectName(subjectId);
+                        string teacher = GetTeacherName(teacherId);
+
+                        int rowIndex = GetRowIndex(timeStart);
+                        if (rowIndex >= 0)
+                        {
+                            if (dataGridView2.Rows.Count <= rowIndex)
+                            {
+                                dataGridView2.Rows.Add();
+                                dataGridView2.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
+                            }
+
+                            if (dataGridView2.Columns.Count <= columnIndex)
+                            {
+                                dataGridView2.Columns.Add(groupName, groupName);
+                            }
+
+                            dataGridView2.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            // Закриття підключення до бази даних
+            connection.Close();
+        
+    }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string selectedDate = dateTimePicker1.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
+            var connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            string query = "DELETE FROM Schedule WHERE date = @selectedDate";
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+            command.ExecuteNonQuery();
+            connection.Close();
+            MessageBox.Show("Всі записи за вказаний день успішно видалено з бази даних.");
+        }
     }
 }
 
