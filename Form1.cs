@@ -23,32 +23,50 @@ namespace Project2
         private void Form1_Load(object sender, EventArgs e)
         {
             // Підключення до бази даних SQLite
-/*            string connectionString = "Data Source=db2.db;Version=3;";
-            var connection = new SQLiteConnection(connectionString);*/
+            /*            string connectionString = "Data Source=db2.db;Version=3;";
+                        var connection = new SQLiteConnection(connectionString);*/
+
+            // Додавання стовпця заголовків рядків
+            dataGridView1.RowHeadersVisible = true;
+            for (int i = 0; i < 5; i++)
+            {
+                dataGridView1.Rows.Add();
+                dataGridView1.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            string selectedDate = dateTimePicker1.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
+
             //string connectionString = "Data Source=db2.db;Version=3;";
             var connection = new SQLiteConnection(connectionString);
             // Відкриття підключення до бази даних
             connection.Open();
             // Очистка DataGridView перед відображенням нових даних
             dataGridView1.Rows.Clear();
-            // Запит до бази даних для отримання розкладу
-            string query = "SELECT * FROM Schedule ORDER BY time_start";
+            for (int i = 0; i < 5; i++)
+            {
+                dataGridView1.Rows.Add();
+                dataGridView1.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+            }
+            // Запит до бази даних для отримання розкладу на обрану дату
+            string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
             SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
             SQLiteDataReader reader = command.ExecuteReader();
 
+            /*            // Індекс рядка у DataGridView
+                        int rowIndex = 0;
 
-/*            // Індекс рядка у DataGridView
-            int rowIndex = 0;
+                        // Масив для зберігання інформації про пари для даної групи
+                        string[] scheduleInfo = new string[5]; // 5 пар у день*/
 
-            // Масив для зберігання інформації про пари для даної групи
-            string[] scheduleInfo = new string[5]; // 5 пар у день*/
-
-            // Пройтись по всіх рядках результатів запиту
-            while (reader.Read())
+            // Логіка для заповнення DataGridView з результатами запиту
+            if (reader.HasRows)
+            {
+                // Пройтись по всіх рядках результатів запиту
+                while (reader.Read())
             {
                 // Отримати ідентифікатор групи
                 int groupId = Convert.ToInt32(reader["group_id"]);
@@ -64,6 +82,7 @@ namespace Project2
 
                 // Отримати індекс стовпця, в який буде додана інформація
                 int columnIndex = GetColumnIndex(groupName);
+
 
                 // Отримати інформацію про предмет та викладача з відповідних таблиць
                 if (columnIndex >= 0)
@@ -89,10 +108,44 @@ namespace Project2
                     }
                 }
             }
-        
+            }
+            else
+            {
+                MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
-        // Закриття підключення до бази даних
-        connection.Close();
+
+            // Закриття підключення до бази даних
+            connection.Close();
+        }
+
+        // Подія для зміни значення DateTimePicker
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            // Оновити DataGridView згідно з новим обраним днем тижня
+            UpdateDataGridView();
+        }
+
+        // Метод для оновлення DataGridView згідно з обраним днем тижня
+        private void UpdateDataGridView()
+        {
+            string selectedDate = dateTimePicker1.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі року-місяця-дня
+
+            // Запит до бази даних для отримання розкладу з урахуванням обраної дати
+            string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    SQLiteDataReader reader = command.ExecuteReader();
+
+                    // Очищення DataGridView перед оновленням
+                    dataGridView1.Rows.Clear();
+
+                }
+            }
         }
         // Метод для отримання назви групи за ідентифікатором групи
         private string GetGroupName(int groupId)
@@ -231,7 +284,7 @@ namespace Project2
             string subjectName = textBox2.Text;
             string teacherName = textBox3.Text;
             string classroom = textBox4.Text;
-            string dayOfWeek = comboBox2.SelectedItem.ToString();
+            string selectedDate = dateTimePicker2.Value.ToString("dd.MM.yyyy");
             string timeStart = GetTimeStartFromPair(comboBox1.Text);
             string timeEnd = GetTimeEndFromPair(comboBox1.Text);
 
@@ -245,10 +298,10 @@ namespace Project2
             CheckAndAddTeacher(teacherName);
 
             // Додавання нового рядка до таблиці Schedule
-            string query = "INSERT INTO Schedule (group_id, subject_id, teacher_id, classroom, day_of_week, time_start, time_end) VALUES (@group_id, @subject_id, @teacher_id, @classroom, @day_of_week, @time_start, @time_end)";
+            string query = "INSERT INTO Schedule (group_id, subject_id, teacher_id, classroom, date, time_start, time_end) " +
+                               "VALUES (@group_id, @subject_id, @teacher_id, @classroom, @date, @time_start, @time_end)";
             using (SQLiteCommand command = new SQLiteCommand(query, connection))
-            {
-                // Отримання group_id для введеної назви групи
+            {                // Отримання group_id для введеної назви групи
                 int groupId = GetGroupId(groupName);
 
                 // Отримання subject_id для введеної назви предмету
@@ -261,7 +314,7 @@ namespace Project2
                 command.Parameters.AddWithValue("@subject_id", subjectId);
                 command.Parameters.AddWithValue("@teacher_id", teacherId);
                 command.Parameters.AddWithValue("@classroom", classroom);
-                command.Parameters.AddWithValue("@day_of_week", dayOfWeek);
+                command.Parameters.AddWithValue("@date", selectedDate);
                 command.Parameters.AddWithValue("@time_start", timeStart);
                 command.Parameters.AddWithValue("@time_end", timeEnd);
 
@@ -399,6 +452,6 @@ namespace Project2
         }
     }
 
-}
+    }
 }
 
