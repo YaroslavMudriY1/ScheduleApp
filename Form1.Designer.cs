@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -66,13 +67,28 @@
             this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
             this.buttonCheckSchedule3 = new System.Windows.Forms.Button();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.dateTimePicker4 = new System.Windows.Forms.DateTimePicker();
+            this.buttonGetSchedule = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBoxClassroomSearch = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxTeacherSearch = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBoxSubjectSearch = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBoxGroupSearch = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.buttonCheckSchedule4 = new System.Windows.Forms.Button();
+            this.dataGridView4 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -83,8 +99,8 @@
             this.dataGridView1.Location = new System.Drawing.Point(336, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 60;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView1.Size = new System.Drawing.Size(437, 339);
             this.dataGridView1.TabIndex = 0;
@@ -408,8 +424,8 @@
             this.dataGridView2.Location = new System.Drawing.Point(336, 0);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 60;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridView2.Size = new System.Drawing.Size(437, 339);
             this.dataGridView2.TabIndex = 19;
             // 
@@ -428,6 +444,19 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.dateTimePicker4);
+            this.tabPage4.Controls.Add(this.buttonGetSchedule);
+            this.tabPage4.Controls.Add(this.label8);
+            this.tabPage4.Controls.Add(this.textBoxClassroomSearch);
+            this.tabPage4.Controls.Add(this.label10);
+            this.tabPage4.Controls.Add(this.textBoxTeacherSearch);
+            this.tabPage4.Controls.Add(this.label11);
+            this.tabPage4.Controls.Add(this.textBoxSubjectSearch);
+            this.tabPage4.Controls.Add(this.label12);
+            this.tabPage4.Controls.Add(this.textBoxGroupSearch);
+            this.tabPage4.Controls.Add(this.label15);
+            this.tabPage4.Controls.Add(this.buttonCheckSchedule4);
+            this.tabPage4.Controls.Add(this.dataGridView4);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -462,11 +491,142 @@
             this.dataGridView3.Location = new System.Drawing.Point(4, 41);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 60;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dataGridView3.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView3.Size = new System.Drawing.Size(769, 298);
             this.dataGridView3.TabIndex = 18;
+            // 
+            // dateTimePicker4
+            // 
+            this.dateTimePicker4.Location = new System.Drawing.Point(191, 12);
+            this.dateTimePicker4.Name = "dateTimePicker4";
+            this.dateTimePicker4.Size = new System.Drawing.Size(137, 20);
+            this.dateTimePicker4.TabIndex = 30;
+            // 
+            // buttonGetSchedule
+            // 
+            this.buttonGetSchedule.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonGetSchedule.Location = new System.Drawing.Point(16, 177);
+            this.buttonGetSchedule.Name = "buttonGetSchedule";
+            this.buttonGetSchedule.Size = new System.Drawing.Size(241, 28);
+            this.buttonGetSchedule.TabIndex = 29;
+            this.buttonGetSchedule.Text = "Знайти записи";
+            this.buttonGetSchedule.UseVisualStyleBackColor = true;
+            this.buttonGetSchedule.Click += new System.EventHandler(this.buttonGetSchedule_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(13, 122);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(56, 13);
+            this.label8.TabIndex = 28;
+            this.label8.Text = "Аудиторія";
+            // 
+            // textBoxClassroomSearch
+            // 
+            this.textBoxClassroomSearch.Location = new System.Drawing.Point(16, 138);
+            this.textBoxClassroomSearch.Name = "textBoxClassroomSearch";
+            this.textBoxClassroomSearch.Size = new System.Drawing.Size(100, 20);
+            this.textBoxClassroomSearch.TabIndex = 27;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(138, 122);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(55, 13);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "Викладач";
+            // 
+            // textBoxTeacherSearch
+            // 
+            this.textBoxTeacherSearch.AutoCompleteCustomSource.AddRange(new string[] {
+            "Сухойваненко Ю.М.",
+            "Суровицький М.М.",
+            "Суровицька О.І.",
+            "В\'юненко О.Б."});
+            this.textBoxTeacherSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxTeacherSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.textBoxTeacherSearch.Location = new System.Drawing.Point(127, 138);
+            this.textBoxTeacherSearch.Name = "textBoxTeacherSearch";
+            this.textBoxTeacherSearch.Size = new System.Drawing.Size(130, 20);
+            this.textBoxTeacherSearch.TabIndex = 25;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(124, 66);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 13);
+            this.label11.TabIndex = 24;
+            this.label11.Text = "Назва предмету";
+            // 
+            // textBoxSubjectSearch
+            // 
+            this.textBoxSubjectSearch.Location = new System.Drawing.Point(127, 82);
+            this.textBoxSubjectSearch.Name = "textBoxSubjectSearch";
+            this.textBoxSubjectSearch.Size = new System.Drawing.Size(130, 20);
+            this.textBoxSubjectSearch.TabIndex = 23;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(13, 66);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(42, 13);
+            this.label12.TabIndex = 22;
+            this.label12.Text = "Группа";
+            // 
+            // textBoxGroupSearch
+            // 
+            this.textBoxGroupSearch.AutoCompleteCustomSource.AddRange(new string[] {
+            "11KI",
+            "21KI",
+            "31KI",
+            "41KI"});
+            this.textBoxGroupSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxGroupSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.textBoxGroupSearch.Location = new System.Drawing.Point(16, 82);
+            this.textBoxGroupSearch.Name = "textBoxGroupSearch";
+            this.textBoxGroupSearch.Size = new System.Drawing.Size(100, 20);
+            this.textBoxGroupSearch.TabIndex = 21;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label15.Location = new System.Drawing.Point(13, 42);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(98, 15);
+            this.label15.TabIndex = 20;
+            this.label15.Text = "Знайти запис";
+            // 
+            // buttonCheckSchedule4
+            // 
+            this.buttonCheckSchedule4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonCheckSchedule4.Location = new System.Drawing.Point(5, 7);
+            this.buttonCheckSchedule4.Name = "buttonCheckSchedule4";
+            this.buttonCheckSchedule4.Size = new System.Drawing.Size(180, 32);
+            this.buttonCheckSchedule4.TabIndex = 19;
+            this.buttonCheckSchedule4.Text = "Переглянути дані";
+            this.buttonCheckSchedule4.UseVisualStyleBackColor = true;
+            this.buttonCheckSchedule4.Click += new System.EventHandler(this.buttonCheckSchedule4_Click);
+            // 
+            // dataGridView4
+            // 
+            this.dataGridView4.AllowUserToAddRows = false;
+            this.dataGridView4.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView4.Location = new System.Drawing.Point(334, 0);
+            this.dataGridView4.Name = "dataGridView4";
+            this.dataGridView4.RowHeadersWidth = 60;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView4.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dataGridView4.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.dataGridView4.Size = new System.Drawing.Size(437, 339);
+            this.dataGridView4.TabIndex = 18;
             // 
             // Schedule
             // 
@@ -485,7 +645,10 @@
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -527,6 +690,19 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker3;
         private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.Button buttonCheckSchedule3;
+        private System.Windows.Forms.DateTimePicker dateTimePicker4;
+        private System.Windows.Forms.Button buttonGetSchedule;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBoxClassroomSearch;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox textBoxTeacherSearch;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBoxSubjectSearch;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox textBoxGroupSearch;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button buttonCheckSchedule4;
+        private System.Windows.Forms.DataGridView dataGridView4;
     }
 }
 

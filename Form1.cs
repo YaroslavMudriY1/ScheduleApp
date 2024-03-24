@@ -13,7 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project2
 {
-    
+
     public partial class Schedule : Form
     {
         string connectionString = "Data Source=db2.db;Version=3;";
@@ -25,22 +25,22 @@ namespace Project2
         {
             // Додавання стовпців заголовків рядків
             dataGridView1.RowHeadersVisible = true;
-/*
-            // Отримання всіх доступних назв груп з бази даних
-            List<string> groupNames = GetAllGroupNames();
+            /*
+                        // Отримання всіх доступних назв груп з бази даних
+                        List<string> groupNames = GetAllGroupNames();
 
-            // Додавання стовпців для кожної групи
-            foreach (string groupName in groupNames)
-            {
-                dataGridView1.Columns.Add(groupName, groupName);
-            }
+                        // Додавання стовпців для кожної групи
+                        foreach (string groupName in groupNames)
+                        {
+                            dataGridView1.Columns.Add(groupName, groupName);
+                        }
 
-            // Додавання рядків у відповідності до пар
-            for (int i = 0; i < 5; i++)
-            {
-                dataGridView1.Rows.Add();
-                dataGridView1.Rows[i].HeaderCell.Value = $"{i + 1} пара";
-            }*/
+                        // Додавання рядків у відповідності до пар
+                        for (int i = 0; i < 5; i++)
+                        {
+                            dataGridView1.Rows.Add();
+                            dataGridView1.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+                        }*/
         }
 
         // Метод для отримання всіх доступних назв груп з бази даних
@@ -54,12 +54,13 @@ namespace Project2
             SQLiteCommand command = new SQLiteCommand(query, connection);
             SQLiteDataReader reader = command.ExecuteReader();
 
-            while (reader.Read()) {
+            while (reader.Read())
+            {
 
                 string groupName = reader["group_name"].ToString();
                 groupNames.Add(groupName);
             }
-                        
+
             return groupNames;
         }
 
@@ -371,131 +372,131 @@ namespace Project2
 
         //Методи
 
-    // Метод для перевірки наявності та додавання нової групи до таблиці Groups
-    private void CheckAndAddGroup(string groupName)
+        // Метод для перевірки наявності та додавання нової групи до таблиці Groups
+        private void CheckAndAddGroup(string groupName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT COUNT(*) FROM Groups WHERE group_name = @group_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@group_name", groupName);
-            connection.Open();
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-
-            if (count == 0)
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
             {
-                // Додавання нової групи до таблиці Groups
-                query = "INSERT INTO Groups (group_name) VALUES (@group_name)";
-                using (SQLiteCommand addGroupCommand = new SQLiteCommand(query, connection))
+                command.Parameters.AddWithValue("@group_name", groupName);
+                connection.Open();
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+
+                if (count == 0)
                 {
-                    addGroupCommand.Parameters.AddWithValue("@group_name", groupName);
-                    connection.Open();
-                    addGroupCommand.ExecuteNonQuery();
-                    connection.Close();
+                    // Додавання нової групи до таблиці Groups
+                    query = "INSERT INTO Groups (group_name) VALUES (@group_name)";
+                    using (SQLiteCommand addGroupCommand = new SQLiteCommand(query, connection))
+                    {
+                        addGroupCommand.Parameters.AddWithValue("@group_name", groupName);
+                        connection.Open();
+                        addGroupCommand.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
             }
         }
-    }
 
-    // Метод для перевірки наявності та додавання нового предмету до таблиці Subjects
-    private void CheckAndAddSubject(string subjectName)
+        // Метод для перевірки наявності та додавання нового предмету до таблиці Subjects
+        private void CheckAndAddSubject(string subjectName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT COUNT(*) FROM Subjects WHERE subject_name = @subject_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@subject_name", subjectName);
-            connection.Open();
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-
-            if (count == 0)
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
             {
-                // Додавання нового предмету до таблиці Subjects
-                query = "INSERT INTO Subjects (subject_name) VALUES (@subject_name)";
-                using (SQLiteCommand addSubjectCommand = new SQLiteCommand(query, connection))
+                command.Parameters.AddWithValue("@subject_name", subjectName);
+                connection.Open();
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+
+                if (count == 0)
                 {
-                    addSubjectCommand.Parameters.AddWithValue("@subject_name", subjectName);
-                    connection.Open();
-                    addSubjectCommand.ExecuteNonQuery();
-                    connection.Close();
+                    // Додавання нового предмету до таблиці Subjects
+                    query = "INSERT INTO Subjects (subject_name) VALUES (@subject_name)";
+                    using (SQLiteCommand addSubjectCommand = new SQLiteCommand(query, connection))
+                    {
+                        addSubjectCommand.Parameters.AddWithValue("@subject_name", subjectName);
+                        connection.Open();
+                        addSubjectCommand.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
             }
         }
-    }
 
-    // Метод для перевірки наявності та додавання нового викладача до таблиці Teachers
-    private void CheckAndAddTeacher(string teacherName)
+        // Метод для перевірки наявності та додавання нового викладача до таблиці Teachers
+        private void CheckAndAddTeacher(string teacherName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT COUNT(*) FROM Teachers WHERE teacher_name = @teacher_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@teacher_name", teacherName);
-            connection.Open();
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-
-            if (count == 0)
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
             {
-                // Додавання нового викладача до таблиці Teachers
-                query = "INSERT INTO Teachers (teacher_name) VALUES (@teacher_name)";
-                using (SQLiteCommand addTeacherCommand = new SQLiteCommand(query, connection))
+                command.Parameters.AddWithValue("@teacher_name", teacherName);
+                connection.Open();
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+
+                if (count == 0)
                 {
-                    addTeacherCommand.Parameters.AddWithValue("@teacher_name", teacherName);
-                    connection.Open();
-                    addTeacherCommand.ExecuteNonQuery();
-                    connection.Close();
+                    // Додавання нового викладача до таблиці Teachers
+                    query = "INSERT INTO Teachers (teacher_name) VALUES (@teacher_name)";
+                    using (SQLiteCommand addTeacherCommand = new SQLiteCommand(query, connection))
+                    {
+                        addTeacherCommand.Parameters.AddWithValue("@teacher_name", teacherName);
+                        connection.Open();
+                        addTeacherCommand.ExecuteNonQuery();
+                        connection.Close();
+                    }
                 }
             }
         }
-    }
 
-    // Метод для отримання group_id за назвою групи
-    private int GetGroupId(string groupName)
+        // Метод для отримання group_id за назвою групи
+        private int GetGroupId(string groupName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT group_id FROM Groups WHERE group_name = @group_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@group_name", groupName);
-            connection.Open();
-            int groupId = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-            return groupId;
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@group_name", groupName);
+                connection.Open();
+                int groupId = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return groupId;
+            }
         }
-    }
 
-    // Метод для отримання subject_id за назвою предмету
-    private int GetSubjectId(string subjectName)
+        // Метод для отримання subject_id за назвою предмету
+        private int GetSubjectId(string subjectName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT subject_id FROM Subjects WHERE subject_name = @subject_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@subject_name", subjectName);
-            connection.Open();
-            int subjectId = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-            return subjectId;
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@subject_name", subjectName);
+                connection.Open();
+                int subjectId = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return subjectId;
+            }
         }
-    }
 
-    // Метод для отримання teacher_id за ім'ям викладача
-    private int GetTeacherId(string teacherName)
+        // Метод для отримання teacher_id за ім'ям викладача
+        private int GetTeacherId(string teacherName)
         {
             var connection = new SQLiteConnection(connectionString);
             string query = "SELECT teacher_id FROM Teachers WHERE teacher_name = @teacher_name";
-        using (SQLiteCommand command = new SQLiteCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@teacher_name", teacherName);
-            connection.Open();
-            int teacherId = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-            return teacherId;
+            using (SQLiteCommand command = new SQLiteCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@teacher_name", teacherName);
+                connection.Open();
+                int teacherId = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return teacherId;
+            }
         }
-    }
 
         //Вкладка видалення записів
         private void buttonDeleteEntry_Click(object sender, EventArgs e)
@@ -558,6 +559,149 @@ namespace Project2
         {
             LoadDataFromDatabase(dateTimePicker3, dataGridView3);
 
+        }
+
+        private void buttonGetSchedule_Click(object sender, EventArgs e)
+        {
+            // Отримання значення з текстового поля textBoxGroups
+            string groupNameFilter = textBoxGroupSearch.Text;
+
+            string teacherFilter = textBoxTeacherSearch.Text;
+            string classroomFilter = textBoxClassroomSearch.Text;
+            string subjectFilter = textBoxSubjectSearch.Text;
+
+            // Виклик методу для завантаження даних у dataGridView4 з урахуванням фільтрації
+            LoadFilteredDataFromDatabase(groupNameFilter, teacherFilter, classroomFilter, subjectFilter, dataGridView4);
+        }
+
+        // Метод для завантаження даних з бази даних з урахуванням фільтрації
+        private void LoadFilteredDataFromDatabase(string groupNameFilter, string teacherFilter, string classroomFilter, string subjectFilter, DataGridView dataGridView)
+        {
+            string selectedDate = dateTimePicker4.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
+
+            var connection = new SQLiteConnection(connectionString);
+            // Відкриття підключення до бази даних
+            connection.Open();
+            // Очистка DataGridView перед відображенням нових даних
+            dataGridView.Rows.Clear();
+            dataGridView.Columns.Clear();
+            // Отримання всіх доступних назв груп з бази даних
+            List<string> groupNames = GetAllGroupNames();
+            // Додавання стовпців до DataGridView, якщо вони ще не додані
+            foreach (string groupName in groupNames)
+            {
+                if (groupName.Contains(groupNameFilter))
+                {
+                    dataGridView.Columns.Add(groupName, groupName);
+                }
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                dataGridView.Rows.Add();
+                dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+            }
+
+            // Запит до бази даних для отримання розкладу з урахуванням фільтрації
+            string query = "SELECT * FROM Schedule WHERE date = @selectedDate";
+
+            // Додавання умов фільтрації за параметрами, якщо вони вказані
+            if (!string.IsNullOrWhiteSpace(textBoxGroupSearch.Text))
+            {
+                query += " AND group_id IN (SELECT group_id FROM Groups WHERE group_name LIKE @groupName)";
+            }
+
+            if (!string.IsNullOrEmpty(teacherFilter))
+            {
+                query += " AND teacher_name LIKE @teacherFilter";
+            }
+
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                query += " AND classroom LIKE @classroomFilter";
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                query += " AND subject_name LIKE @subjectFilter";
+            }
+
+            query += " ORDER BY time_start";
+
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+
+            // Додавання параметрів фільтрації за групою, якщо вона вказана
+            if (!string.IsNullOrWhiteSpace(textBoxGroupSearch.Text))
+            {
+                command.Parameters.AddWithValue("@groupName", $"%{textBoxGroupSearch.Text}%");
+            }
+
+            if (!string.IsNullOrEmpty(teacherFilter))
+            {
+                command.Parameters.AddWithValue("@teacherFilter", "%" + teacherFilter + "%");
+            }
+
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                command.Parameters.AddWithValue("@classroomFilter", "%" + classroomFilter + "%");
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                command.Parameters.AddWithValue("@subjectFilter", "%" + subjectFilter + "%");
+            }
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            // Логіка для заповнення DataGridView з результатами запиту
+            while (reader.Read())
+            {
+                // Отримати ідентифікатор групи
+                int groupId = Convert.ToInt32(reader["group_id"]);
+
+                // Отримати ім'я групи за допомогою методу GetGroupName
+                string groupName = GetGroupName(groupId);
+
+                // Отримати дані про предмет, викладача, аудиторію
+                int subjectId = Convert.ToInt32(reader["subject_id"]);
+                int teacherId = Convert.ToInt32(reader["teacher_id"]);
+                string classroom = reader["classroom"].ToString();
+                string timeStart = reader["time_start"].ToString();
+
+                    string subject = GetSubjectName(subjectId);
+                    string teacher = GetTeacherName(teacherId);
+
+                    // Отримання індексу стовпця або додавання нового, якщо не існує
+                    int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : dataGridView.Columns.Add(groupName, groupName);
+
+                    // Отримання індексу рядка або додавання нового, якщо не існує
+                    int rowIndex = GetRowIndex(timeStart);
+                    if (rowIndex >= 0)
+                    {
+                        if (dataGridView.Rows.Count <= rowIndex)
+                        {
+                            dataGridView.Rows.Add();
+                            dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
+                        }
+
+                        dataGridView.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                    }
+                
+
+                else
+                {
+                    MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            
+             }
+            // Закриття підключення до бази даних
+            connection.Close();
+        }
+
+        private void buttonCheckSchedule4_Click(object sender, EventArgs e)
+        {
+            LoadDataFromDatabase(dateTimePicker4, dataGridView4);
         }
     }
 }
