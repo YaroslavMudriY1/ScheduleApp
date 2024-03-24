@@ -17,7 +17,7 @@ namespace Project2
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Schedule());
         }
 /*        static void SQL(string[] args) { 
                 using (SQLiteConnection conn = new SQLiteConnection("data source = db2.db"))
