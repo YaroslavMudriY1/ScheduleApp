@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.IO;
+using System.Xml.Serialization; //Для зберігання списку недавніх
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -13,34 +15,62 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project2
 {
-
+    // Клас для збереження списку нещодавно відкритих файлів
+    public class RecentFilesConfig
+    {
+        public List<string> RecentlyOpenedFiles { get; set; } = new List<string>();
+    }
     public partial class Schedule : Form
     {
-        string connectionString = "Data Source=db2.db;Version=3;";
+        // Шлях до файлу конфігурації
+        private string configFilePath = "recentFilesConfig.xml";
+        private List<string> recentlyOpenedFiles;
+        // Завантаження списку нещодавно відкритих файлів
+        private List<string> LoadRecentFiles()
+        {
+            if (File.Exists(configFilePath))
+            {
+                using (StreamReader reader = new StreamReader(configFilePath))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
+                    RecentFilesConfig config = (RecentFilesConfig)serializer.Deserialize(reader);
+                    return config.RecentlyOpenedFiles;
+                }
+            }
+            return new List<string>();
+        }
+
+        // Збереження списку нещодавно відкритих файлів
+        private void SaveRecentFiles(List<string> recentlyOpenedFiles)
+        {
+            RecentFilesConfig config = new RecentFilesConfig();
+            config.RecentlyOpenedFiles = recentlyOpenedFiles;
+            using (StreamWriter writer = new StreamWriter(configFilePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
+                serializer.Serialize(writer, config);
+            }
+        }
+
+        // private List<string> recentlyOpenedFiles = new List<string>(); // Список нещодавно відкритих файлів
+        // string connectionString = "Data Source=db2.db;Version=3;";
+        private static string selectedDatabasePath = "";
+        string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
+
+        private void UpdateConnectionString()
+        {
+            connectionString = $"Data Source={selectedDatabasePath};Version=3;";
+        }
         public Schedule()
         {
             InitializeComponent();
+            // Завантаження списку нещодавно відкритих файлів при запуску програми
+            LoadRecentFilesOnStartup();
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             // Додавання стовпців заголовків рядків
             dataGridView1.RowHeadersVisible = true;
-            /*
-                        // Отримання всіх доступних назв груп з бази даних
-                        List<string> groupNames = GetAllGroupNames();
-
-                        // Додавання стовпців для кожної групи
-                        foreach (string groupName in groupNames)
-                        {
-                            dataGridView1.Columns.Add(groupName, groupName);
-                        }
-
-                        // Додавання рядків у відповідності до пар
-                        for (int i = 0; i < 5; i++)
-                        {
-                            dataGridView1.Rows.Add();
-                            dataGridView1.Rows[i].HeaderCell.Value = $"{i + 1} пара";
-                        }*/
         }
 
         // Метод для отримання всіх доступних назв груп з бази даних
@@ -68,6 +98,13 @@ namespace Project2
 
         private void LoadDataFromDatabase(DateTimePicker dateTimePicker, DataGridView dataGridView)
         {
+
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string selectedDate = dateTimePicker.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
                                                                                // Отримання всіх доступних назв груп з бази даних
             List<string> groupNames = GetAllGroupNames();
@@ -86,71 +123,79 @@ namespace Project2
                     dataGridView.Columns.Add(groupName, groupName);
                 }
             }
-
-            for (int i = 0; i < 5; i++)
+            // Перевірка наявності стовпців у DataGridView перед додаванням рядків
+            if (dataGridView.Columns.Count == 0)
             {
-                dataGridView.Rows.Add();
-                dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
-            }
-
-            // Запит до бази даних для отримання розкладу на обрану дату
-            string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
-            SQLiteCommand command = new SQLiteCommand(query, connection);
-            command.Parameters.AddWithValue("@selectedDate", selectedDate);
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            // Логіка для заповнення DataGridView з результатами запиту
-            if (reader.HasRows)
-            {
-                // Пройтись по всіх рядках результатів запиту
-                while (reader.Read())
-                {
-                    // Отримати ідентифікатор групи
-                    int groupId = Convert.ToInt32(reader["group_id"]);
-
-                    // Отримати ім'я групи за допомогою методу GetGroupName
-                    string groupName = GetGroupName(groupId);
-
-                    // Отримати дані про предмет, викладача, аудиторію
-                    int subjectId = Convert.ToInt32(reader["subject_id"]);
-                    int teacherId = Convert.ToInt32(reader["teacher_id"]);
-                    string classroom = reader["classroom"].ToString();
-                    string timeStart = reader["time_start"].ToString();
-
-                    // Отримати індекс стовпця, в який буде додана інформація
-                    int columnIndex = GetColumnIndex(groupName);
-
-
-                    // Отримати інформацію про предмет та викладача з відповідних таблиць
-                    if (columnIndex >= 0)
-                    {
-                        string subject = GetSubjectName(subjectId);
-                        string teacher = GetTeacherName(teacherId);
-
-                        int rowIndex = GetRowIndex(timeStart);
-                        if (rowIndex >= 0)
-                        {
-                            if (dataGridView.Rows.Count <= rowIndex)
-                            {
-                                dataGridView.Rows.Add();
-                                dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
-                            }
-
-                            if (dataGridView.Columns.Count <= columnIndex)
-                            {
-                                dataGridView.Columns.Add(groupName, groupName);
-                            }
-
-                            dataGridView.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
-                        }
-                    }
-                }
+                MessageBox.Show("База даних порожня.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else
             {
-                MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+                // Додавання рядків у випадку наявності стовпців
+                for (int i = 0; i < 5; i++)
+                {
+                    dataGridView.Rows.Add();
+                    dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+                }
 
+
+                // Запит до бази даних для отримання розкладу на обрану дату
+                string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                // Логіка для заповнення DataGridView з результатами запиту
+                if (reader.HasRows)
+                {
+                    // Пройтись по всіх рядках результатів запиту
+                    while (reader.Read())
+                    {
+                        // Отримати ідентифікатор групи
+                        int groupId = Convert.ToInt32(reader["group_id"]);
+
+                        // Отримати ім'я групи за допомогою методу GetGroupName
+                        string groupName = GetGroupName(groupId);
+
+                        // Отримати дані про предмет, викладача, аудиторію
+                        int subjectId = Convert.ToInt32(reader["subject_id"]);
+                        int teacherId = Convert.ToInt32(reader["teacher_id"]);
+                        string classroom = reader["classroom"].ToString();
+                        string timeStart = reader["time_start"].ToString();
+
+                        // Отримати індекс стовпця, в який буде додана інформація
+                        int columnIndex = GetColumnIndex(groupName);
+
+
+                        // Отримати інформацію про предмет та викладача з відповідних таблиць
+                        if (columnIndex >= 0)
+                        {
+                            string subject = GetSubjectName(subjectId);
+                            string teacher = GetTeacherName(teacherId);
+
+                            int rowIndex = GetRowIndex(timeStart);
+                            if (rowIndex >= 0)
+                            {
+                                if (dataGridView.Rows.Count <= rowIndex)
+                                {
+                                    dataGridView.Rows.Add();
+                                    dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
+                                }
+
+                                if (dataGridView.Columns.Count <= columnIndex)
+                                {
+                                    dataGridView.Columns.Add(groupName, groupName);
+                                }
+
+                                dataGridView.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
             // Закриття підключення до бази даних
             connection.Close();
 
@@ -159,7 +204,6 @@ namespace Project2
         private void buttonCheckSchedule1_Click(object sender, EventArgs e)
         {
             LoadDataFromDatabase(dateTimePicker1, dataGridView1); //Використання функції з наданням вихідних об'єктів в аргументів
-
         }
 
         // Подія для зміни значення DateTimePicker
@@ -322,6 +366,11 @@ namespace Project2
         //Додавання запису
         private void buttonAddData_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             var connection = new SQLiteConnection(connectionString);
             // Отримання значень з текстових полів
             string groupName = textBox1.Text;
@@ -501,6 +550,11 @@ namespace Project2
         //Вкладка видалення записів
         private void buttonDeleteEntry_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Отримання значень з полів вибору
             string groupName = textBox5.Text;
             string selectedDate = dateTimePicker2.Value.ToString("dd.MM.yyyy");
@@ -539,11 +593,15 @@ namespace Project2
         private void buttonCheckSchedule2_Click(object sender, EventArgs e)
         {
             LoadDataFromDatabase(dateTimePicker2, dataGridView2);
-
         }
 
         private void buttonDeleteDayEntry_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string selectedDate = dateTimePicker2.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
             var connection = new SQLiteConnection(connectionString);
             connection.Open();
@@ -558,7 +616,6 @@ namespace Project2
         private void buttonCheckSchedule3_Click(object sender, EventArgs e)
         {
             LoadDataFromDatabase(dateTimePicker3, dataGridView3);
-
         }
 
         private void buttonGetSchedule_Click(object sender, EventArgs e)
@@ -577,6 +634,11 @@ namespace Project2
         // Метод для завантаження даних з бази даних з урахуванням фільтрації
         private void LoadFilteredDataFromDatabase(string groupNameFilter, string teacherFilter, string classroomFilter, string subjectFilter, DataGridView dataGridView)
         {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string selectedDate = dateTimePicker4.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
 
             var connection = new SQLiteConnection(connectionString);
@@ -587,8 +649,21 @@ namespace Project2
             dataGridView.Columns.Clear();
             // Отримання всіх доступних назв груп з бази даних
             List<string> groupNames = GetAllGroupNames();
-            // Додавання стовпців до DataGridView, якщо вони ще не додані
+            // Зберігаємо групи, які вже мають розклад з потрібним вчителем або предметом
+            HashSet<string> groupsWithFilteredData = new HashSet<string>();
+
+            // Перевірка груп на наявність розкладу з потрібним вчителем або предметом
             foreach (string groupName in groupNames)
+            {
+                bool groupContainsFilteredData = CheckGroupForFilteredData(groupName, selectedDate, teacherFilter, subjectFilter, connection);
+                if (groupContainsFilteredData)
+                {
+                    groupsWithFilteredData.Add(groupName);
+                }
+            }
+
+            // Додавання стовпців до DataGridView лише для груп, що містять потрібні дані
+            foreach (string groupName in groupsWithFilteredData)
             {
                 if (groupName.Contains(groupNameFilter))
                 {
@@ -613,7 +688,7 @@ namespace Project2
 
             if (!string.IsNullOrEmpty(teacherFilter))
             {
-                query += " AND teacher_name LIKE @teacherFilter";
+                query += " AND teacher_id IN (SELECT teacher_id FROM Teachers WHERE teacher_name LIKE @teacherFilter)";
             }
 
             if (!string.IsNullOrEmpty(classroomFilter))
@@ -623,7 +698,7 @@ namespace Project2
 
             if (!string.IsNullOrEmpty(subjectFilter))
             {
-                query += " AND subject_name LIKE @subjectFilter";
+                query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
             }
 
             query += " ORDER BY time_start";
@@ -644,7 +719,7 @@ namespace Project2
 
             if (!string.IsNullOrEmpty(classroomFilter))
             {
-                command.Parameters.AddWithValue("@classroomFilter", "%" + classroomFilter + "%");
+                command.Parameters.AddWithValue("@classroomFilter", classroomFilter);
             }
 
             if (!string.IsNullOrEmpty(subjectFilter))
@@ -663,19 +738,29 @@ namespace Project2
                 // Отримати ім'я групи за допомогою методу GetGroupName
                 string groupName = GetGroupName(groupId);
 
-                // Отримати дані про предмет, викладача, аудиторію
-                int subjectId = Convert.ToInt32(reader["subject_id"]);
-                int teacherId = Convert.ToInt32(reader["teacher_id"]);
-                string classroom = reader["classroom"].ToString();
-                string timeStart = reader["time_start"].ToString();
+                // Перевірити, чи група містить потрібні дані
+                if (groupsWithFilteredData.Contains(groupName))
+                {
+
+                    // Отримати дані про предмет, викладача, аудиторію
+                    int subjectId = Convert.ToInt32(reader["subject_id"]);
+                    int teacherId = Convert.ToInt32(reader["teacher_id"]);
+                    string classroom = reader["classroom"].ToString();
+                    string timeStart = reader["time_start"].ToString();
 
                     string subject = GetSubjectName(subjectId);
                     string teacher = GetTeacherName(teacherId);
 
-                    // Отримання індексу стовпця або додавання нового, якщо не існує
-                    int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : dataGridView.Columns.Add(groupName, groupName);
+                    // Отримати індекс стовпця, в який буде додана інформація
+                    int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : -1;
 
-                    // Отримання індексу рядка або додавання нового, якщо не існує
+                    // Якщо стовпець не знайдено, додати новий
+                    if (columnIndex == -1)
+                    {
+                        columnIndex = dataGridView.Columns.Add(groupName, groupName);
+                    }
+
+                    // Отримати індекс рядка або додати новий, якщо не існує
                     int rowIndex = GetRowIndex(timeStart);
                     if (rowIndex >= 0)
                     {
@@ -685,24 +770,285 @@ namespace Project2
                             dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
                         }
 
-                        dataGridView.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                        dataGridView.Rows[rowIndex].Cells[columnIndex].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
                     }
-                
 
+
+                    else
+                    {
+                        MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
                 else
                 {
-                    MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("За вказаними фільтрами відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-            
-             }
+            }
             // Закриття підключення до бази даних
             connection.Close();
         }
+        // Метод для перевірки наявності потрібних даних у розкладі групи за вибраний день
+        private bool CheckGroupForFilteredData(string groupName, string selectedDate, string teacherFilter, string subjectFilter, SQLiteConnection connection)
+        {
+            string query = "SELECT COUNT(*) FROM Schedule WHERE group_id IN (SELECT group_id FROM Groups WHERE group_name = @groupName) AND date = @selectedDate";
+
+            if (!string.IsNullOrEmpty(teacherFilter))
+            {
+                query += " AND teacher_id IN (SELECT teacher_id FROM Teachers WHERE teacher_name LIKE @teacherFilter)";
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
+            }
+
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@groupName", groupName);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+
+            if (!string.IsNullOrEmpty(teacherFilter))
+            {
+                command.Parameters.AddWithValue("@teacherFilter", "%" + teacherFilter + "%");
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                command.Parameters.AddWithValue("@subjectFilter", "%" + subjectFilter + "%");
+            }
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+
 
         private void buttonCheckSchedule4_Click(object sender, EventArgs e)
         {
             LoadDataFromDatabase(dateTimePicker4, dataGridView4);
         }
+
+        // Відкриття файлу бази даних
+        private void OpenDatabaseFile(string filePath)
+        {
+            // Оновлення вибраного файлу бази даних
+            selectedDatabasePath = filePath;
+            UpdateConnectionString();
+            // Оновити меню нещодавно відкритих файлів
+            AddRecentlyOpenedFile(selectedDatabasePath);
+        }
+
+        // Вибір і відкриття файлу бази даних
+        private void обратиФайлБазиДанихToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "SQL DB files(*.db)|*.db";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFilePath = openFileDialog1.FileName;
+                OpenDatabaseFile(selectedFilePath);
+            }
+        }
+
+        // Додати файл до списку нещодавно відкритих файлів
+        private void AddRecentlyOpenedFile(string filePath)
+        {
+            recentlyOpenedFiles.Insert(0, filePath);
+            if (recentlyOpenedFiles.Count > 3)
+            {
+                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1);
+            }
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+            // Зберегти список нещодавно відкритих файлів
+            SaveRecentFiles(recentlyOpenedFiles);
+        }
+
+        // Оновлення меню нещодавно відкритих файлів
+        private void UpdateRecentlyOpenedFilesMenu(ToolStripMenuItem нещодавноВідкритіToolStripMenuItem, List<string> recentlyOpenedFiles)
+        {
+            нещодавноВідкритіToolStripMenuItem.DropDownItems.Clear();
+            foreach (string filePath in recentlyOpenedFiles)
+            {
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(Path.GetFileName(filePath));
+                menuItem.Tag = filePath;
+                menuItem.Click += RecentlyOpenedFile_Click;
+                нещодавноВідкритіToolStripMenuItem.DropDownItems.Add(menuItem);
+            }
+        }
+
+        // Обробник подій для пунктів меню нещодавно відкритих файлів
+        private void RecentlyOpenedFile_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            string filePath = menuItem.Tag.ToString();
+            OpenDatabaseFile(filePath);
+        }
+
+        // Метод для завантаження списку нещодавно відкритих файлів при запуску програми
+        private void LoadRecentFilesOnStartup()
+        {
+            recentlyOpenedFiles = LoadRecentFiles();
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+        }
+
+
+
+        //Вікно "Про розробника"
+        private void проРозробникаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Створення та відображення нової форми для відомостей про розробника
+/*            AboutDeveloperForm aboutDeveloperForm = new AboutDeveloperForm();
+            aboutDeveloperForm.ShowDialog();*/
+        }
+
+        //Вікно "Про навчальний заклад"
+        private void проНавчальнийЗакладToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Створення та відображення нової форми для відомостей про навчальний заклад
+/*            AboutSchoolForm aboutSchoolForm = new AboutSchoolForm();
+            aboutSchoolForm.ShowDialog();*/
+        }
+
+        //Вікно про програму
+        private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Створення та відображення нової форми для відомостей про програму
+            AboutProgram aboutProgram = new AboutProgram();
+            aboutProgram.ShowDialog();
+        }
+
+        //Очищення вмісту бази даних
+        private void очиститиФайлToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            try {
+                // Перевірка, чи обрано файл бази даних
+                if (!string.IsNullOrEmpty(selectedDatabasePath))
+                {
+                    // Виведення попередження про очищення бази даних та підтвердження користувача
+                    DialogResult result = MessageBox.Show("Ви справді хочете очистити базу даних?", "Попередження", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Yes)
+                    {
+                        SQLiteConnection connection = new SQLiteConnection($"Data Source={selectedDatabasePath}");
+                        connection.Open();
+
+                        // Очищення вмісту кожної таблиці
+                        string[] tableNames = GetAllTableNames(connection);
+                        foreach (string tableName in tableNames)
+                        {
+                            string query = $"DELETE FROM {tableName}";
+                            SQLiteCommand command = new SQLiteCommand(query, connection);
+                            command.ExecuteNonQuery();
+                        }
+
+                        MessageBox.Show("Вміст бази даних очищено успішно.", "Очищення бази даних", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Сталася помилка під час очищення бази даних: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Метод для отримання імен усіх таблиць в базі даних
+        private string[] GetAllTableNames(SQLiteConnection connection)
+        {
+            List<string> tableNames = new List<string>();
+            SQLiteCommand command = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table'", connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        tableNames.Add(reader.GetString(0));
+                    }
+            return tableNames.ToArray();
+        }
+
+        //Створення резервної копії в папці з базою даних
+        private void створитиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевірка, чи обрано файл бази даних
+            if (!string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                try
+                {
+                    // Визначення шляху до папки з резервними копіями
+                    string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
+
+                    // Створення папки для резервних копій, якщо вона не існує
+                    if (!Directory.Exists(backupFolderPath))
+                    {
+                        Directory.CreateDirectory(backupFolderPath);
+                    }
+
+                    // Формування нового шляху для резервної копії
+                    string backupFileName = Path.GetFileNameWithoutExtension(selectedDatabasePath) + "_backup.db";
+                    string backupFilePath = Path.Combine(backupFolderPath, backupFileName);
+
+                    // Копіювання файлу бази даних у папку з резервними копіями
+                    File.Copy(selectedDatabasePath, backupFilePath, true);
+
+                    MessageBox.Show("Резервна копія створена успішно.", "Створення резервної копії", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Сталася помилка при створенні резервної копії: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        //Відкриття в провіднику папки з резервною копією
+        private void переглянутиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевірка, чи обрано файл бази даних
+            if (!string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                // Визначення шляху до папки з резервними копіями
+                string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
+
+                // Перевірка, чи існує папка "Copy" у папці бази даних
+                if (!Directory.Exists(backupFolderPath))
+                {
+                    // Якщо папка "Copy" не існує, відкрити папку бази даних
+                    backupFolderPath = Path.GetDirectoryName(selectedDatabasePath);
+                }
+
+                // Відкриття папки з резервними копіями в провіднику
+                System.Diagnostics.Process.Start("explorer.exe", backupFolderPath);
+            }
+            else
+            {
+                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        //Зберегти базу даних як окремий файл
+        private void зберегтиЯкToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // Вибір шляху та імені для збереження бази даних
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "SQL DB files(*.db)|*.db";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Копіювання поточного файлу бази даних за обраний шлях та ім'я
+                string sourcePath = selectedDatabasePath;
+                string destinationPath = saveFileDialog.FileName;
+                File.Copy(sourcePath, destinationPath, true);
+                MessageBox.Show("Базу даних успішно збережено.", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
     }
+
 }
 

@@ -19,25 +19,5 @@ namespace Project2
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Schedule());
         }
-/*        static void SQL(string[] args) { 
-                using (SQLiteConnection conn = new SQLiteConnection("data source = db2.db"))
-
-                {
-
-                    using (SQLiteCommand cmd = new SQLiteCommand())
-                    {
-                        string strSql = "INSERT INTO[Customer] ([Id], [CustName]) VALUES(1, ‘Ming’)";
-                        cmd.CommandText = strSql;
-                        cmd.Connection = conn;
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                        // do something…
-                        conn.Close();
-
-                    }
-
-                }
-
-        }*/
     }
 }

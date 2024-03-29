@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -63,10 +64,10 @@
             this.buttonCheckSchedule2 = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
-            this.buttonCheckSchedule3 = new System.Windows.Forms.Button();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.buttonCheckSchedule3 = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
             this.dateTimePicker4 = new System.Windows.Forms.DateTimePicker();
             this.buttonGetSchedule = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -80,15 +81,32 @@
             this.label15 = new System.Windows.Forms.Label();
             this.buttonCheckSchedule4 = new System.Windows.Forms.Button();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.опціїToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.обратиФайлБазиДанихToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.нещодавноВідкритіToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.зберегтиЯкToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.очиститиФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.створитиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.переглянутиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.очиститиФайлToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.довідкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проРозробникаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проНавчальнийЗакладToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.проПрограмуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -99,8 +117,8 @@
             this.dataGridView1.Location = new System.Drawing.Point(336, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 60;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView1.Size = new System.Drawing.Size(437, 339);
             this.dataGridView1.TabIndex = 0;
@@ -111,10 +129,10 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Location = new System.Drawing.Point(2, 1);
+            this.tabControl1.Location = new System.Drawing.Point(2, 25);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(784, 365);
+            this.tabControl1.Size = new System.Drawing.Size(784, 366);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
@@ -139,7 +157,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(776, 339);
+            this.tabPage1.Size = new System.Drawing.Size(776, 340);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Додавання даних";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -183,13 +201,14 @@
             // 
             // buttonAddData
             // 
+            this.buttonAddData.BackColor = System.Drawing.Color.LightGreen;
             this.buttonAddData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonAddData.Location = new System.Drawing.Point(18, 243);
             this.buttonAddData.Name = "buttonAddData";
             this.buttonAddData.Size = new System.Drawing.Size(241, 28);
             this.buttonAddData.TabIndex = 13;
             this.buttonAddData.Text = "Додати дані";
-            this.buttonAddData.UseVisualStyleBackColor = true;
+            this.buttonAddData.UseVisualStyleBackColor = false;
             this.buttonAddData.Click += new System.EventHandler(this.buttonAddData_Click);
             // 
             // label6
@@ -291,13 +310,14 @@
             // 
             // buttonCheckSchedule1
             // 
+            this.buttonCheckSchedule1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.buttonCheckSchedule1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonCheckSchedule1.Location = new System.Drawing.Point(7, 7);
             this.buttonCheckSchedule1.Name = "buttonCheckSchedule1";
             this.buttonCheckSchedule1.Size = new System.Drawing.Size(180, 32);
             this.buttonCheckSchedule1.TabIndex = 1;
             this.buttonCheckSchedule1.Text = "Переглянути дані";
-            this.buttonCheckSchedule1.UseVisualStyleBackColor = true;
+            this.buttonCheckSchedule1.UseVisualStyleBackColor = false;
             this.buttonCheckSchedule1.Click += new System.EventHandler(this.buttonCheckSchedule1_Click);
             // 
             // tabPage2
@@ -315,7 +335,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(776, 339);
+            this.tabPage2.Size = new System.Drawing.Size(776, 340);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Видалення даних";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -323,6 +343,7 @@
             // buttonDeleteDayEntry
             // 
             this.buttonDeleteDayEntry.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonDeleteDayEntry.ForeColor = System.Drawing.Color.Brown;
             this.buttonDeleteDayEntry.Location = new System.Drawing.Point(191, 40);
             this.buttonDeleteDayEntry.Name = "buttonDeleteDayEntry";
             this.buttonDeleteDayEntry.Size = new System.Drawing.Size(137, 39);
@@ -333,7 +354,7 @@
             // 
             // dateTimePicker2
             // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(193, 10);
+            this.dateTimePicker2.Location = new System.Drawing.Point(193, 12);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker2.TabIndex = 34;
@@ -354,6 +375,7 @@
             // 
             // buttonDeleteEntry
             // 
+            this.buttonDeleteEntry.ForeColor = System.Drawing.Color.Brown;
             this.buttonDeleteEntry.Location = new System.Drawing.Point(16, 157);
             this.buttonDeleteEntry.Name = "buttonDeleteEntry";
             this.buttonDeleteEntry.Size = new System.Drawing.Size(121, 32);
@@ -406,13 +428,14 @@
             // 
             // buttonCheckSchedule2
             // 
+            this.buttonCheckSchedule2.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.buttonCheckSchedule2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonCheckSchedule2.Location = new System.Drawing.Point(7, 7);
             this.buttonCheckSchedule2.Name = "buttonCheckSchedule2";
             this.buttonCheckSchedule2.Size = new System.Drawing.Size(180, 32);
             this.buttonCheckSchedule2.TabIndex = 20;
             this.buttonCheckSchedule2.Text = "Переглянути дані";
-            this.buttonCheckSchedule2.UseVisualStyleBackColor = true;
+            this.buttonCheckSchedule2.UseVisualStyleBackColor = false;
             this.buttonCheckSchedule2.Click += new System.EventHandler(this.buttonCheckSchedule2_Click);
             // 
             // dataGridView2
@@ -424,8 +447,8 @@
             this.dataGridView2.Location = new System.Drawing.Point(336, 0);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 60;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView2.Size = new System.Drawing.Size(437, 339);
             this.dataGridView2.TabIndex = 19;
             // 
@@ -437,10 +460,43 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(776, 339);
+            this.tabPage3.Size = new System.Drawing.Size(776, 340);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Перегляд даних";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker3
+            // 
+            this.dateTimePicker3.Location = new System.Drawing.Point(190, 10);
+            this.dateTimePicker3.Name = "dateTimePicker3";
+            this.dateTimePicker3.Size = new System.Drawing.Size(137, 20);
+            this.dateTimePicker3.TabIndex = 20;
+            // 
+            // dataGridView3
+            // 
+            this.dataGridView3.AllowUserToAddRows = false;
+            this.dataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView3.Location = new System.Drawing.Point(4, 41);
+            this.dataGridView3.Name = "dataGridView3";
+            this.dataGridView3.RowHeadersWidth = 60;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridView3.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.dataGridView3.Size = new System.Drawing.Size(769, 298);
+            this.dataGridView3.TabIndex = 18;
+            // 
+            // buttonCheckSchedule3
+            // 
+            this.buttonCheckSchedule3.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonCheckSchedule3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonCheckSchedule3.Location = new System.Drawing.Point(4, 3);
+            this.buttonCheckSchedule3.Name = "buttonCheckSchedule3";
+            this.buttonCheckSchedule3.Size = new System.Drawing.Size(180, 32);
+            this.buttonCheckSchedule3.TabIndex = 19;
+            this.buttonCheckSchedule3.Text = "Переглянути дані";
+            this.buttonCheckSchedule3.UseVisualStyleBackColor = false;
+            this.buttonCheckSchedule3.Click += new System.EventHandler(this.buttonCheckSchedule3_Click);
             // 
             // tabPage4
             // 
@@ -460,65 +516,34 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(776, 339);
+            this.tabPage4.Size = new System.Drawing.Size(776, 340);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Фільтрація";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // dateTimePicker3
-            // 
-            this.dateTimePicker3.Location = new System.Drawing.Point(190, 8);
-            this.dateTimePicker3.Name = "dateTimePicker3";
-            this.dateTimePicker3.Size = new System.Drawing.Size(137, 20);
-            this.dateTimePicker3.TabIndex = 20;
-            // 
-            // buttonCheckSchedule3
-            // 
-            this.buttonCheckSchedule3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonCheckSchedule3.Location = new System.Drawing.Point(4, 3);
-            this.buttonCheckSchedule3.Name = "buttonCheckSchedule3";
-            this.buttonCheckSchedule3.Size = new System.Drawing.Size(180, 32);
-            this.buttonCheckSchedule3.TabIndex = 19;
-            this.buttonCheckSchedule3.Text = "Переглянути дані";
-            this.buttonCheckSchedule3.UseVisualStyleBackColor = true;
-            this.buttonCheckSchedule3.Click += new System.EventHandler(this.buttonCheckSchedule3_Click);
-            // 
-            // dataGridView3
-            // 
-            this.dataGridView3.AllowUserToAddRows = false;
-            this.dataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(4, 41);
-            this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.RowHeadersWidth = 60;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridView3.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.dataGridView3.Size = new System.Drawing.Size(769, 298);
-            this.dataGridView3.TabIndex = 18;
-            // 
             // dateTimePicker4
             // 
-            this.dateTimePicker4.Location = new System.Drawing.Point(191, 12);
+            this.dateTimePicker4.Location = new System.Drawing.Point(193, 12);
             this.dateTimePicker4.Name = "dateTimePicker4";
             this.dateTimePicker4.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker4.TabIndex = 30;
             // 
             // buttonGetSchedule
             // 
+            this.buttonGetSchedule.BackColor = System.Drawing.Color.LemonChiffon;
             this.buttonGetSchedule.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonGetSchedule.Location = new System.Drawing.Point(16, 177);
             this.buttonGetSchedule.Name = "buttonGetSchedule";
             this.buttonGetSchedule.Size = new System.Drawing.Size(241, 28);
             this.buttonGetSchedule.TabIndex = 29;
             this.buttonGetSchedule.Text = "Знайти записи";
-            this.buttonGetSchedule.UseVisualStyleBackColor = true;
+            this.buttonGetSchedule.UseVisualStyleBackColor = false;
             this.buttonGetSchedule.Click += new System.EventHandler(this.buttonGetSchedule_Click);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 122);
+            this.label8.Location = new System.Drawing.Point(15, 122);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 13);
             this.label8.TabIndex = 28;
@@ -526,7 +551,7 @@
             // 
             // textBoxClassroomSearch
             // 
-            this.textBoxClassroomSearch.Location = new System.Drawing.Point(16, 138);
+            this.textBoxClassroomSearch.Location = new System.Drawing.Point(18, 138);
             this.textBoxClassroomSearch.Name = "textBoxClassroomSearch";
             this.textBoxClassroomSearch.Size = new System.Drawing.Size(100, 20);
             this.textBoxClassroomSearch.TabIndex = 27;
@@ -534,7 +559,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(138, 122);
+            this.label10.Location = new System.Drawing.Point(140, 122);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(55, 13);
             this.label10.TabIndex = 26;
@@ -549,7 +574,7 @@
             "В\'юненко О.Б."});
             this.textBoxTeacherSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxTeacherSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.textBoxTeacherSearch.Location = new System.Drawing.Point(127, 138);
+            this.textBoxTeacherSearch.Location = new System.Drawing.Point(129, 138);
             this.textBoxTeacherSearch.Name = "textBoxTeacherSearch";
             this.textBoxTeacherSearch.Size = new System.Drawing.Size(130, 20);
             this.textBoxTeacherSearch.TabIndex = 25;
@@ -557,7 +582,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(124, 66);
+            this.label11.Location = new System.Drawing.Point(126, 66);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(90, 13);
             this.label11.TabIndex = 24;
@@ -565,7 +590,7 @@
             // 
             // textBoxSubjectSearch
             // 
-            this.textBoxSubjectSearch.Location = new System.Drawing.Point(127, 82);
+            this.textBoxSubjectSearch.Location = new System.Drawing.Point(129, 82);
             this.textBoxSubjectSearch.Name = "textBoxSubjectSearch";
             this.textBoxSubjectSearch.Size = new System.Drawing.Size(130, 20);
             this.textBoxSubjectSearch.TabIndex = 23;
@@ -573,7 +598,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(13, 66);
+            this.label12.Location = new System.Drawing.Point(15, 66);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(42, 13);
             this.label12.TabIndex = 22;
@@ -588,7 +613,7 @@
             "41KI"});
             this.textBoxGroupSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxGroupSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.textBoxGroupSearch.Location = new System.Drawing.Point(16, 82);
+            this.textBoxGroupSearch.Location = new System.Drawing.Point(18, 82);
             this.textBoxGroupSearch.Name = "textBoxGroupSearch";
             this.textBoxGroupSearch.Size = new System.Drawing.Size(100, 20);
             this.textBoxGroupSearch.TabIndex = 21;
@@ -597,7 +622,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label15.Location = new System.Drawing.Point(13, 42);
+            this.label15.Location = new System.Drawing.Point(15, 42);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(98, 15);
             this.label15.TabIndex = 20;
@@ -605,13 +630,14 @@
             // 
             // buttonCheckSchedule4
             // 
+            this.buttonCheckSchedule4.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.buttonCheckSchedule4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonCheckSchedule4.Location = new System.Drawing.Point(5, 7);
+            this.buttonCheckSchedule4.Location = new System.Drawing.Point(7, 7);
             this.buttonCheckSchedule4.Name = "buttonCheckSchedule4";
             this.buttonCheckSchedule4.Size = new System.Drawing.Size(180, 32);
             this.buttonCheckSchedule4.TabIndex = 19;
             this.buttonCheckSchedule4.Text = "Переглянути дані";
-            this.buttonCheckSchedule4.UseVisualStyleBackColor = true;
+            this.buttonCheckSchedule4.UseVisualStyleBackColor = false;
             this.buttonCheckSchedule4.Click += new System.EventHandler(this.buttonCheckSchedule4_Click);
             // 
             // dataGridView4
@@ -619,22 +645,140 @@
             this.dataGridView4.AllowUserToAddRows = false;
             this.dataGridView4.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Location = new System.Drawing.Point(334, 0);
+            this.dataGridView4.Location = new System.Drawing.Point(336, 0);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 60;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView4.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView4.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView4.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView4.Size = new System.Drawing.Size(437, 339);
             this.dataGridView4.TabIndex = 18;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.опціїToolStripMenuItem,
+            this.довідкаToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(784, 24);
+            this.menuStrip1.TabIndex = 2;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // опціїToolStripMenuItem
+            // 
+            this.опціїToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.обратиФайлБазиДанихToolStripMenuItem,
+            this.нещодавноВідкритіToolStripMenuItem,
+            this.зберегтиЯкToolStripMenuItem,
+            this.очиститиФайлToolStripMenuItem,
+            this.очиститиФайлToolStripMenuItem1});
+            this.опціїToolStripMenuItem.Name = "опціїToolStripMenuItem";
+            this.опціїToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.опціїToolStripMenuItem.Text = "Файл";
+            // 
+            // обратиФайлБазиДанихToolStripMenuItem
+            // 
+            this.обратиФайлБазиДанихToolStripMenuItem.Name = "обратиФайлБазиДанихToolStripMenuItem";
+            this.обратиФайлБазиДанихToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.обратиФайлБазиДанихToolStripMenuItem.Text = "Обрати файл бази даних";
+            this.обратиФайлБазиДанихToolStripMenuItem.Click += new System.EventHandler(this.обратиФайлБазиДанихToolStripMenuItem_Click);
+            // 
+            // нещодавноВідкритіToolStripMenuItem
+            // 
+            this.нещодавноВідкритіToolStripMenuItem.Name = "нещодавноВідкритіToolStripMenuItem";
+            this.нещодавноВідкритіToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.нещодавноВідкритіToolStripMenuItem.Text = "Нещодавно відкриті";
+            // 
+            // зберегтиЯкToolStripMenuItem
+            // 
+            this.зберегтиЯкToolStripMenuItem.Name = "зберегтиЯкToolStripMenuItem";
+            this.зберегтиЯкToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.зберегтиЯкToolStripMenuItem.Text = "Зберегти як...";
+            this.зберегтиЯкToolStripMenuItem.Click += new System.EventHandler(this.зберегтиЯкToolStripMenuItem_Click);
+            // 
+            // очиститиФайлToolStripMenuItem
+            // 
+            this.очиститиФайлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.створитиРезервнуКопіюToolStripMenuItem,
+            this.переглянутиРезервнуКопіюToolStripMenuItem});
+            this.очиститиФайлToolStripMenuItem.Name = "очиститиФайлToolStripMenuItem";
+            this.очиститиФайлToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.очиститиФайлToolStripMenuItem.Text = "Резервна копія";
+            // 
+            // створитиРезервнуКопіюToolStripMenuItem
+            // 
+            this.створитиРезервнуКопіюToolStripMenuItem.Name = "створитиРезервнуКопіюToolStripMenuItem";
+            this.створитиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.створитиРезервнуКопіюToolStripMenuItem.Text = "Створити резервну копію";
+            this.створитиРезервнуКопіюToolStripMenuItem.Click += new System.EventHandler(this.створитиРезервнуКопіюToolStripMenuItem_Click);
+            // 
+            // переглянутиРезервнуКопіюToolStripMenuItem
+            // 
+            this.переглянутиРезервнуКопіюToolStripMenuItem.Name = "переглянутиРезервнуКопіюToolStripMenuItem";
+            this.переглянутиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.переглянутиРезервнуКопіюToolStripMenuItem.Text = "Переглянути резервну копію";
+            this.переглянутиРезервнуКопіюToolStripMenuItem.Click += new System.EventHandler(this.переглянутиРезервнуКопіюToolStripMenuItem_Click);
+            // 
+            // очиститиФайлToolStripMenuItem1
+            // 
+            this.очиститиФайлToolStripMenuItem1.Name = "очиститиФайлToolStripMenuItem1";
+            this.очиститиФайлToolStripMenuItem1.Size = new System.Drawing.Size(210, 22);
+            this.очиститиФайлToolStripMenuItem1.Text = "Очистити файл";
+            this.очиститиФайлToolStripMenuItem1.Click += new System.EventHandler(this.очиститиФайлToolStripMenuItem1_Click);
+            // 
+            // довідкаToolStripMenuItem
+            // 
+            this.довідкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.проРозробникаToolStripMenuItem,
+            this.проНавчальнийЗакладToolStripMenuItem,
+            this.проПрограмуToolStripMenuItem});
+            this.довідкаToolStripMenuItem.Name = "довідкаToolStripMenuItem";
+            this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.довідкаToolStripMenuItem.Text = "Довідка";
+            // 
+            // проРозробникаToolStripMenuItem
+            // 
+            this.проРозробникаToolStripMenuItem.Name = "проРозробникаToolStripMenuItem";
+            this.проРозробникаToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.проРозробникаToolStripMenuItem.Text = "Про розробника";
+            this.проРозробникаToolStripMenuItem.Click += new System.EventHandler(this.проРозробникаToolStripMenuItem_Click);
+            // 
+            // проНавчальнийЗакладToolStripMenuItem
+            // 
+            this.проНавчальнийЗакладToolStripMenuItem.Name = "проНавчальнийЗакладToolStripMenuItem";
+            this.проНавчальнийЗакладToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.проНавчальнийЗакладToolStripMenuItem.Text = "Про навчальний заклад";
+            this.проНавчальнийЗакладToolStripMenuItem.Click += new System.EventHandler(this.проНавчальнийЗакладToolStripMenuItem_Click);
+            // 
+            // проПрограмуToolStripMenuItem
+            // 
+            this.проПрограмуToolStripMenuItem.Name = "проПрограмуToolStripMenuItem";
+            this.проПрограмуToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.проПрограмуToolStripMenuItem.Text = "Про програму";
+            this.проПрограмуToolStripMenuItem.Click += new System.EventHandler(this.проПрограмуToolStripMenuItem_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
             // 
             // Schedule
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 361);
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.ClientSize = new System.Drawing.Size(784, 390);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.HelpButton = true;
+            this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "Schedule";
             this.Text = "Schedule";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
@@ -645,11 +789,14 @@
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -703,6 +850,22 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Button buttonCheckSchedule4;
         private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem опціїToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem довідкаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem проРозробникаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem проНавчальнийЗакладToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem проПрограмуToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem обратиФайлБазиДанихToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem очиститиФайлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem очиститиФайлToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem створитиРезервнуКопіюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem переглянутиРезервнуКопіюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem зберегтиЯкToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ToolStripMenuItem нещодавноВідкритіToolStripMenuItem;
     }
 }
 
