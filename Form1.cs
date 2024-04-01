@@ -15,11 +15,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project2
 {
-    // Клас для збереження списку нещодавно відкритих файлів
-    public class RecentFilesConfig
-    {
-        public List<string> RecentlyOpenedFiles { get; set; } = new List<string>();
-    }
     public partial class Schedule : Form
     {
         // Шлях до файлу конфігурації
@@ -69,8 +64,7 @@ namespace Project2
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Додавання стовпців заголовків рядків
-            dataGridView1.RowHeadersVisible = true;
+
         }
 
         // Метод для отримання всіх доступних назв груп з бази даних
@@ -130,8 +124,12 @@ namespace Project2
             }
             else
             {
-                // Додавання рядків у випадку наявності стовпців
-                for (int i = 0; i < 5; i++)
+                // Перевірка наявності шостої пари
+                bool hasSixthPair = CheckSixthPairAvailability(selectedDate);
+
+                // Додавання рядків у випадку наявності шостої пари
+                int rowsCount = hasSixthPair ? 6 : 5;
+                for (int i = 0; i < rowsCount; i++)
                 {
                     dataGridView.Rows.Add();
                     dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
@@ -163,7 +161,7 @@ namespace Project2
                         string timeStart = reader["time_start"].ToString();
 
                         // Отримати індекс стовпця, в який буде додана інформація
-                        int columnIndex = GetColumnIndex(groupName);
+                        int columnIndex = GetColumnIndex(dataGridView, groupName);
 
 
                         // Отримати інформацію про предмет та викладача з відповідних таблиць
@@ -200,40 +198,78 @@ namespace Project2
             connection.Close();
 
         }
+        private bool CheckSixthPairAvailability(string selectedDate)
+        {
+            bool hasSixthPair = false;
+
+            // SQL-запит для перевірки наявності шостої пари
+            string query = "SELECT COUNT(*) FROM Schedule WHERE date = @selectedDate AND time_start = '14:30'";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    int count = Convert.ToInt32(command.ExecuteScalar());
+
+                    // Якщо є записи з часом початку "13:30", то шоста пара доступна
+                    hasSixthPair = count > 0;
+                }
+            }
+
+            return hasSixthPair;
+        }
 
         private void buttonCheckSchedule1_Click(object sender, EventArgs e)
         {
             LoadDataFromDatabase(dateTimePicker1, dataGridView1); //Використання функції з наданням вихідних об'єктів в аргументів
         }
 
-        // Подія для зміни значення DateTimePicker
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        // Метод, який встановлює значення DateTimePicker на інших вкладках
+        private void SyncDateTimePickers(DateTime dateTime)
         {
-            // Оновити DataGridView згідно з новим обраним днем тижня
-            UpdateDataGridView();
+            dateTimePicker1.Value = dateTime;
+            dateTimePicker2.Value = dateTime;
+            dateTimePicker3.Value = dateTime;
+            dateTimePicker4.Value = dateTime;
         }
 
-        // Метод для оновлення DataGridView згідно з обраним днем тижня
-        private void UpdateDataGridView()
+        // Подія для зміни значення DateTimePicker1
+        private void dateTimePicker1_ValueChanged_1(object sender, EventArgs e)
         {
-            string selectedDate = dateTimePicker1.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі року-місяця-дня
+            // Отримати нове значення DateTime з dateTimePicker1
+            DateTime selectedDate = dateTimePicker1.Value;
 
-            // Запит до бази даних для отримання розкладу з урахуванням обраної дати
-            string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@selectedDate", selectedDate);
-                    SQLiteDataReader reader = command.ExecuteReader();
-
-                    // Очищення DataGridView перед оновленням
-                    dataGridView1.Rows.Clear();
-
-                }
-            }
+            // Виклик методу для синхронізації значень DateTimePicker на інших вкладках
+            SyncDateTimePickers(selectedDate);
         }
+        private void dateTimePicker2_ValueChanged_1(object sender, EventArgs e)
+        {
+            // Отримати нове значення DateTime з dateTimePicker1
+            DateTime selectedDate = dateTimePicker2.Value;
+
+            // Виклик методу для синхронізації значень DateTimePicker на інших вкладках
+            SyncDateTimePickers(selectedDate);
+        }
+        private void dateTimePicker3_ValueChanged_1(object sender, EventArgs e)
+        {
+            // Отримати нове значення DateTime з dateTimePicker1
+            DateTime selectedDate = dateTimePicker3.Value;
+
+            // Виклик методу для синхронізації значень DateTimePicker на інших вкладках
+            SyncDateTimePickers(selectedDate);
+        }
+        private void dateTimePicker4_ValueChanged_1(object sender, EventArgs e)
+        {
+            // Отримати нове значення DateTime з dateTimePicker1
+            DateTime selectedDate = dateTimePicker4.Value;
+
+            // Виклик методу для синхронізації значень DateTimePicker на інших вкладках
+            SyncDateTimePickers(selectedDate);
+        }
+
         // Метод для отримання назви групи за ідентифікатором групи
         private string GetGroupName(int groupId)
         {
@@ -249,10 +285,16 @@ namespace Project2
             }
         }
         // Метод для отримання індексу стовпця за назвою групи
-        private int GetColumnIndex(string groupName)
+        private int GetColumnIndex(DataGridView dataGridView, string groupName)
         {
-            // Припустимо, що у  DataGridView стовпці названі як групи
-            return dataGridView1.Columns.Cast<DataGridViewColumn>().ToList().FindIndex(column => column.HeaderText == groupName);
+            // Перевірка, чи наданий dataGridView не є нульовим
+            if (dataGridView == null)
+            {
+                return -1; // Повертаємо -1 у випадку, якщо dataGridView нульовий
+            }
+
+            // Припустимо, що у dataGridView стовпці названі як групи
+            return dataGridView.Columns.Cast<DataGridViewColumn>().ToList().FindIndex(column => column.HeaderText == groupName);
         }
 
         // Метод для отримання назви предмету за його ідентифікатором
@@ -301,6 +343,8 @@ namespace Project2
                     return 3;
                 case "13:15":
                     return 4;
+                case "14:30":
+                    return 5;
                 default:
                     throw new ArgumentException("Invalid time start: " + timeStart);
             }
@@ -321,10 +365,13 @@ namespace Project2
                     return "4 пара";
                 case 4:
                     return "5 пара";
+                case 5:
+                    return "6 пара"; // Додано рядок для шостої пари
                 default:
                     throw new ArgumentException("Invalid time row index: " + rowIndex);
             }
         }
+
         // Метод для визначення значення часу за обраним варіантом
         private string GetTimeStartFromPair(string text)
         {
@@ -340,10 +387,14 @@ namespace Project2
                     return "12:00";
                 case "П'ята пара":
                     return "13:15";
+                case "Шоста пара":
+                    return "14:30";
                 default:
                     throw new ArgumentException("Invalid time: " + text);
             }
         }
+
+        // Метод для визначення значення часу закінчення за обраним варіантом
         private string GetTimeEndFromPair(string text)
         {
             switch (text)
@@ -358,10 +409,13 @@ namespace Project2
                     return "13:00";
                 case "П'ята пара":
                     return "14:15";
+                case "Шоста пара":
+                    return "15:30";
                 default:
                     throw new ArgumentException("Invalid time: " + text);
             }
         }
+
 
         //Додавання запису
         private void buttonAddData_Click(object sender, EventArgs e)
@@ -1047,8 +1101,11 @@ namespace Project2
                 MessageBox.Show("Базу даних успішно збережено.", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
     }
-
+    // Клас для збереження списку нещодавно відкритих файлів
+    public class RecentFilesConfig
+    {
+        public List<string> RecentlyOpenedFiles { get; set; } = new List<string>();
+    }
 }
 

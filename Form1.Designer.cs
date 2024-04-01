@@ -119,7 +119,6 @@
             this.dataGridView1.RowHeadersWidth = 60;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView1.Size = new System.Drawing.Size(437, 339);
             this.dataGridView1.TabIndex = 0;
             // 
@@ -175,6 +174,7 @@
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker1.TabIndex = 17;
+            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged_1);
             // 
             // label7
             // 
@@ -193,7 +193,8 @@
             "Друга пара",
             "Третя пара",
             "Четверта пара",
-            "П\'ята пара"});
+            "П\'ята пара",
+            "Шоста пара"});
             this.comboBox1.Location = new System.Drawing.Point(18, 202);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(100, 21);
@@ -207,7 +208,7 @@
             this.buttonAddData.Name = "buttonAddData";
             this.buttonAddData.Size = new System.Drawing.Size(241, 28);
             this.buttonAddData.TabIndex = 13;
-            this.buttonAddData.Text = "Додати дані";
+            this.buttonAddData.Text = "Додати запис";
             this.buttonAddData.UseVisualStyleBackColor = false;
             this.buttonAddData.Click += new System.EventHandler(this.buttonAddData_Click);
             // 
@@ -270,6 +271,12 @@
             // 
             // textBox2
             // 
+            this.textBox2.AutoCompleteCustomSource.AddRange(new string[] {
+            "Програмування",
+            "Веб-дизайн",
+            "Алгоритми",
+            "Системне адміністрування",
+            "Вступ до спеціальності"});
             this.textBox2.Location = new System.Drawing.Point(129, 82);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(130, 20);
@@ -304,9 +311,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(15, 42);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 15);
+            this.label1.Size = new System.Drawing.Size(187, 15);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Додати запис";
+            this.label1.Text = "Додати дані до бази даних";
             // 
             // buttonCheckSchedule1
             // 
@@ -358,6 +365,7 @@
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker2.TabIndex = 34;
+            this.dateTimePicker2.ValueChanged += new System.EventHandler(this.dateTimePicker2_ValueChanged_1);
             // 
             // comboBox2
             // 
@@ -467,10 +475,11 @@
             // 
             // dateTimePicker3
             // 
-            this.dateTimePicker3.Location = new System.Drawing.Point(190, 10);
+            this.dateTimePicker3.Location = new System.Drawing.Point(193, 12);
             this.dateTimePicker3.Name = "dateTimePicker3";
             this.dateTimePicker3.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker3.TabIndex = 20;
+            this.dateTimePicker3.ValueChanged += new System.EventHandler(this.dateTimePicker3_ValueChanged_1);
             // 
             // dataGridView3
             // 
@@ -482,7 +491,6 @@
             this.dataGridView3.RowHeadersWidth = 60;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView3.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView3.Size = new System.Drawing.Size(769, 298);
             this.dataGridView3.TabIndex = 18;
             // 
@@ -490,7 +498,7 @@
             // 
             this.buttonCheckSchedule3.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.buttonCheckSchedule3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonCheckSchedule3.Location = new System.Drawing.Point(4, 3);
+            this.buttonCheckSchedule3.Location = new System.Drawing.Point(7, 7);
             this.buttonCheckSchedule3.Name = "buttonCheckSchedule3";
             this.buttonCheckSchedule3.Size = new System.Drawing.Size(180, 32);
             this.buttonCheckSchedule3.TabIndex = 19;
@@ -527,6 +535,7 @@
             this.dateTimePicker4.Name = "dateTimePicker4";
             this.dateTimePicker4.Size = new System.Drawing.Size(137, 20);
             this.dateTimePicker4.TabIndex = 30;
+            this.dateTimePicker4.ValueChanged += new System.EventHandler(this.dateTimePicker4_ValueChanged_1);
             // 
             // buttonGetSchedule
             // 
@@ -624,9 +633,9 @@
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label15.Location = new System.Drawing.Point(15, 42);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(98, 15);
+            this.label15.Size = new System.Drawing.Size(267, 15);
             this.label15.TabIndex = 20;
-            this.label15.Text = "Знайти запис";
+            this.label15.Text = "Знайти запис за цей день в базі даних";
             // 
             // buttonCheckSchedule4
             // 
@@ -650,7 +659,6 @@
             this.dataGridView4.RowHeadersWidth = 60;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView4.RowsDefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridView4.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.dataGridView4.Size = new System.Drawing.Size(437, 339);
             this.dataGridView4.TabIndex = 18;
             // 
