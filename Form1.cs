@@ -724,13 +724,19 @@ namespace Project2
                     dataGridView.Columns.Add(groupName, groupName);
                 }
             }
-
-            for (int i = 0; i < 5; i++)
+            if (dataGridView.Columns.Count <= 0)
             {
-                dataGridView.Rows.Add();
-                dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
-            }
+                MessageBox.Show("Введіть коректні параметри для фільтрації.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+            }
+            else
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    dataGridView.Rows.Add();
+                    dataGridView.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+                }
+            }
             // Запит до бази даних для отримання розкладу з урахуванням фільтрації
             string query = "SELECT * FROM Schedule WHERE date = @selectedDate";
 
@@ -801,9 +807,6 @@ namespace Project2
                     int teacherId = Convert.ToInt32(reader["teacher_id"]);
                     string classroom = reader["classroom"].ToString();
                     string timeStart = reader["time_start"].ToString();
-
-                    string subject = GetSubjectName(subjectId);
-                    string teacher = GetTeacherName(teacherId);
 
                     // Отримати індекс стовпця, в який буде додана інформація
                     int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : -1;

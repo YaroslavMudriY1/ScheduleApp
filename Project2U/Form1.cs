@@ -23,8 +23,7 @@ namespace Project2U
             // Завантаження останньої використаної бази даних
             recentlyOpenedDatabase = LoadRecentDatabase();
 
-            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
-            dateTimePicker1.Value = DateTime.Now;
+            UpdateDateLabels(DateTime.Now); //Оновлення тексту за поточною датою
 
             // Перевірка наявності останньої використаної бази даних
             if (string.IsNullOrEmpty(recentlyOpenedDatabase))
@@ -39,8 +38,7 @@ namespace Project2U
                     openFileDialog.Filter = "SQL DB files(*.db)|*.db";
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        selectedDatabasePath = openFileDialog.FileName;
-                        OpenDatabaseFile(openFileDialog.FileName);
+                        OpenDatabaseFile(selectedDatabasePath);
                         UpdateConnectionString();// Оновлюємо значення recentlyOpenedDatabase
                         SaveRecentDatabase(recentlyOpenedDatabase); // Зберігаємо шлях до бази даних
                     }
@@ -63,26 +61,33 @@ namespace Project2U
             UpdateDateLabels(dateTimePicker1.Value);
         }
 
-        private void dateTimePicker2_ValueChanged_1(object sender, EventArgs e)
-        {
-            string dateString = dateTimePicker2.Value.ToString("dd MMMM yyyy р.");
-            label2.Text = $"Розклад занять за {dateString}";
-
-        }
 
         //Отримання фільтрованого розкладу
         private void buttonGetSchedule_Click(object sender, EventArgs e)
         {
+            string selectedDate = dateTimePicker1.Value.ToString("dd MMMM yyyy р.");
+            label2.Text = $"Розклад занять за {selectedDate}";
+
             // Отримання значення з текстового поля textBoxGroups
             string groupNameFilter = textBoxGroupSearch.Text;
-
             string teacherFilter = textBoxTeacherSearch.Text;
             string classroomFilter = textBoxClassroomSearch.Text;
             string subjectFilter = textBoxSubjectSearch.Text;
 
-            // Виклик методу для завантаження даних у dataGridView4 з урахуванням фільтрації
-            LoadFilteredDataFromDatabase(groupNameFilter, teacherFilter, classroomFilter, subjectFilter);
 
+            // Виклик методу для завантаження даних у dataGridView4 з урахуванням фільтрації
+            LoadFilteredDataFromDatabase(groupNameFilter, teacherFilter, classroomFilter, subjectFilter, selectedDate, dataGridView2);
+
+        }
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Перевірка, чи користувач перейшов на вкладку "Мій розклад"
+            if (tabControl1.SelectedTab == tabPage3)
+            {
+                string selectedDate = dateTimePicker1.Value.ToString("dd.MM.yyyy");
+                // Виклик методу для завантаження розкладу
+                LoadPesonalSchedule(selectedDate);
+            }
         }
 
         //Вибір та відкриття файлу бази даних
@@ -108,7 +113,9 @@ namespace Project2U
         //Виклик вікна для введенях персональних даних користувача
         private void профільКористувачаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            // Створення та відображення нової форми для зберігання даних користувача
+            Authorization authorization= new Authorization();
+            authorization.ShowDialog();
         }
 
         //Ввімкнення/вимкнення сповіщень
@@ -127,5 +134,39 @@ namespace Project2U
 
         }
 
+        private void label15_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxTeacherSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxClassroomSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxGroupSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
