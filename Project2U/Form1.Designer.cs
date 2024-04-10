@@ -67,6 +67,7 @@
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.label4 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -132,6 +133,7 @@
             // 
             // сповіщенняToolStripMenuItem
             // 
+            this.сповіщенняToolStripMenuItem.CheckOnClick = true;
             this.сповіщенняToolStripMenuItem.Name = "сповіщенняToolStripMenuItem";
             this.сповіщенняToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.сповіщенняToolStripMenuItem.Text = "Сповіщення";
@@ -274,7 +276,6 @@
             this.label8.Size = new System.Drawing.Size(65, 14);
             this.label8.TabIndex = 41;
             this.label8.Text = "Аудиторія";
-            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // textBoxClassroomSearch
             // 
@@ -282,7 +283,6 @@
             this.textBoxClassroomSearch.Name = "textBoxClassroomSearch";
             this.textBoxClassroomSearch.Size = new System.Drawing.Size(100, 22);
             this.textBoxClassroomSearch.TabIndex = 40;
-            this.textBoxClassroomSearch.TextChanged += new System.EventHandler(this.textBoxClassroomSearch_TextChanged);
             // 
             // label10
             // 
@@ -293,7 +293,6 @@
             this.label10.Size = new System.Drawing.Size(62, 14);
             this.label10.TabIndex = 39;
             this.label10.Text = "Викладач";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
             // textBoxTeacherSearch
             // 
@@ -308,7 +307,6 @@
             this.textBoxTeacherSearch.Name = "textBoxTeacherSearch";
             this.textBoxTeacherSearch.Size = new System.Drawing.Size(130, 22);
             this.textBoxTeacherSearch.TabIndex = 38;
-            this.textBoxTeacherSearch.TextChanged += new System.EventHandler(this.textBoxTeacherSearch_TextChanged);
             // 
             // label11
             // 
@@ -336,7 +334,6 @@
             this.label12.Size = new System.Drawing.Size(47, 14);
             this.label12.TabIndex = 35;
             this.label12.Text = "Группа";
-            this.label12.Click += new System.EventHandler(this.label12_Click);
             // 
             // textBoxGroupSearch
             // 
@@ -351,7 +348,6 @@
             this.textBoxGroupSearch.Name = "textBoxGroupSearch";
             this.textBoxGroupSearch.Size = new System.Drawing.Size(100, 22);
             this.textBoxGroupSearch.TabIndex = 34;
-            this.textBoxGroupSearch.TextChanged += new System.EventHandler(this.textBoxGroupSearch_TextChanged);
             // 
             // label15
             // 
@@ -362,7 +358,6 @@
             this.label15.Size = new System.Drawing.Size(238, 15);
             this.label15.TabIndex = 33;
             this.label15.Text = "Знайти запис за цей день в базі даних";
-            this.label15.Click += new System.EventHandler(this.label15_Click);
             // 
             // dataGridView2
             // 
@@ -391,17 +386,19 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.Location = new System.Drawing.Point(270, 17);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(221, 25);
+            this.label3.Size = new System.Drawing.Size(260, 25);
             this.label3.TabIndex = 33;
-            this.label3.Text = "Розклад занять за ...\r\n";
+            this.label3.Text = "Мій розклад занять за ...\r\n";
             // 
             // dataGridView3
             // 
             this.dataGridView3.AllowUserToAddRows = false;
+            this.dataGridView3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.dataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Location = new System.Drawing.Point(275, 45);
@@ -509,6 +506,7 @@
         private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

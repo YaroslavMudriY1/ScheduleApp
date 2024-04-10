@@ -741,7 +741,7 @@ namespace Project2
             string query = "SELECT * FROM Schedule WHERE date = @selectedDate";
 
             // Додавання умов фільтрації за параметрами, якщо вони вказані
-            if (!string.IsNullOrWhiteSpace(textBoxGroupSearch.Text))
+            if (!string.IsNullOrWhiteSpace(groupNameFilter))
             {
                 query += " AND group_id IN (SELECT group_id FROM Groups WHERE group_name LIKE @groupName)";
             }
@@ -767,9 +767,9 @@ namespace Project2
             command.Parameters.AddWithValue("@selectedDate", selectedDate);
 
             // Додавання параметрів фільтрації за групою, якщо вона вказана
-            if (!string.IsNullOrWhiteSpace(textBoxGroupSearch.Text))
+            if (!string.IsNullOrWhiteSpace(groupNameFilter))
             {
-                command.Parameters.AddWithValue("@groupName", $"%{textBoxGroupSearch.Text}%");
+                command.Parameters.AddWithValue("@groupName", $"%{groupNameFilter}%");
             }
 
             if (!string.IsNullOrEmpty(teacherFilter))
