@@ -379,7 +379,6 @@ namespace Project2U
                         {
                             dataGridView.Columns.Add(groupName, groupName);
                         }
-
                     }
 
                     // Перевірка наявності стовпців у DataGridView перед додаванням рядків
@@ -503,66 +502,253 @@ namespace Project2U
                     connection.Close();
                 }
         }
-
-            private void LoadPersonalSchedule(string selectedDate)
+        // Метод для перевірки наявності потрібних даних у розкладі групи за вибраний день
+        private bool CheckGroupForFilteredData(string groupName, string selectedDate, string teacherFilter, string subjectFilter, string classroomFilter, SQLiteConnection connection)
         {
-            // Перевірка, чи користувач перейшов на вкладку "Мій розклад"
-            if (tabControl1.SelectedTab != tabPage3)
-                return;
+            string query = "SELECT COUNT(*) FROM Schedule WHERE group_id IN (SELECT group_id FROM Groups WHERE group_name = @groupName) AND date = @selectedDate";
 
-            // Перевірка наявності бази даних та користувача
-            if (string.IsNullOrEmpty(selectedDatabasePath) || GetUserProfile() == null)
+            if (!string.IsNullOrEmpty(teacherFilter))
             {
-                MessageBox.Show("Будь ласка, оберіть базу даних та налаштуйте користувача.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                query += " AND teacher_id IN (SELECT teacher_id FROM Teachers WHERE teacher_name LIKE @teacherFilter)";
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
+            }
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                query += " AND classroom = @classroomFilter";
+            }
+
+            SQLiteCommand command = new SQLiteCommand(query, connection);
+            command.Parameters.AddWithValue("@groupName", groupName);
+            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+
+            if (!string.IsNullOrEmpty(teacherFilter))
+            {
+                command.Parameters.AddWithValue("@teacherFilter", "%" + teacherFilter + "%");
+            }
+
+            if (!string.IsNullOrEmpty(subjectFilter))
+            {
+                command.Parameters.AddWithValue("@subjectFilter", "%" + subjectFilter + "%");
+            }
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                command.Parameters.AddWithValue("@classroomFilter", classroomFilter);
+            }
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+
+        private void LoadPersonalSchedule(string selectedDate, bool isNotify)
+        {
+            if (!isNotify)
+            {
+                // Перевірка, чи користувач перейшов на вкладку "Мій розклад"
+                if (tabControl1.SelectedTab != tabPage3)
+                    return;
+                // Перевірка наявності бази даних та користувача
+                if (string.IsNullOrEmpty(selectedDatabasePath) || GetUserProfile() == null)
+                {
+                    MessageBox.Show("Будь ласка, оберіть базу даних та налаштуйте користувача.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Отримання типу користувача (вчителя або студента)
+            string userType = GetUserType();
+
+            // Завантаження розкладу в залежності від типу користувача
+            if (userType == "Вчитель")
+            {
+                LoadTeacherSchedule(selectedDate);
+            }
+            else if (userType == "Студент")
+            {
+                LoadStudentSchedule(selectedDate);
+            }
+
+        }
+        // Метод для завантаження персонального розкладу студента
+        private void LoadStudentSchedule(string selectedDate)
+        {
+            // Перевірка наявності бази даних
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
+            // Отримання назви групи користувача з XML файлу
+            string userGroupName = GetUserGroupName();
+
+            // Очищення DataGridView перед завантаженням нових даних
+            dataGridView3.Rows.Clear();
+            dataGridView3.Columns.Clear();
+
+            dataGridView3.Columns.Add("Час початку", "Час початку");
+            // Додавання стовпця до DataGridView з ім'ям групи студента
+            dataGridView3.Columns.Add(userGroupName, userGroupName);
+
+            // Перевірка наявності шостої пари
+            bool hasSixthPair = CheckSixthPairAvailability(selectedDate);
+
+            // Додавання рядків у випадку наявності шостої пари
+            int rowsCount = hasSixthPair ? 6 : 5;
+            for (int i = 0; i < rowsCount; i++)
+            {
+                dataGridView3.Rows.Add();
+                dataGridView3.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+                dataGridView3.Rows[i].Cells["Час початку"].Value = GetTimeBeginHeader(i);
             }
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open(); // Відкриття підключення до бази даних
 
-                // Очищення dataGridView3 перед відображенням нових даних
-                dataGridView3.Rows.Clear();
-                dataGridView3.Columns.Clear();
+                // Запит до бази даних для отримання розкладу з урахуванням фільтрації для студента
+                string query = "SELECT * FROM Schedule WHERE date = @selectedDate AND group_id = (SELECT group_id FROM Groups WHERE group_name = @groupName)";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                command.Parameters.AddWithValue("@groupName", userGroupName);
+                SQLiteDataReader reader = command.ExecuteReader();
 
-                // Отримання типу користувача (вчителя або студента)
-                string userType = GetUserType();
-                string userGroupName = "";
-                string userTeacherName = "";
-                string classroomFilter = ""; // Пусте значення для можливості виклику функції
-                string subjectFilter = ""; // Пусте значення для можливості виклику функції
-
-                // Додавання параметрів фільтрації для вчителя або студента
-                if (userType == "Вчитель")
+                // Логіка для заповнення DataGridView з результатами запиту
+                while (reader.Read())
                 {
-                    // Отримання імені вчителя з XML файлу
-                    UserProfile userProfile = GetUserProfile();
-                    if (userProfile != null)
+                    int subjectId = Convert.ToInt32(reader["subject_id"]);
+                    int teacherId = Convert.ToInt32(reader["teacher_id"]);
+                    string classroom = reader["classroom"].ToString();
+                    string timeStart = reader["time_start"].ToString();
+                    string Schedule = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+
+                        int rowIndex = GetRowIndex(timeStart);
+
+                        if (rowIndex >= 0)
+                        {
+                            if (dataGridView3.Rows.Count <= rowIndex)
+                            {
+                                dataGridView3.Rows.Add();
+                            }
+
+                            dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+                            // Перевірка, чи є інформація про пару
+                            if (!string.IsNullOrEmpty(classroom))
+                            {
+                                // Заповнення комірки з інформацією про пару
+                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+                            }
+                            else
+                            {
+                                MessageBox.Show("За вказаною датою відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("За вказаними фільтрами відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                }
+
+                // Закриття підключення до бази даних
+                connection.Close();
+            }
+
+            // Перевірка, чи вдалося завантажити розклад користувача
+            if (dataGridView3.Rows.Count == 0)
+            {
+                SendNotification("Помилка", "Неможливо завантажити персональний розклад. Система сповіщень працює некоректно.");
+            }
+        }
+
+        // Метод для завантаження персонального розкладу вчителя
+        private void LoadTeacherSchedule(string selectedDate)
+        {
+            // Перевірка наявності бази даних
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // Отримання імені вчителя з XML файлу
+            UserProfile userProfile = GetUserProfile();
+            string userTeacherName = userProfile != null ? userProfile.Name : "";
+            // Отримання всіх доступних назв груп з бази даних
+            List<string> groupNames = GetAllGroupNames();
+            // Очищення DataGridView перед завантаженням нових даних
+            dataGridView3.Rows.Clear();
+            dataGridView3.Columns.Clear();
+            dataGridView3.Columns.Add("Час початку", "Час початку");
+            // Додавання стовпця до DataGridView з ім'ям вчителя
+            dataGridView3.Columns.Add(userTeacherName, userTeacherName);
+
+            // Перевірка наявності шостої пари
+            bool hasSixthPair = CheckSixthPairAvailability(selectedDate);
+
+            // Додавання рядків у випадку наявності шостої пари
+            int rowsCount = hasSixthPair ? 6 : 5;
+            for (int i = 0; i < rowsCount; i++)
+            {
+                dataGridView3.Rows.Add();
+                dataGridView3.Rows[i].HeaderCell.Value = $"{i + 1} пара";
+            }
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open(); // Відкриття підключення до бази даних
+
+                // Запит до бази даних для отримання розкладу з урахуванням фільтрації для вчителя
+                string query = "SELECT * FROM Schedule WHERE date = @selectedDate AND teacher_id = (SELECT teacher_id FROM Teachers WHERE teacher_name = @teacherName)";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                command.Parameters.AddWithValue("@teacherName", userTeacherName);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                // Логіка для заповнення DataGridView з результатами запиту
+                while (reader.Read())
+                {
+                    int subjectId = Convert.ToInt32(reader["subject_id"]);
+                    string groupName = GetGroupName(Convert.ToInt32(reader["group_id"]));
+                    string classroom = reader["classroom"].ToString();
+                    string timeStart = reader["time_start"].ToString();
+                    // Отримання індексу рядка
+                    int rowIndex = GetRowIndex(timeStart);
+                    if (rowIndex >= 0)
                     {
-                        userTeacherName = userProfile.Name;
+                        // Перевірка, чи індекс рядка не виходить за межі доступних рядків
+                        while (rowIndex >= dataGridView3.Rows.Count)
+                        {
+                            // Додавання нового рядка
+                            dataGridView3.Rows.Add();
+                        }
+
+                        // Перевірка, чи є інформація про пару
+                        if (!string.IsNullOrEmpty(classroom))
+                        {
+                            // Заповнення комірки з інформацією про пару
+                            dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = GetSubjectName(subjectId) + "\n" + groupName + "\n" + classroom;
+                            dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
+                        }
+                        else
+                        {
+                            MessageBox.Show("За вказаною датою відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("За вказаними фільтрами відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-                else if (userType == "Студент")
-                {
-                    // Отримання назви групи користувача з XML файлу
-                    userGroupName = GetUserGroupName();
-                }
 
-                // Додавання колонки "Час" до dataGridView3 після заповнення даними розкладу
-                DataGridViewTextBoxColumn timeColumn = new DataGridViewTextBoxColumn();
-                timeColumn.HeaderText = "Час початку";
-                timeColumn.Width = 55;
-                dataGridView3.Columns.Insert(0, timeColumn);
+                // Закриття підключення до бази даних
+                connection.Close();
+            }
 
-                // Виклик функції LoadFilteredDataFromDatabase з відповідними параметрами
-                LoadFilteredDataFromDatabase(userGroupName, userTeacherName, classroomFilter, subjectFilter, selectedDate, dataGridView3);
-
-                // Заповнення значень колонки "Час" на відповідних рядках
-                for (int i = 0; i < dataGridView3.Rows.Count; i++)
-                {
-                    string timeHeader = GetTimeBeginHeader(i);
-                    dataGridView3.Rows[i].Cells[0].Value = timeHeader;
-                }
+            // Перевірка, чи вдалося завантажити розклад користувача
+            if (dataGridView3.Rows.Count == 0)
+            {
+                SendNotification("Помилка", "Неможливо завантажити персональний розклад. Система сповіщень працює некоректно.");
             }
         }
 
@@ -643,47 +829,30 @@ namespace Project2U
             }
         }
 
-
-        // Метод для перевірки наявності потрібних даних у розкладі групи за вибраний день
-        private bool CheckGroupForFilteredData(string groupName, string selectedDate, string teacherFilter, string subjectFilter, string classroomFilter, SQLiteConnection connection)
+        private bool hasScheduleForToday(DateTime currentDate)
         {
-            string query = "SELECT COUNT(*) FROM Schedule WHERE group_id IN (SELECT group_id FROM Groups WHERE group_name = @groupName) AND date = @selectedDate";
-
-            if (!string.IsNullOrEmpty(teacherFilter))
+            // Перевірка, чи є розклад на сьогоднішній день
+            bool hasScheduleForToday = false;
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
-                query += " AND teacher_id IN (SELECT teacher_id FROM Teachers WHERE teacher_name LIKE @teacherFilter)";
-            }
+                connection.Open(); // Відкриття підключення до бази даних
 
-            if (!string.IsNullOrEmpty(subjectFilter))
-            {
-                query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
-            }
-            if (!string.IsNullOrEmpty(classroomFilter))
-            {
-                query += " AND classroom = @classroomFilter";
-            }
+                // Запит до бази даних для перевірки наявності розкладу на сьогоднішній день
+                string query = "SELECT COUNT(*) FROM Schedule WHERE date = @currentDate";
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@currentDate", currentDate.ToString("dd.MM.yyyy"));
+                int count = Convert.ToInt32(command.ExecuteScalar());
 
-            SQLiteCommand command = new SQLiteCommand(query, connection);
-            command.Parameters.AddWithValue("@groupName", groupName);
-            command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                if (count > 0)
+                {
+                    hasScheduleForToday = true;
+                }
 
-            if (!string.IsNullOrEmpty(teacherFilter))
-            {
-                command.Parameters.AddWithValue("@teacherFilter", "%" + teacherFilter + "%");
+                connection.Close();
             }
-
-            if (!string.IsNullOrEmpty(subjectFilter))
-            {
-                command.Parameters.AddWithValue("@subjectFilter", "%" + subjectFilter + "%");
-            }
-            if (!string.IsNullOrEmpty(classroomFilter))
-            {
-                command.Parameters.AddWithValue("@classroomFilter", classroomFilter);
-            }
-
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            return count > 0;
+            return hasScheduleForToday;
         }
+
         // Відкриття файлу бази даних
         private void OpenDatabaseFile(string filePath)
         {

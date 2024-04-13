@@ -14,7 +14,8 @@ namespace Project2U
             // Заповнення форми даними з файлу, якщо вони є
             LoadUserProfile();
             // Приховати поле comboBoxGroup на початку
-            comboBoxGroup.Visible = false;
+            if (!checkBoxStudent.Checked)
+            { comboBoxGroup.Visible = false; }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -57,7 +58,6 @@ namespace Project2U
             // Закриття вікна
             this.Close();
         }
-
 
         private void checkBoxStudent_CheckedChanged(object sender, EventArgs e)
         {

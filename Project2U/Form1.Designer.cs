@@ -389,7 +389,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(270, 17);
+            this.label3.Location = new System.Drawing.Point(253, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(260, 25);
             this.label3.TabIndex = 33;
@@ -399,6 +399,7 @@
             // 
             this.dataGridView3.AllowUserToAddRows = false;
             this.dataGridView3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.dataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Location = new System.Drawing.Point(275, 45);
@@ -406,7 +407,7 @@
             this.dataGridView3.RowHeadersWidth = 65;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView3.Size = new System.Drawing.Size(326, 370);
+            this.dataGridView3.Size = new System.Drawing.Size(302, 370);
             this.dataGridView3.TabIndex = 32;
             // 
             // notifyIcon1
@@ -438,6 +439,10 @@
             this.label4.Size = new System.Drawing.Size(131, 16);
             this.label4.TabIndex = 23;
             this.label4.Text = "Встановлена дата:";
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Schedule
             // 
