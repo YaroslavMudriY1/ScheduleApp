@@ -341,7 +341,7 @@ namespace Project2U
             // Отримайте текст з обраної дати та встановіть його для label1, label2 та label3
             string dateString = selectedDate.ToString("dd MMMM yyyy р.");
             label1.Text = $"Розклад занять за {dateString}";
-            label3.Text = $"Розклад занять за {dateString}";
+            label3.Text = $"Мій розклад занять за {dateString}";
         }
 
         // Метод для завантаження даних з бази даних з урахуванням фільтрації
@@ -551,9 +551,14 @@ namespace Project2U
                 if (tabControl1.SelectedTab != tabPage3)
                     return;
                 // Перевірка наявності бази даних та користувача
-                if (string.IsNullOrEmpty(selectedDatabasePath) || GetUserProfile() == null)
+                if (string.IsNullOrEmpty(selectedDatabasePath))
                 {
-                    MessageBox.Show("Будь ласка, оберіть базу даних та налаштуйте користувача.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Будь ласка, перевірте обрану базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                if (GetUserProfile() == null)
+                {
+                    MessageBox.Show("Відсутні дані про користувача. Будь ласка, повторно заповніть форму користувача.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -564,16 +569,16 @@ namespace Project2U
             // Завантаження розкладу в залежності від типу користувача
             if (userType == "Вчитель")
             {
-                LoadTeacherSchedule(selectedDate);
+                LoadTeacherSchedule(selectedDate, isNotify);
             }
             else if (userType == "Студент")
             {
-                LoadStudentSchedule(selectedDate);
+                LoadStudentSchedule(selectedDate, isNotify);
             }
 
         }
         // Метод для завантаження персонального розкладу студента
-        private void LoadStudentSchedule(string selectedDate)
+        private void LoadStudentSchedule(string selectedDate, bool isNotify)
         {
             // Перевірка наявності бази даних
             if (string.IsNullOrEmpty(selectedDatabasePath))
@@ -601,7 +606,6 @@ namespace Project2U
             {
                 dataGridView3.Rows.Add();
                 dataGridView3.Rows[i].HeaderCell.Value = $"{i + 1} пара";
-                dataGridView3.Rows[i].Cells["Час початку"].Value = GetTimeBeginHeader(i);
             }
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -622,7 +626,6 @@ namespace Project2U
                     int teacherId = Convert.ToInt32(reader["teacher_id"]);
                     string classroom = reader["classroom"].ToString();
                     string timeStart = reader["time_start"].ToString();
-                    string Schedule = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
 
                         int rowIndex = GetRowIndex(timeStart);
 
@@ -633,17 +636,24 @@ namespace Project2U
                                 dataGridView3.Rows.Add();
                             }
 
-                            dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
-                            // Перевірка, чи є інформація про пару
-                            if (!string.IsNullOrEmpty(classroom))
+                        // Перевірка, чи є інформація про пару
+                        if (!string.IsNullOrEmpty(classroom))
+                        {
+                            if (isNotify)
+                            {
+                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: "+GetSubjectName(subjectId) + ", Викладач: " + GetTeacherName(teacherId) + ", Аудиторія: " + classroom;
+                            }
+                            else
                             {
                                 // Заповнення комірки з інформацією про пару
                                 dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
                             }
-                            else
-                            {
-                                MessageBox.Show("За вказаною датою відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
+                            dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
+                        }
+                        else
+                        {
+                            MessageBox.Show("За вказаною датою відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                         }
                         else
                         {
@@ -663,7 +673,7 @@ namespace Project2U
         }
 
         // Метод для завантаження персонального розкладу вчителя
-        private void LoadTeacherSchedule(string selectedDate)
+        private void LoadTeacherSchedule(string selectedDate, bool isNotify)
         {
             // Перевірка наявності бази даних
             if (string.IsNullOrEmpty(selectedDatabasePath))
@@ -727,7 +737,13 @@ namespace Project2U
                         if (!string.IsNullOrEmpty(classroom))
                         {
                             // Заповнення комірки з інформацією про пару
-                            dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = GetSubjectName(subjectId) + "\n" + groupName + "\n" + classroom;
+                            if (isNotify) {
+                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value ="Предмет: "+ GetSubjectName(subjectId) +", Група: " + groupName + ", Аудиторія: " + classroom;
+                            }
+                            else
+                            {
+                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = GetSubjectName(subjectId) + "\n" + groupName + "\n" + classroom;
+                            }
                             dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
                         }
                         else

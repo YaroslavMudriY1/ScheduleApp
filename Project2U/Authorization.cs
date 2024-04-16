@@ -43,7 +43,11 @@ namespace Project2U
             {
                 // Виклик функції для видалення даних про користувача з XML файлу
                 DeleteUserProfile();
-
+                // Очищення полів форми
+                checkBoxStudent.Checked = false;
+                checkBoxTeacher.Checked = false;
+                textBoxName.Text = "";
+                comboBoxGroup.SelectedIndex = -1;
                 // Повідомлення про успішну дію
                 MessageBox.Show("Дані користувача видалено успішно!", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -117,7 +121,7 @@ namespace Project2U
             else
             {
                 // Повідомлення про неможливу дію
-                MessageBox.Show("Відсутні дані про користувача. Будь-ласка, заповність форму.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Відсутні дані про користувача. Будь ласка, заповніть форму.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         private void SaveUserProfile(UserProfile user)
@@ -130,24 +134,6 @@ namespace Project2U
             }
 
             MessageBox.Show("Дані збережено успішно!", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        private UserProfile ReadUserProfile()
-        {
-            // Перевірка наявності файлу
-            if (File.Exists(configFilePath))
-            {
-                // Зчитування об'єкту користувача з XML файлу
-                XmlSerializer serializer = new XmlSerializer(typeof(UserProfile));
-                using (StreamReader reader = new StreamReader(configFilePath))
-                {
-                    return (UserProfile)serializer.Deserialize(reader);
-                }
-            }
-            else
-            {
-                // Якщо файл не існує, повертаємо порожній об'єкт користувача
-                return new UserProfile();
-            }
         }
         private void DeleteUserProfile()
         {

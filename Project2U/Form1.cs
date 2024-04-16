@@ -131,16 +131,17 @@ namespace Project2U
             authorization.ShowDialog();
         }
 
-        static bool IsNotificationSent = false;
+        static bool IsNotificationSent = false; // Прапорець "Чи надіслано сповіщення"
+        DateTime currentClassStartTime; // Змінна для зберігання початку поточної пари
+        DateTime currentClassEndTime;
+        DateTime currentDate;
         //Ввімкнення/вимкнення сповіщень
         private void сповіщенняToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Змінна для зберігання стану пункту меню
-            bool notificationsEnabled = сповіщенняToolStripMenuItem.Checked;
             // Отримання поточної дати
-            DateTime currentDate = dateTimePicker1.Value;//DateTime.Today;
-            // Якщо сповіщення ввімкнути, встановити інтервал для таймера та запустити його
-            if (notificationsEnabled)
+            currentDate = dateTimePicker1.Value;//DateTime.Today;
+            // Перевірка, чи ввімкнуті сповіщення
+            if (сповіщенняToolStripMenuItem.Checked)
             {
                 if (!hasScheduleForToday(currentDate)) {
                     SendNotification("Повідомлення", "Це тестове повідомлення. Сьогодні пари відсутні."); //Якщо на сьогодні немає розкладу то виводиться таке повідомлення
@@ -148,8 +149,10 @@ namespace Project2U
                 else {
                     // Код для перевірки та відправлення тестового сповіщення
                     SendNotification("Повідомлення", "Це тестове повідомлення.");
-                    timer1.Interval = 10000; // Інтервал в мілісекундах (60000 мс = 1 хвилина)
+                    SetTimerInterval(currentDate);
+                    //timer1.Interval = 10000; // Інтервал в мілісекундах (60000 мс = 1 хвилина)
                     timer1.Start();
+                    CheckAndSendNotification();
                 }
 
             }
@@ -160,59 +163,184 @@ namespace Project2U
                 IsNotificationSent = false;
             }
         }
+        // Метод для встановлення інтервалу таймера залежно від початку наступної пари
+        private void SetTimerInterval(DateTime currentDate)
+        {
+            //DateTime currentTime = DateTime.ParseExact("08:00", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+
+            DateTime nextClassStartTime = GetNextClassStartTime(currentDate);
+            DateTime currentTime = DateTime.ParseExact("07:59", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+            TimeSpan timeUntilNextClass = nextClassStartTime - DateTime.Now;//DateTime.Now;
+            timer1.Interval = (int)timeUntilNextClass.TotalMilliseconds;
+        }
+
+        
+
         // Обробник події для перевірки та відправлення сповіщення
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // Виклик методу для перевірки та відправлення сповіщення
+            CheckTime(currentDate);    // Виклик методу для перевірки часу
+           // DateTime currentTime = DateTime.ParseExact("08:00", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+
+            // Перевірка чи треба відправити сповіщення
             if (!IsNotificationSent)
-            CheckAndSendNotification();
+                //if ( DateTime.Now >= currentClassStartTime && DateTime.Now < currentClassEndTime)
+            {
+                CheckAndSendNotification();
+            }
         }
 
+        // Метод для встановлення часу та перевірки поточного часу
+        private void CheckTime(DateTime currentDate)
+        {
+            DateTime currentTime = DateTime.ParseExact("07:59", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+            DateTime nextClassStartTime = currentDate.AddDays(1);
+            DateTime currentClassStartTime = currentDate.AddHours(-1);
+
+            foreach (DataGridViewRow row in dataGridView3.Rows)
+            {
+                string timeBeginHeader = GetTimeBeginHeader(row.Index);
+                DateTime classStartTime = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
+
+                // Знаходимо час початку наступної пари
+                if (classStartTime > DateTime.Now && classStartTime < nextClassStartTime)
+                {
+                    nextClassStartTime = classStartTime;
+                }
+                // Знаходимо час початку поточної пари
+                if (classStartTime < DateTime.Now && DateTime.Now < nextClassStartTime)
+                {
+                    currentClassStartTime = classStartTime;
+                }
+            }
+            TimeSpan timeUntilNextClass = nextClassStartTime - DateTime.Now;
+            timer1.Interval = (int)timeUntilNextClass.TotalMilliseconds; //Оновлення інтервалу таймера
+            // Встановлюємо час початку та кінця поточної пари
+            currentClassEndTime = GetCurrentClassEndTime(currentDate, currentClassStartTime.ToString());
+
+            // Якщо поточний час перевищує час початку наступної пари, оновлюємо дані для наступної пари
+            if (DateTime.Now >= nextClassStartTime)
+            {
+                currentClassStartTime = nextClassStartTime;
+                currentClassEndTime = GetCurrentClassEndTime(currentDate, currentClassStartTime.ToString());
+                IsNotificationSent = false; // Скидаємо прапорець, оскільки починається нова пара
+
+            }
+
+/*            // Встановлюємо час початку поточної пари
+            currentClassStartTime = GetCurrentClassStartTime(currentDate);
+
+            // Перевірка чи поточний час знаходиться в межах поточної пари
+            if (!IsNotificationSent&&currentTime >= currentClassStartTime && currentTime <= currentClassEndTime)
+            {
+                CheckAndSendNotification(); 
+            }*/
+        }
+
+        // Метод для отримання часу початку наступної пари
+        private DateTime GetNextClassStartTime(DateTime currentDate)
+        {
+            DateTime nextClassStartTime = currentDate.AddDays(1);
+
+            foreach (DataGridViewRow row in dataGridView3.Rows)
+            {
+                string timeBeginHeader = GetTimeBeginHeader(row.Index);
+                DateTime classStartTime = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
+                DateTime currentTime = DateTime.ParseExact("07:59", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+
+                if (classStartTime > DateTime.Now && classStartTime < nextClassStartTime)
+                {
+                    nextClassStartTime = classStartTime;
+                }
+            }
+
+            return nextClassStartTime;
+        }
+
+        // Метод для отримання часу початку поточної пари
+        private DateTime GetCurrentClassStartTime(DateTime currentDate)
+        {
+            DateTime currentClassStartTime = DateTime.MaxValue;
+
+            foreach (DataGridViewRow row in dataGridView3.Rows)
+            {
+                string timeBeginHeader = GetTimeBeginHeader(row.Index);
+                DateTime classStartTime = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
+                DateTime currentTime = DateTime.ParseExact("07:59", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+
+                if (classStartTime < DateTime.Now && DateTime.Now < GetNextClassStartTime(currentDate))
+                {
+                    currentClassStartTime = classStartTime;
+                }
+            }
+
+            return currentClassStartTime;
+        }
+
+        // Метод для отримання часу закінчення пари з бази даних
+        private DateTime GetCurrentClassEndTime(DateTime currentDate, string timeBeginHeader)
+        {
+            DateTime currentClassEndTime = currentDate.AddHours(1);
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open(); // Відкриття підключення до бази даних
+
+                string query = "SELECT time_end FROM Schedule WHERE date = @currentDate AND time_start = @timeBeginHeader";
+
+                SQLiteCommand command = new SQLiteCommand(query, connection);
+                command.Parameters.AddWithValue("@currentDate", currentDate.ToString("dd.MM.yyyy"));
+                command.Parameters.AddWithValue("@timeBeginHeader", timeBeginHeader);
+
+                object result = command.ExecuteScalar();
+
+                if (result != null && result != DBNull.Value)
+                {
+                    currentClassEndTime = DateTime.ParseExact(result.ToString(), "HH:mm", CultureInfo.InvariantCulture);
+                }
+
+                connection.Close();
+            }
+
+            return currentClassEndTime;
+        }
         // Метод для перевірки та відправлення сповіщення
         private void CheckAndSendNotification()
         {
             // Отримання поточної дати
             DateTime currentDate = dateTimePicker1.Value; //DateTime.Today;
 
-            // Якщо є розклад на сьогоднішній день, перевірити час початку пари
-            if (hasScheduleForToday(currentDate))
-            {
-                // Отримання поточного часу
-                DateTime currentTime = DateTime.ParseExact("08:00", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
+                    // Отримання поточного часу
+                    DateTime currentTime = DateTime.ParseExact("07:59", "HH:mm", CultureInfo.InvariantCulture); //DateTime.Now;
                 // Перевірка часу початку пари
                 for (int i = 0; i < dataGridView3.Rows.Count; i++)
                 {
                     // Отримання часу початку пари з першого стовпця
                     string timeBeginHeader = GetTimeBeginHeader(i); // Отримання часу початку пари
                     DateTime timeBegin = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
-                    string timeHeader = GetTimeHeader(i); // Отримання пари за порядком для сповіщення
-                    DateTime endTime = GetEndTime(currentDate, timeBeginHeader); // Отримання часу закінчення пари
+                    DateTime endTime = GetCurrentClassEndTime(currentDate, timeBeginHeader); // Отримання часу закінчення пари
                     // Якщо поточний час співпадає з часом початку пари, відправити сповіщення
-                    if (currentTime.AddMinutes(1) >= timeBegin && currentTime <= timeBegin.AddMinutes(5))
+                    if (DateTime.Now.AddMinutes(5) >= timeBegin && DateTime.Now <= timeBegin.AddMinutes(5))
                     {
                         UserProfile userProfile = GetUserProfile();
-                        string notificationTitle = $"{timeHeader}";
-                            LoadPersonalSchedule(currentDate.ToString("dd.MM.yyyy"), true);
+                        string notificationTitle = $"{GetTimeHeader(i)}";// Отримання пари за порядком для сповіщення
+                    LoadPersonalSchedule(currentDate.ToString("dd.MM.yyyy"), true);
                         if (!String.IsNullOrEmpty(dataGridView3.Rows[i].Cells[1].Value as String))
-                          {
+                        {
                             // Отримання інформації про предмет, викладача та аудиторію з відповідних стовпців dataGridView3
                             string schedule = dataGridView3.Rows[i].Cells[1].Value.ToString();
-                            string notificationBody = $"{userProfile.Name}, початок {i+1} пари.\n{schedule}";
+                            string notificationBody = $"{userProfile.Name}, початок {i + 1} пари.\n{schedule}";
                             SendNotification(notificationTitle, notificationBody);
-                            IsNotificationSent = true;
-                          }
-                    }
-                    // Якщо поточний час перевищує час закінчення пари, скидаємо прапорець
-                    if (DateTime.Now.TimeOfDay >= endTime.TimeOfDay)
-                    {
-                        IsNotificationSent = false;
+                        IsNotificationSent = true;
+                        break;
                     }
                 }
-            }
-            else
-            {
-                IsNotificationSent = false; // Встановлюємо флаг IsNotificationSent в false, оскільки на сьогодні немає розкладу
-            }
+                    // Якщо поточний час перевищує час закінчення пари, скидаємо прапорець
+/*                    if (DateTime.Now.TimeOfDay >= endTime.TimeOfDay)
+                    {
+                        IsNotificationSent = false;
+                    }*/
+                }
 
         }
 
@@ -227,34 +355,6 @@ namespace Project2U
                 .Show();
         }
 
-        // Метод для отримання часу закінчення пари з бази даних
-        private DateTime GetEndTime(DateTime currentDate, string timeBeginHeader)
-        {
-            DateTime endTime = DateTime.MinValue;
-
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open(); // Відкриття підключення до бази даних
-
-                string query = "SELECT time_end FROM Schedule " +
-                               "WHERE date = @currentDate AND time_start = @timeBeginHeader";
-
-                SQLiteCommand command = new SQLiteCommand(query, connection);
-                command.Parameters.AddWithValue("@currentDate", currentDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@timeBeginHeader", timeBeginHeader);
-
-                object result = command.ExecuteScalar();
-
-                if (result != null && result != DBNull.Value)
-                {
-                    endTime = DateTime.ParseExact(result.ToString(), "HH:mm", CultureInfo.InvariantCulture);
-                }
-
-                connection.Close();
-            }
-
-            return endTime;
-        }
 
         //Налаштування кольорових тем
         private void стандартнаToolStripMenuItem_Click(object sender, EventArgs e)
