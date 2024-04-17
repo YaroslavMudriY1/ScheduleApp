@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutInfo.Designer.cs">
+      <DependentUpon>AboutInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Authorization.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -61,9 +67,15 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Notification.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Schedule.cs" />
+    <EmbeddedResource Include="AboutInfo.resx">
+      <DependentUpon>AboutInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Authorization.resx">
       <DependentUpon>Authorization.cs</DependentUpon>
     </EmbeddedResource>
@@ -93,6 +105,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MaterialSkin.2">
+      <Version>2.3.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
       <Version>1.0.3</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -102,7 +117,7 @@
       <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts">
-      <Version>10.0.19041.1</Version>
+      <Version>10.0.22621.3233</Version>
     </PackageReference>
     <PackageReference Include="SQLite">
       <Version>3.13.0</Version>

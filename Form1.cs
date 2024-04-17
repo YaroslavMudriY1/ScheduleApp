@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
-using System.Xml.Serialization; //Для зберігання списку недавніх
+using System.Xml.Serialization; //Для зберігання даних користувача в файлах формату .XML
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;

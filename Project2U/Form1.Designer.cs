@@ -1,4 +1,7 @@
-﻿namespace Project2U
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace Project2U
 {
     partial class Schedule
     {
@@ -29,13 +32,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.обратиФайлБазиДанихToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.нещодавноВідкритіToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.налаштуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.профільКористувачаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сповіщенняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,39 +82,32 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.menuStrip1.BackColor = System.Drawing.Color.Transparent;
+            this.menuStrip1.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.файлToolStripMenuItem,
             this.налаштуванняToolStripMenuItem,
             this.довідкаToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Location = new System.Drawing.Point(3, 64);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(834, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(794, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // файлToolStripMenuItem
             // 
             this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.обратиФайлБазиДанихToolStripMenuItem,
-            this.нещодавноВідкритіToolStripMenuItem});
+            this.обратиФайлБазиДанихToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.файлToolStripMenuItem.Text = "Файл";
             // 
             // обратиФайлБазиДанихToolStripMenuItem
             // 
             this.обратиФайлБазиДанихToolStripMenuItem.Name = "обратиФайлБазиДанихToolStripMenuItem";
-            this.обратиФайлБазиДанихToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.обратиФайлБазиДанихToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.обратиФайлБазиДанихToolStripMenuItem.Text = "Обрати файл бази даних";
             this.обратиФайлБазиДанихToolStripMenuItem.Click += new System.EventHandler(this.обратиФайлБазиДанихToolStripMenuItem_Click);
-            // 
-            // нещодавноВідкритіToolStripMenuItem
-            // 
-            this.нещодавноВідкритіToolStripMenuItem.Name = "нещодавноВідкритіToolStripMenuItem";
-            this.нещодавноВідкритіToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-            this.нещодавноВідкритіToolStripMenuItem.Text = "Нещодавно відкриті";
-            this.нещодавноВідкритіToolStripMenuItem.Click += new System.EventHandler(this.нещодавноВідкритіToolStripMenuItem_Click);
             // 
             // налаштуванняToolStripMenuItem
             // 
@@ -121,13 +116,13 @@
             this.сповіщенняToolStripMenuItem,
             this.темаToolStripMenuItem});
             this.налаштуванняToolStripMenuItem.Name = "налаштуванняToolStripMenuItem";
-            this.налаштуванняToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
+            this.налаштуванняToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
             this.налаштуванняToolStripMenuItem.Text = "Налаштування";
             // 
             // профільКористувачаToolStripMenuItem
             // 
             this.профільКористувачаToolStripMenuItem.Name = "профільКористувачаToolStripMenuItem";
-            this.профільКористувачаToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.профільКористувачаToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.профільКористувачаToolStripMenuItem.Text = "Профіль користувача";
             this.профільКористувачаToolStripMenuItem.Click += new System.EventHandler(this.профільКористувачаToolStripMenuItem_Click);
             // 
@@ -135,7 +130,7 @@
             // 
             this.сповіщенняToolStripMenuItem.CheckOnClick = true;
             this.сповіщенняToolStripMenuItem.Name = "сповіщенняToolStripMenuItem";
-            this.сповіщенняToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.сповіщенняToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.сповіщенняToolStripMenuItem.Text = "Сповіщення";
             this.сповіщенняToolStripMenuItem.Click += new System.EventHandler(this.сповіщенняToolStripMenuItem_Click);
             // 
@@ -145,7 +140,7 @@
             this.стандартнаToolStripMenuItem,
             this.чорнаToolStripMenuItem});
             this.темаToolStripMenuItem.Name = "темаToolStripMenuItem";
-            this.темаToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.темаToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.темаToolStripMenuItem.Text = "Тема";
             // 
             // стандартнаToolStripMenuItem
@@ -153,22 +148,23 @@
             this.стандартнаToolStripMenuItem.Checked = true;
             this.стандартнаToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.стандартнаToolStripMenuItem.Name = "стандартнаToolStripMenuItem";
-            this.стандартнаToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.стандартнаToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.стандартнаToolStripMenuItem.Text = "Стандартна";
             this.стандартнаToolStripMenuItem.Click += new System.EventHandler(this.стандартнаToolStripMenuItem_Click);
             // 
             // чорнаToolStripMenuItem
             // 
             this.чорнаToolStripMenuItem.Name = "чорнаToolStripMenuItem";
-            this.чорнаToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.чорнаToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.чорнаToolStripMenuItem.Text = "Чорна";
             this.чорнаToolStripMenuItem.Click += new System.EventHandler(this.чорнаToolStripMenuItem_Click);
             // 
             // довідкаToolStripMenuItem
             // 
             this.довідкаToolStripMenuItem.Name = "довідкаToolStripMenuItem";
-            this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.довідкаToolStripMenuItem.Text = "Довідка";
+            this.довідкаToolStripMenuItem.Click += new System.EventHandler(this.довідкаToolStripMenuItem_Click);
             // 
             // tabControl1
             // 
@@ -176,12 +172,11 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabControl1.HotTrack = true;
-            this.tabControl1.Location = new System.Drawing.Point(0, 24);
+            this.tabControl1.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tabControl1.Location = new System.Drawing.Point(3, 88);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(834, 442);
+            this.tabControl1.Size = new System.Drawing.Size(794, 469);
             this.tabControl1.TabIndex = 1;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -189,10 +184,10 @@
             // 
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.dataGridView1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(826, 415);
+            this.tabPage1.Size = new System.Drawing.Size(786, 441);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Загальний розклад";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -202,7 +197,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(270, 3);
+            this.label1.Location = new System.Drawing.Point(250, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(221, 25);
             this.label1.TabIndex = 23;
@@ -212,14 +207,18 @@
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 34);
+            this.dataGridView1.EnableHeadersVisualStyles = false;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 31);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 65;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView1.Size = new System.Drawing.Size(820, 378);
+            this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dataGridView1.RowHeadersWidth = 70;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridView1.Size = new System.Drawing.Size(780, 407);
             this.dataGridView1.TabIndex = 21;
             // 
             // tabPage2
@@ -236,10 +235,10 @@
             this.tabPage2.Controls.Add(this.textBoxGroupSearch);
             this.tabPage2.Controls.Add(this.label15);
             this.tabPage2.Controls.Add(this.dataGridView2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 23);
+            this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(826, 415);
+            this.tabPage2.Size = new System.Drawing.Size(786, 441);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Фільтр";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -249,7 +248,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(335, 3);
+            this.label2.Location = new System.Drawing.Point(266, 5);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(221, 25);
             this.label2.TabIndex = 44;
@@ -281,7 +280,7 @@
             // 
             this.textBoxClassroomSearch.Location = new System.Drawing.Point(22, 131);
             this.textBoxClassroomSearch.Name = "textBoxClassroomSearch";
-            this.textBoxClassroomSearch.Size = new System.Drawing.Size(100, 22);
+            this.textBoxClassroomSearch.Size = new System.Drawing.Size(100, 23);
             this.textBoxClassroomSearch.TabIndex = 40;
             // 
             // label10
@@ -305,7 +304,7 @@
             this.textBoxTeacherSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxTeacherSearch.Location = new System.Drawing.Point(133, 131);
             this.textBoxTeacherSearch.Name = "textBoxTeacherSearch";
-            this.textBoxTeacherSearch.Size = new System.Drawing.Size(130, 22);
+            this.textBoxTeacherSearch.Size = new System.Drawing.Size(130, 23);
             this.textBoxTeacherSearch.TabIndex = 38;
             // 
             // label11
@@ -322,7 +321,7 @@
             // 
             this.textBoxSubjectSearch.Location = new System.Drawing.Point(133, 75);
             this.textBoxSubjectSearch.Name = "textBoxSubjectSearch";
-            this.textBoxSubjectSearch.Size = new System.Drawing.Size(130, 22);
+            this.textBoxSubjectSearch.Size = new System.Drawing.Size(130, 23);
             this.textBoxSubjectSearch.TabIndex = 36;
             // 
             // label12
@@ -346,7 +345,7 @@
             this.textBoxGroupSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxGroupSearch.Location = new System.Drawing.Point(22, 75);
             this.textBoxGroupSearch.Name = "textBoxGroupSearch";
-            this.textBoxGroupSearch.Size = new System.Drawing.Size(100, 22);
+            this.textBoxGroupSearch.Size = new System.Drawing.Size(100, 23);
             this.textBoxGroupSearch.TabIndex = 34;
             // 
             // label15
@@ -364,22 +363,24 @@
             this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView2.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView2.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(311, 33);
+            this.dataGridView2.EnableHeadersVisualStyles = false;
+            this.dataGridView2.Location = new System.Drawing.Point(271, 33);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowHeadersWidth = 65;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridView2.Size = new System.Drawing.Size(507, 379);
+            this.dataGridView2.RowHeadersWidth = 70;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            this.dataGridView2.Size = new System.Drawing.Size(507, 405);
             this.dataGridView2.TabIndex = 31;
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.label3);
             this.tabPage3.Controls.Add(this.dataGridView3);
-            this.tabPage3.Location = new System.Drawing.Point(4, 23);
+            this.tabPage3.Location = new System.Drawing.Point(4, 24);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(826, 415);
+            this.tabPage3.Size = new System.Drawing.Size(786, 441);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Мій розклад";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -389,7 +390,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Roboto", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(253, 17);
+            this.label3.Location = new System.Drawing.Point(225, 8);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(260, 25);
             this.label3.TabIndex = 33;
@@ -399,15 +400,19 @@
             // 
             this.dataGridView3.AllowUserToAddRows = false;
             this.dataGridView3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.dataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView3.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView3.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView3.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView3.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(275, 45);
+            this.dataGridView3.EnableHeadersVisualStyles = false;
+            this.dataGridView3.Location = new System.Drawing.Point(255, 36);
             this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.RowHeadersWidth = 65;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridView3.Size = new System.Drawing.Size(302, 370);
+            this.dataGridView3.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dataGridView3.RowHeadersWidth = 70;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dataGridView3.Size = new System.Drawing.Size(310, 402);
             this.dataGridView3.TabIndex = 32;
             // 
             // notifyIcon1
@@ -418,10 +423,11 @@
             // dateTimePicker1
             // 
             this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.dateTimePicker1.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(684, 0);
+            this.dateTimePicker1.Location = new System.Drawing.Point(631, 31);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(150, 22);
+            this.dateTimePicker1.Size = new System.Drawing.Size(166, 22);
             this.dateTimePicker1.TabIndex = 22;
             this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
             // 
@@ -433,10 +439,12 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(548, 2);
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label4.Location = new System.Drawing.Point(480, 35);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(131, 16);
+            this.label4.Size = new System.Drawing.Size(148, 16);
             this.label4.TabIndex = 23;
             this.label4.Text = "Встановлена дата:";
             // 
@@ -448,7 +456,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(834, 466);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(800, 560);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.dateTimePicker1);
@@ -482,7 +491,6 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem обратиФайлБазиДанихToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem нещодавноВідкритіToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem налаштуванняToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem профільКористувачаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem сповіщенняToolStripMenuItem;

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Serialization;
+using System.Xml.Serialization; //Для зберігання даних користувача в файлах формату .XML
+using Windows.UI.Xaml.Documents;
 using static Project2U.Authorization;
 
 namespace Project2U
@@ -594,6 +596,9 @@ namespace Project2U
             dataGridView3.Columns.Clear();
 
             dataGridView3.Columns.Add("Час початку", "Час початку");
+            dataGridView3.Columns[0].Width = 55;
+            // Зробити заголовок жирним лише для стовпця "Час початку"
+
             // Додавання стовпця до DataGridView з ім'ям групи студента
             dataGridView3.Columns.Add(userGroupName, userGroupName);
 
@@ -690,6 +695,8 @@ namespace Project2U
             dataGridView3.Rows.Clear();
             dataGridView3.Columns.Clear();
             dataGridView3.Columns.Add("Час початку", "Час початку");
+            dataGridView3.Columns[0].Width = 55;
+
             // Додавання стовпця до DataGridView з ім'ям вчителя
             dataGridView3.Columns.Add(userTeacherName, userTeacherName);
 
@@ -745,6 +752,7 @@ namespace Project2U
                                 dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = GetSubjectName(subjectId) + "\n" + groupName + "\n" + classroom;
                             }
                             dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
+
                         }
                         else
                         {
