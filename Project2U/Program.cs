@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Project2U
+namespace ScheduleUser
 {
     internal static class Program
     {

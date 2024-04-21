@@ -2,15 +2,21 @@
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
-
-namespace Project2U
+using MaterialSkin;
+using MaterialSkin.Controls;
+namespace ScheduleUser
 {
-    public partial class Authorization : Form
+    public partial class Authorization : MaterialForm
     {
         private readonly string configFilePath = "userProfile.xml";
         public Authorization()
         {
             InitializeComponent();
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.EnforceBackcolorOnAllComponents = false;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
+
             // Заповнення форми даними з файлу, якщо вони є
             LoadUserProfile();
             // Приховати поле comboBoxGroup на початку
@@ -26,7 +32,7 @@ namespace Project2U
                 IsStudent = checkBoxStudent.Checked,
                 IsTeacher = checkBoxTeacher.Checked,
                 Name = textBoxName.Text,
-                Group = comboBoxGroup.Visible ? comboBoxGroup.SelectedItem.ToString() : ""
+                Group = comboBoxGroup.Visible ? comboBoxGroup.Text.ToString() : ""
             };
 
             // Збереження об'єкту користувача в XML файл
@@ -117,11 +123,6 @@ namespace Project2U
                         comboBoxGroup.SelectedItem = profile.Group;
                     }
                 }
-            }
-            else
-            {
-                // Повідомлення про неможливу дію
-                MessageBox.Show("Відсутні дані про користувача. Будь ласка, заповніть форму.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         private void SaveUserProfile(UserProfile user)

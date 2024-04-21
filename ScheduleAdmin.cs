@@ -12,60 +12,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using MaterialSkin;
+using MaterialSkin.Controls;
 
-namespace Project2
+namespace ScheduleAdmin
 {
-    public partial class Schedule : Form
+    public partial class Schedule : MaterialForm
     {
-        // Шлях до файлу конфігурації
-        private string configFilePath = "recentFilesConfig.xml";
-        private List<string> recentlyOpenedFiles;
-        // Завантаження списку нещодавно відкритих файлів
-        private List<string> LoadRecentFiles()
-        {
-            if (File.Exists(configFilePath))
-            {
-                using (StreamReader reader = new StreamReader(configFilePath))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
-                    RecentFilesConfig config = (RecentFilesConfig)serializer.Deserialize(reader);
-                    return config.RecentlyOpenedFiles;
-                }
-            }
-            return new List<string>();
-        }
-
-        // Збереження списку нещодавно відкритих файлів
-        private void SaveRecentFiles(List<string> recentlyOpenedFiles)
-        {
-            RecentFilesConfig config = new RecentFilesConfig();
-            config.RecentlyOpenedFiles = recentlyOpenedFiles;
-            using (StreamWriter writer = new StreamWriter(configFilePath))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
-                serializer.Serialize(writer, config);
-            }
-        }
-
-        // private List<string> recentlyOpenedFiles = new List<string>(); // Список нещодавно відкритих файлів
-        // string connectionString = "Data Source=db2.db;Version=3;";
-        private static string selectedDatabasePath = "";
-        string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
-
-        private void UpdateConnectionString()
-        {
-            connectionString = $"Data Source={selectedDatabasePath};Version=3;";
-        }
         public Schedule()
         {
             InitializeComponent();
             // Завантаження списку нещодавно відкритих файлів при запуску програми
             LoadRecentFilesOnStartup();
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.EnforceBackcolorOnAllComponents = false;
+            materialSkinManager.AddFormToManage(this);
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
         }
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
-        }
+        // Шлях до файлу конфігурації
+        private string configFilePath = "recentFilesConfig.xml";
+        private List<string> recentlyOpenedFiles;
+
+        private static string selectedDatabasePath = "";
+        string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
 
         // Метод для отримання всіх доступних назв груп з бази даних
         private List<string> GetAllGroupNames()
@@ -224,8 +194,9 @@ namespace Project2
 
         private void buttonCheckSchedule1_Click(object sender, EventArgs e)
         {
-            LoadDataFromDatabase(dateTimePicker1, dataGridView1); //Використання функції з наданням вихідних об'єктів в аргументів
+                LoadDataFromDatabase(dateTimePicker1, dataGridView1); //Використання функції з наданням вихідних об'єктів в аргументів
         }
+
 
         // Метод, який встановлює значення DateTimePicker на інших вкладках
         private void SyncDateTimePickers(DateTime dateTime)
@@ -425,15 +396,20 @@ namespace Project2
                 MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (textBoxAddGroup.Text == "" || textBoxAddSubject.Text == "" || textBoxAddTeacher.Text == "" || textBoxAddClassroom.Text == "")
+            {
+                MessageBox.Show("Будь ласка, введіть всі дані для запису в розклад.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             var connection = new SQLiteConnection(connectionString);
             // Отримання значень з текстових полів
-            string groupName = textBox1.Text;
-            string subjectName = textBox2.Text;
-            string teacherName = textBox3.Text;
-            string classroom = textBox4.Text;
+            string groupName = textBoxAddGroup.Text;
+            string subjectName = textBoxAddSubject.Text;
+            string teacherName = textBoxAddTeacher.Text;
+            string classroom = textBoxAddClassroom.Text;
             string selectedDate = dateTimePickerAdd.Value.ToString("dd.MM.yyyy");
-            string timeStart = GetTimeStartFromPair(comboBox1.Text);
-            string timeEnd = GetTimeEndFromPair(comboBox1.Text);
+            string timeStart = GetTimeStartFromPair(comboBoxAddLesson.Text);
+            string timeEnd = GetTimeEndFromPair(comboBoxAddLesson.Text);
 
             // Перевірка і додавання нової групи, якщо вона не існує
             CheckAndAddGroup(groupName);
@@ -609,10 +585,15 @@ namespace Project2
                 MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            if (textBoxDeleteGroup.Text == "" || comboBoxDeleteLesson.Text == "")
+            {
+                MessageBox.Show("Будь ласка, необхідні дані для видалення запису з розкладу.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // Отримання значень з полів вибору
-            string groupName = textBox5.Text;
+            string groupName = textBoxDeleteGroup.Text;
             string selectedDate = dateTimePicker2.Value.ToString("dd.MM.yyyy");
-            string timeStart = GetTimeStartFromPair(comboBox2.Text);
+            string timeStart = GetTimeStartFromPair(comboBoxDeleteLesson.Text);
 
             // Складання SQL-запиту для видалення записів
             string query = "DELETE FROM Schedule WHERE group_id = (SELECT group_id FROM Groups WHERE group_name = @groupName) " +
@@ -676,7 +657,6 @@ namespace Project2
         {
             // Отримання значення з текстового поля textBoxGroups
             string groupNameFilter = textBoxGroupSearch.Text;
-
             string teacherFilter = textBoxTeacherSearch.Text;
             string classroomFilter = textBoxClassroomSearch.Text;
             string subjectFilter = textBoxSubjectSearch.Text;
@@ -709,7 +689,7 @@ namespace Project2
             // Перевірка груп на наявність розкладу з потрібним вчителем або предметом
             foreach (string groupName in groupNames)
             {
-                bool groupContainsFilteredData = CheckGroupForFilteredData(groupName, selectedDate, teacherFilter, subjectFilter, connection);
+                bool groupContainsFilteredData = CheckGroupForFilteredData(groupName, selectedDate, teacherFilter, subjectFilter,classroomFilter, connection);
                 if (groupContainsFilteredData)
                 {
                     groupsWithFilteredData.Add(groupName);
@@ -845,7 +825,7 @@ namespace Project2
             connection.Close();
         }
         // Метод для перевірки наявності потрібних даних у розкладі групи за вибраний день
-        private bool CheckGroupForFilteredData(string groupName, string selectedDate, string teacherFilter, string subjectFilter, SQLiteConnection connection)
+        private bool CheckGroupForFilteredData(string groupName, string selectedDate, string teacherFilter, string subjectFilter, string classroomFilter, SQLiteConnection connection)
         {
             string query = "SELECT COUNT(*) FROM Schedule WHERE group_id IN (SELECT group_id FROM Groups WHERE group_name = @groupName) AND date = @selectedDate";
 
@@ -858,10 +838,15 @@ namespace Project2
             {
                 query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
             }
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                query += " AND classroom IN (SELECT classroom FROM Subjects WHERE classroom LIKE @classroomFilter)";
+            }
 
             SQLiteCommand command = new SQLiteCommand(query, connection);
             command.Parameters.AddWithValue("@groupName", groupName);
             command.Parameters.AddWithValue("@selectedDate", selectedDate);
+
 
             if (!string.IsNullOrEmpty(teacherFilter))
             {
@@ -871,6 +856,10 @@ namespace Project2
             if (!string.IsNullOrEmpty(subjectFilter))
             {
                 command.Parameters.AddWithValue("@subjectFilter", "%" + subjectFilter + "%");
+            }
+            if (!string.IsNullOrEmpty(classroomFilter))
+            {
+                command.Parameters.AddWithValue("@classroomFilter", "%" + classroomFilter + "%");
             }
 
             int count = Convert.ToInt32(command.ExecuteScalar());
@@ -883,14 +872,16 @@ namespace Project2
             LoadDataFromDatabase(dateTimePicker4, dataGridView4);
         }
 
+        //Функції кнопоку меню
+
         // Відкриття файлу бази даних
         private void OpenDatabaseFile(string filePath)
         {
             // Оновлення вибраного файлу бази даних
             selectedDatabasePath = filePath;
-            UpdateConnectionString();
+            connectionString = $"Data Source={selectedDatabasePath};Version=3;";
             // Оновити меню нещодавно відкритих файлів
-            AddRecentlyOpenedFile(selectedDatabasePath);
+            UpdateRecentlyOpenedFiles(filePath);
         }
 
         // Вибір і відкриття файлу бази даних
@@ -904,17 +895,50 @@ namespace Project2
             }
         }
 
-        // Додати файл до списку нещодавно відкритих файлів
-        private void AddRecentlyOpenedFile(string filePath)
+        // Оновлення списку нещодавно відкритих файлів
+        private void UpdateRecentlyOpenedFiles(string filePath)
         {
-            recentlyOpenedFiles.Insert(0, filePath);
-            if (recentlyOpenedFiles.Count > 3)
+            // Перевірка, чи файл вже є у списку
+            if (recentlyOpenedFiles.Contains(filePath))
             {
-                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1);
+                recentlyOpenedFiles.Remove(filePath); // Видалити файл зі списку
             }
+            recentlyOpenedFiles.Insert(0, filePath); // Додати файл на початок списку
+            if (recentlyOpenedFiles.Count > 4)
+            {
+                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1); // Видалити останній елемент, якщо списку більше 4 файлів
+            }
+
             UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
             // Зберегти список нещодавно відкритих файлів
             SaveRecentFiles(recentlyOpenedFiles);
+        }
+
+        // Завантаження списку нещодавно відкритих файлів
+        private List<string> LoadRecentFiles()
+        {
+            if (File.Exists(configFilePath))
+            {
+                using (StreamReader reader = new StreamReader(configFilePath))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
+                    RecentFilesConfig config = (RecentFilesConfig)serializer.Deserialize(reader);
+                    return config.RecentlyOpenedFiles;
+                }
+            }
+            return new List<string>();
+        }
+
+        // Збереження списку нещодавно відкритих файлів
+        private void SaveRecentFiles(List<string> recentlyOpenedFiles)
+        {
+            RecentFilesConfig config = new RecentFilesConfig();
+            config.RecentlyOpenedFiles = recentlyOpenedFiles;
+            using (StreamWriter writer = new StreamWriter(configFilePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
+                serializer.Serialize(writer, config);
+            }
         }
 
         // Оновлення меню нещодавно відкритих файлів
@@ -926,6 +950,11 @@ namespace Project2
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(Path.GetFileName(filePath));
                 menuItem.Tag = filePath;
                 menuItem.Click += RecentlyOpenedFile_Click;
+                // Перевірка, чи поточний елемент є обраним файлом
+                if (filePath == selectedDatabasePath)
+                {
+                    menuItem.Checked = true;
+                }
                 нещодавноВідкритіToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
@@ -943,32 +972,6 @@ namespace Project2
         {
             recentlyOpenedFiles = LoadRecentFiles();
             UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
-        }
-
-
-
-        //Вікно "Про розробника"
-        private void проРозробникаToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Створення та відображення нової форми для відомостей про розробника
-/*            AboutDeveloperForm aboutDeveloperForm = new AboutDeveloperForm();
-            aboutDeveloperForm.ShowDialog();*/
-        }
-
-        //Вікно "Про навчальний заклад"
-        private void проНавчальнийЗакладToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Створення та відображення нової форми для відомостей про навчальний заклад
-/*            AboutSchoolForm aboutSchoolForm = new AboutSchoolForm();
-            aboutSchoolForm.ShowDialog();*/
-        }
-
-        //Вікно про програму
-        private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Створення та відображення нової форми для відомостей про програму
-            AboutProgram aboutProgram = new AboutProgram();
-            aboutProgram.ShowDialog();
         }
 
         //Очищення вмісту бази даних
@@ -1103,6 +1106,19 @@ namespace Project2
                 File.Copy(sourcePath, destinationPath, true);
                 MessageBox.Show("Базу даних успішно збережено.", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Створення та відображення нової форми для відомостей про програму
+            AboutInfo aboutProgram = new AboutInfo();
+            aboutProgram.ShowDialog();
+        }
+
+        private void гайдКористуванняToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Guide guide = new Guide();
+            guide.Show();
         }
     }
     // Клас для збереження списку нещодавно відкритих файлів

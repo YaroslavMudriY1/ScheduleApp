@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization; //Для зберігання даних користувача в файлах формату .XML
 using Windows.UI.Xaml.Documents;
-using static Project2U.Authorization;
+using static ScheduleUser.Authorization;
 
-namespace Project2U
+namespace ScheduleUser
 {
     // Клас для збереження списку нещодавно відкритих файлів
     [Serializable]
@@ -226,7 +226,7 @@ namespace Project2U
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
                     int count = Convert.ToInt32(command.ExecuteScalar());
 
-                    // Якщо є записи з часом початку "13:30", то шоста пара доступна
+                    // Якщо є записи з часом початку "14:30", то шоста пара доступна
                     hasSixthPair = count > 0;
                 }
             }
@@ -545,10 +545,9 @@ namespace Project2U
             return count > 0;
         }
 
-        private void LoadPersonalSchedule(string selectedDate, bool isNotify)
+        private void LoadPersonalSchedule(string selectedDate, bool IsNotify)
         {
-            if (!isNotify)
-            {
+
                 // Перевірка, чи користувач перейшов на вкладку "Мій розклад"
                 if (tabControl1.SelectedTab != tabPage3)
                     return;
@@ -558,29 +557,25 @@ namespace Project2U
                     MessageBox.Show("Будь ласка, перевірте обрану базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                if (GetUserProfile() == null)
+
+            if (GetUserProfile()!= null)
+            {
+                // Отримання типу користувача (вчителя або студента)
+                string userType = GetUserType();
+
+                // Завантаження розкладу в залежності від типу користувача
+                if (userType == "Вчитель")
                 {
-                    MessageBox.Show("Відсутні дані про користувача. Будь ласка, повторно заповніть форму користувача.", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    LoadTeacherSchedule(selectedDate, IsNotify);
+                }
+                else if (userType == "Студент")
+                {
+                    LoadStudentSchedule(selectedDate, IsNotify);
                 }
             }
-
-            // Отримання типу користувача (вчителя або студента)
-            string userType = GetUserType();
-
-            // Завантаження розкладу в залежності від типу користувача
-            if (userType == "Вчитель")
-            {
-                LoadTeacherSchedule(selectedDate, isNotify);
-            }
-            else if (userType == "Студент")
-            {
-                LoadStudentSchedule(selectedDate, isNotify);
-            }
-
         }
         // Метод для завантаження персонального розкладу студента
-        private void LoadStudentSchedule(string selectedDate, bool isNotify)
+        private void LoadStudentSchedule(string selectedDate, bool IsNotify)
         {
             // Перевірка наявності бази даних
             if (string.IsNullOrEmpty(selectedDatabasePath))
@@ -644,15 +639,12 @@ namespace Project2U
                         // Перевірка, чи є інформація про пару
                         if (!string.IsNullOrEmpty(classroom))
                         {
-                            if (isNotify)
+                            if (IsNotify)
                             {
-                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: "+GetSubjectName(subjectId) + ", Викладач: " + GetTeacherName(teacherId) + ", Аудиторія: " + classroom;
+                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Викладач: " + GetTeacherName(teacherId) + ", Аудиторія: " + classroom;
                             }
-                            else
-                            {
-                                // Заповнення комірки з інформацією про пару
-                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
-                            }
+                            dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: "+GetSubjectName(subjectId) + "\nВикладач: " + GetTeacherName(teacherId) + "\nАудиторія: " + classroom;
+
                             dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
                         }
                         else
@@ -678,7 +670,7 @@ namespace Project2U
         }
 
         // Метод для завантаження персонального розкладу вчителя
-        private void LoadTeacherSchedule(string selectedDate, bool isNotify)
+        private void LoadTeacherSchedule(string selectedDate, bool IsNotify)
         {
             // Перевірка наявності бази даних
             if (string.IsNullOrEmpty(selectedDatabasePath))
@@ -743,14 +735,13 @@ namespace Project2U
                         // Перевірка, чи є інформація про пару
                         if (!string.IsNullOrEmpty(classroom))
                         {
-                            // Заповнення комірки з інформацією про пару
-                            if (isNotify) {
-                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value ="Предмет: "+ GetSubjectName(subjectId) +", Група: " + groupName + ", Аудиторія: " + classroom;
-                            }
-                            else
+                            if (IsNotify)
                             {
-                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = GetSubjectName(subjectId) + "\n" + groupName + "\n" + classroom;
+                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Група: " + groupName + ", Аудиторія: " + classroom;
                             }
+                            // Заповнення комірки з інформацією про пару
+                            dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value ="Предмет: "+ GetSubjectName(subjectId) +"\nГрупа: " + groupName + "\nАудиторія: " + classroom;
+
                             dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
 
                         }
@@ -812,7 +803,7 @@ namespace Project2U
             }
             else
             {
-                MessageBox.Show("Файл користувача не знайдено.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Файл користувача не знайдено. Будь ласка, заповніть форму.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
         }

@@ -1,4 +1,4 @@
-﻿namespace Project2U
+﻿namespace ScheduleUser
 {
     partial class Authorization
     {
@@ -42,19 +42,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(2, 9);
+            this.label1.Font = new System.Drawing.Font("Roboto", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(22, 27);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(237, 16);
+            this.label1.Size = new System.Drawing.Size(226, 18);
             this.label1.TabIndex = 0;
             this.label1.Text = "Зберігання даних користувача";
             // 
             // checkBoxTeacher
             // 
             this.checkBoxTeacher.AutoSize = true;
-            this.checkBoxTeacher.Location = new System.Drawing.Point(129, 56);
+            this.checkBoxTeacher.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkBoxTeacher.Location = new System.Drawing.Point(141, 74);
             this.checkBoxTeacher.Name = "checkBoxTeacher";
-            this.checkBoxTeacher.Size = new System.Drawing.Size(67, 17);
+            this.checkBoxTeacher.Size = new System.Drawing.Size(76, 19);
             this.checkBoxTeacher.TabIndex = 1;
             this.checkBoxTeacher.Text = "Вчитель";
             this.checkBoxTeacher.UseVisualStyleBackColor = true;
@@ -63,9 +64,10 @@
             // checkBoxStudent
             // 
             this.checkBoxStudent.AutoSize = true;
-            this.checkBoxStudent.Location = new System.Drawing.Point(57, 56);
+            this.checkBoxStudent.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkBoxStudent.Location = new System.Drawing.Point(59, 74);
             this.checkBoxStudent.Name = "checkBoxStudent";
-            this.checkBoxStudent.Size = new System.Drawing.Size(66, 17);
+            this.checkBoxStudent.Size = new System.Drawing.Size(75, 19);
             this.checkBoxStudent.TabIndex = 2;
             this.checkBoxStudent.Text = "Студент";
             this.checkBoxStudent.UseVisualStyleBackColor = true;
@@ -74,20 +76,20 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(75, 38);
+            this.label2.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(83, 53);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 15);
+            this.label2.Size = new System.Drawing.Size(109, 15);
             this.label2.TabIndex = 3;
             this.label2.Text = "Тип користувача";
             // 
             // buttonSave
             // 
-            this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonSave.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonSave.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.buttonSave.Location = new System.Drawing.Point(57, 140);
+            this.buttonSave.Location = new System.Drawing.Point(3, 166);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(130, 23);
+            this.buttonSave.Size = new System.Drawing.Size(125, 30);
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "Зберегти дані";
             this.buttonSave.UseVisualStyleBackColor = true;
@@ -95,11 +97,11 @@
             // 
             // buttonClear
             // 
-            this.buttonClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonClear.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonClear.ForeColor = System.Drawing.Color.Red;
-            this.buttonClear.Location = new System.Drawing.Point(57, 169);
+            this.buttonClear.Location = new System.Drawing.Point(128, 166);
             this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(130, 23);
+            this.buttonClear.Size = new System.Drawing.Size(125, 30);
             this.buttonClear.TabIndex = 5;
             this.buttonClear.Text = "Вийти з профілю";
             this.buttonClear.UseVisualStyleBackColor = true;
@@ -107,9 +109,10 @@
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(57, 87);
+            this.textBoxName.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBoxName.Location = new System.Drawing.Point(58, 105);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(130, 20);
+            this.textBoxName.Size = new System.Drawing.Size(158, 23);
             this.textBoxName.TabIndex = 6;
             this.textBoxName.Text = "Прізвище та Ім\'я";
             // 
@@ -120,22 +123,23 @@
             "21KI",
             "31KI",
             "41KI"});
+            this.comboBoxGroup.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBoxGroup.FormattingEnabled = true;
             this.comboBoxGroup.Items.AddRange(new object[] {
             "11KI",
             "21KI",
             "31KI",
             "41KI"});
-            this.comboBoxGroup.Location = new System.Drawing.Point(57, 113);
+            this.comboBoxGroup.Location = new System.Drawing.Point(58, 134);
             this.comboBoxGroup.Name = "comboBoxGroup";
-            this.comboBoxGroup.Size = new System.Drawing.Size(130, 21);
+            this.comboBoxGroup.Size = new System.Drawing.Size(158, 23);
             this.comboBoxGroup.TabIndex = 8;
             // 
             // buttonClose
             // 
             this.buttonClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonClose.ForeColor = System.Drawing.Color.Red;
-            this.buttonClose.Location = new System.Drawing.Point(214, 182);
+            this.buttonClose.Location = new System.Drawing.Point(232, 2);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(25, 25);
             this.buttonClose.TabIndex = 9;
@@ -147,7 +151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(241, 208);
+            this.ClientSize = new System.Drawing.Size(259, 209);
             this.ControlBox = false;
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.comboBoxGroup);
@@ -158,7 +162,13 @@
             this.Controls.Add(this.checkBoxStudent);
             this.Controls.Add(this.checkBoxTeacher);
             this.Controls.Add(this.label1);
+            this.FormStyle = MaterialSkin.Controls.MaterialForm.FormStyles.ActionBar_None;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Authorization";
+            this.Padding = new System.Windows.Forms.Padding(3, 24, 3, 3);
+            this.Sizable = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Форма входу";
             this.ResumeLayout(false);
             this.PerformLayout();

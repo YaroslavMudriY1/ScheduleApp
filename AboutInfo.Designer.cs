@@ -1,4 +1,4 @@
-﻿namespace ScheduleUser
+﻿namespace ScheduleAdmin
 {
     partial class AboutInfo
     {
@@ -47,9 +47,9 @@
             this.labelAbout.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelAbout.Location = new System.Drawing.Point(11, 71);
             this.labelAbout.Name = "labelAbout";
-            this.labelAbout.Size = new System.Drawing.Size(226, 15);
+            this.labelAbout.Size = new System.Drawing.Size(248, 15);
             this.labelAbout.TabIndex = 0;
-            this.labelAbout.Text = "Schedule v.0.9. Користувацька версія";
+            this.labelAbout.Text = "Schedule v.0.9. Адміністраторська версія";
             // 
             // buttonOK
             // 
@@ -143,7 +143,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::ScheduleUser.Properties.Resources.logo1;
+            this.pictureBox1.Image = global::ScheduleAdmin.Properties.Resources.logo;
             this.pictureBox1.Location = new System.Drawing.Point(413, 67);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(122, 124);

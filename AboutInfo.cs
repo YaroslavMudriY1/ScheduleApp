@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
-namespace ScheduleUser
+namespace ScheduleAdmin
 {
     public partial class AboutInfo : MaterialForm
     {
@@ -21,16 +21,15 @@ namespace ScheduleUser
             materialSkinManager.EnforceBackcolorOnAllComponents = false;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
-
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             Close();
         }
+
         private void labelGuide_Click(object sender, EventArgs e)
         {
-            // Створення та відображення нової форми дляперегляду гайду
             Guide guide = new Guide();
             guide.Show();
         }

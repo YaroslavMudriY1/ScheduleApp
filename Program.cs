@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
 
-namespace Project2
+namespace ScheduleAdmin
 {
     internal static class Program
     {
