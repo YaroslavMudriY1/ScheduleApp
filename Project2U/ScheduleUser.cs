@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Globalization.DateTimeFormatting;
-using MaterialSkin;
+using MaterialSkin; // Підключення пакету для покращення інтерфейсу
 using MaterialSkin.Controls;
 
 namespace ScheduleUser
@@ -63,7 +63,7 @@ namespace ScheduleUser
                 OpenDatabaseFile(recentlyOpenedDatabase);
             }
         }
-
+        // Зміна вигляду вкладок
         private void tabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();
@@ -143,7 +143,14 @@ namespace ScheduleUser
         {
             // Створення та відображення нової форми для зберігання даних користувача
             Authorization authorization = new Authorization();
+            authorization.AuthorizationClosed += Authorization_Closed; // Підписка на подію
+
             authorization.ShowDialog();
+        }
+
+        private void Authorization_Closed()
+        {
+            LoadPersonalSchedule(dateTimePicker1.Value.ToString("dd.MM.yyyy"), false);
         }
 
         //Ввімкнення/вимкнення сповіщень
@@ -236,7 +243,7 @@ namespace ScheduleUser
 
         }
 
-
+        //Іконка в треї
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             // Перевіряємо, чи вікно програми згорнуто

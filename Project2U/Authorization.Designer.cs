@@ -119,17 +119,17 @@
             // comboBoxGroup
             // 
             this.comboBoxGroup.AutoCompleteCustomSource.AddRange(new string[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.comboBoxGroup.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBoxGroup.FormattingEnabled = true;
             this.comboBoxGroup.Items.AddRange(new object[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.comboBoxGroup.Location = new System.Drawing.Point(58, 134);
             this.comboBoxGroup.Name = "comboBoxGroup";
             this.comboBoxGroup.Size = new System.Drawing.Size(158, 23);

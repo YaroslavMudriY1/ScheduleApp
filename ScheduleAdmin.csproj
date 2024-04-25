@@ -26,7 +26,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -94,6 +94,9 @@
     <Compile Include="Guide.Designer.cs">
       <DependentUpon>Guide.cs</DependentUpon>
     </Compile>
+    <Compile Include="Schedule.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ScheduleAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +145,9 @@
     <PackageReference Include="MaterialSkin.2">
       <Version>2.3.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Office.Interop.Excel">
+      <Version>15.0.4795.1001</Version>
+    </PackageReference>
     <PackageReference Include="SQLite">
       <Version>3.13.0</Version>
     </PackageReference>
@@ -159,6 +165,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Guide.html" />
     <Content Include="logo.ico" />
   </ItemGroup>
   <ItemGroup>

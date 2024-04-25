@@ -365,10 +365,10 @@ namespace ScheduleUser
             // textBoxGroupSearch
             // 
             this.textBoxGroupSearch.AutoCompleteCustomSource.AddRange(new string[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.textBoxGroupSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxGroupSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxGroupSearch.Location = new System.Drawing.Point(22, 75);

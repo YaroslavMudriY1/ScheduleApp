@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutInfo));
             this.labelAbout = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.labelAboutProgram1 = new System.Windows.Forms.Label();
@@ -169,6 +170,7 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.labelAbout);
             this.Font = new System.Drawing.Font("Roboto", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutInfo";

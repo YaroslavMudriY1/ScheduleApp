@@ -87,6 +87,8 @@
             this.обратиФайлБазиДанихToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.нещодавноВідкритіToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.зберегтиЯкToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.експортВToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.excelxlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.очиститиФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.створитиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.переглянутиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -247,6 +249,14 @@
             // 
             // comboBoxAddLesson
             // 
+            this.comboBoxAddLesson.AutoCompleteCustomSource.AddRange(new string[] {
+            "Перша пара",
+            "Друга пара",
+            "Третя пара",
+            "Четверта пара",
+            "П\'ята пара",
+            "Шоста пара"});
+            this.comboBoxAddLesson.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.comboBoxAddLesson.FormattingEnabled = true;
             this.comboBoxAddLesson.Items.AddRange(new object[] {
             "Перша пара",
@@ -364,10 +374,10 @@
             // textBoxAddGroup
             // 
             this.textBoxAddGroup.AutoCompleteCustomSource.AddRange(new string[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.textBoxAddGroup.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxAddGroup.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxAddGroup.Location = new System.Drawing.Point(21, 88);
@@ -453,7 +463,8 @@
             "Друга пара",
             "Третя пара",
             "Четверта пара",
-            "П\'ята пара"});
+            "П\'ята пара",
+            "Шоста пара"});
             this.comboBoxDeleteLesson.Location = new System.Drawing.Point(164, 88);
             this.comboBoxDeleteLesson.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxDeleteLesson.Name = "comboBoxDeleteLesson";
@@ -498,10 +509,10 @@
             // textBoxDeleteGroup
             // 
             this.textBoxDeleteGroup.AutoCompleteCustomSource.AddRange(new string[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.textBoxDeleteGroup.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxDeleteGroup.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxDeleteGroup.Location = new System.Drawing.Point(18, 88);
@@ -670,10 +681,10 @@
             // textBoxGroupSearch
             // 
             this.textBoxGroupSearch.AutoCompleteCustomSource.AddRange(new string[] {
-            "11KI",
-            "21KI",
-            "31KI",
-            "41KI"});
+            "11КІ",
+            "21КІ",
+            "31КІ",
+            "41КІ"});
             this.textBoxGroupSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxGroupSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxGroupSearch.Location = new System.Drawing.Point(21, 88);
@@ -730,7 +741,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(3, 64);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(884, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(880, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -740,6 +751,7 @@
             this.обратиФайлБазиДанихToolStripMenuItem,
             this.нещодавноВідкритіToolStripMenuItem,
             this.зберегтиЯкToolStripMenuItem,
+            this.експортВToolStripMenuItem,
             this.очиститиФайлToolStripMenuItem,
             this.очиститиФайлToolStripMenuItem1});
             this.опціїToolStripMenuItem.Name = "опціїToolStripMenuItem";
@@ -765,6 +777,21 @@
             this.зберегтиЯкToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.зберегтиЯкToolStripMenuItem.Text = "Зберегти як...";
             this.зберегтиЯкToolStripMenuItem.Click += new System.EventHandler(this.зберегтиЯкToolStripMenuItem_Click);
+            // 
+            // експортВToolStripMenuItem
+            // 
+            this.експортВToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.excelxlsToolStripMenuItem});
+            this.експортВToolStripMenuItem.Name = "експортВToolStripMenuItem";
+            this.експортВToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.експортВToolStripMenuItem.Text = "Експорт в...";
+            // 
+            // excelxlsToolStripMenuItem
+            // 
+            this.excelxlsToolStripMenuItem.Name = "excelxlsToolStripMenuItem";
+            this.excelxlsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.excelxlsToolStripMenuItem.Text = "Excel (.xls)";
+            this.excelxlsToolStripMenuItem.Click += new System.EventHandler(this.excelxlsToolStripMenuItem_Click);
             // 
             // очиститиФайлToolStripMenuItem
             // 
@@ -833,7 +860,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(890, 480);
+            this.ClientSize = new System.Drawing.Size(886, 486);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -844,6 +871,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximizeBox = false;
             this.Name = "Schedule";
+            this.Sizable = false;
             this.Text = "Розклад: Адміністратор";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabControl1.ResumeLayout(false);
@@ -929,6 +957,8 @@
         private System.Windows.Forms.ToolStripMenuItem нещодавноВідкритіToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem проПрограмуToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem гайдКористуванняToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem експортВToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem excelxlsToolStripMenuItem;
     }
 }
 

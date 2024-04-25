@@ -8,6 +8,9 @@ namespace ScheduleUser
 {
     public partial class Authorization : MaterialForm
     {
+        public delegate void AuthorizationClosedEventHandler();
+        public event AuthorizationClosedEventHandler AuthorizationClosed;
+
         private readonly string configFilePath = "userProfile.xml";
         public Authorization()
         {
@@ -37,7 +40,7 @@ namespace ScheduleUser
 
             // Збереження об'єкту користувача в XML файл
             SaveUserProfile(user);
-
+            AuthorizationClosed?.Invoke(); // Викликаємо подію при закритті форми
             this.Close();
 
         }
