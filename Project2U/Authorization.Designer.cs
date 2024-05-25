@@ -114,7 +114,6 @@
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(158, 23);
             this.textBoxName.TabIndex = 6;
-            this.textBoxName.Text = "Прізвище та Ім\'я";
             // 
             // comboBoxGroup
             // 

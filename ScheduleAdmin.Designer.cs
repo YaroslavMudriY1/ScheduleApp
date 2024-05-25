@@ -89,16 +89,21 @@
             this.зберегтиЯкToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.експортВToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.excelxlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.очиститиФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.резервнаКопіяToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.створитиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.переглянутиРезервнуКопіюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.очиститиФайлToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.очиститиФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.налаштуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.довідкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.проПрограмуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.гайдКористуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.переглядЗаписівToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.додаванняЗаписівToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.вийтиЗПрограмиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPageCheckSchedule.SuspendLayout();
@@ -109,6 +114,7 @@
             this.tabPageSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -132,6 +138,7 @@
             this.tabControl1.Controls.Add(this.tabPageAdd);
             this.tabControl1.Controls.Add(this.tabPageDelete);
             this.tabControl1.Controls.Add(this.tabPageSearch);
+            this.tabControl1.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabControl1.Location = new System.Drawing.Point(2, 87);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControl1.Name = "tabControl1";
@@ -144,11 +151,11 @@
             this.tabPageCheckSchedule.Controls.Add(this.dateTimePicker3);
             this.tabPageCheckSchedule.Controls.Add(this.dataGridView3);
             this.tabPageCheckSchedule.Controls.Add(this.buttonCheckSchedule3);
-            this.tabPageCheckSchedule.Location = new System.Drawing.Point(4, 23);
+            this.tabPageCheckSchedule.Location = new System.Drawing.Point(4, 24);
             this.tabPageCheckSchedule.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageCheckSchedule.Name = "tabPageCheckSchedule";
             this.tabPageCheckSchedule.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageCheckSchedule.Size = new System.Drawing.Size(893, 401);
+            this.tabPageCheckSchedule.Size = new System.Drawing.Size(893, 400);
             this.tabPageCheckSchedule.TabIndex = 2;
             this.tabPageCheckSchedule.Text = "Перегляд записів";
             this.tabPageCheckSchedule.UseVisualStyleBackColor = true;
@@ -210,11 +217,11 @@
             this.tabPageAdd.Controls.Add(this.label1);
             this.tabPageAdd.Controls.Add(this.buttonCheckSchedule1);
             this.tabPageAdd.Controls.Add(this.dataGridView1);
-            this.tabPageAdd.Location = new System.Drawing.Point(4, 23);
+            this.tabPageAdd.Location = new System.Drawing.Point(4, 24);
             this.tabPageAdd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageAdd.Name = "tabPageAdd";
             this.tabPageAdd.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageAdd.Size = new System.Drawing.Size(893, 401);
+            this.tabPageAdd.Size = new System.Drawing.Size(893, 400);
             this.tabPageAdd.TabIndex = 0;
             this.tabPageAdd.Text = "Додавання записів";
             this.tabPageAdd.UseVisualStyleBackColor = true;
@@ -224,7 +231,7 @@
             this.dateTimePickerAdd.Location = new System.Drawing.Point(150, 219);
             this.dateTimePickerAdd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dateTimePickerAdd.Name = "dateTimePickerAdd";
-            this.dateTimePickerAdd.Size = new System.Drawing.Size(151, 22);
+            this.dateTimePickerAdd.Size = new System.Drawing.Size(151, 23);
             this.dateTimePickerAdd.TabIndex = 18;
             // 
             // dateTimePicker1
@@ -243,7 +250,7 @@
             this.label7.Location = new System.Drawing.Point(147, 199);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(36, 14);
+            this.label7.Size = new System.Drawing.Size(39, 15);
             this.label7.TabIndex = 15;
             this.label7.Text = "День";
             // 
@@ -268,7 +275,7 @@
             this.comboBoxAddLesson.Location = new System.Drawing.Point(21, 218);
             this.comboBoxAddLesson.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxAddLesson.Name = "comboBoxAddLesson";
-            this.comboBoxAddLesson.Size = new System.Drawing.Size(116, 22);
+            this.comboBoxAddLesson.Size = new System.Drawing.Size(116, 23);
             this.comboBoxAddLesson.TabIndex = 14;
             // 
             // buttonAddData
@@ -290,7 +297,7 @@
             this.label6.Location = new System.Drawing.Point(18, 199);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(119, 14);
+            this.label6.Size = new System.Drawing.Size(125, 15);
             this.label6.TabIndex = 12;
             this.label6.Text = "Пара за розкладом";
             // 
@@ -300,7 +307,7 @@
             this.label5.Location = new System.Drawing.Point(18, 131);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 14);
+            this.label5.Size = new System.Drawing.Size(67, 15);
             this.label5.TabIndex = 10;
             this.label5.Text = "Аудиторія";
             // 
@@ -309,7 +316,7 @@
             this.textBoxAddClassroom.Location = new System.Drawing.Point(21, 149);
             this.textBoxAddClassroom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAddClassroom.Name = "textBoxAddClassroom";
-            this.textBoxAddClassroom.Size = new System.Drawing.Size(116, 22);
+            this.textBoxAddClassroom.Size = new System.Drawing.Size(116, 23);
             this.textBoxAddClassroom.TabIndex = 9;
             // 
             // label4
@@ -318,7 +325,7 @@
             this.label4.Location = new System.Drawing.Point(163, 131);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(62, 14);
+            this.label4.Size = new System.Drawing.Size(67, 15);
             this.label4.TabIndex = 8;
             this.label4.Text = "Викладач";
             // 
@@ -334,7 +341,7 @@
             this.textBoxAddTeacher.Location = new System.Drawing.Point(150, 149);
             this.textBoxAddTeacher.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAddTeacher.Name = "textBoxAddTeacher";
-            this.textBoxAddTeacher.Size = new System.Drawing.Size(151, 22);
+            this.textBoxAddTeacher.Size = new System.Drawing.Size(151, 23);
             this.textBoxAddTeacher.TabIndex = 7;
             // 
             // label3
@@ -343,7 +350,7 @@
             this.label3.Location = new System.Drawing.Point(147, 71);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 14);
+            this.label3.Size = new System.Drawing.Size(106, 15);
             this.label3.TabIndex = 6;
             this.label3.Text = "Назва предмету";
             // 
@@ -358,7 +365,7 @@
             this.textBoxAddSubject.Location = new System.Drawing.Point(150, 88);
             this.textBoxAddSubject.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAddSubject.Name = "textBoxAddSubject";
-            this.textBoxAddSubject.Size = new System.Drawing.Size(151, 22);
+            this.textBoxAddSubject.Size = new System.Drawing.Size(151, 23);
             this.textBoxAddSubject.TabIndex = 5;
             // 
             // label2
@@ -367,7 +374,7 @@
             this.label2.Location = new System.Drawing.Point(18, 71);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 14);
+            this.label2.Size = new System.Drawing.Size(49, 15);
             this.label2.TabIndex = 4;
             this.label2.Text = "Группа";
             // 
@@ -383,7 +390,7 @@
             this.textBoxAddGroup.Location = new System.Drawing.Point(21, 88);
             this.textBoxAddGroup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxAddGroup.Name = "textBoxAddGroup";
-            this.textBoxAddGroup.Size = new System.Drawing.Size(116, 22);
+            this.textBoxAddGroup.Size = new System.Drawing.Size(116, 23);
             this.textBoxAddGroup.TabIndex = 3;
             // 
             // label1
@@ -422,11 +429,11 @@
             this.tabPageDelete.Controls.Add(this.label14);
             this.tabPageDelete.Controls.Add(this.buttonCheckSchedule2);
             this.tabPageDelete.Controls.Add(this.dataGridView2);
-            this.tabPageDelete.Location = new System.Drawing.Point(4, 23);
+            this.tabPageDelete.Location = new System.Drawing.Point(4, 24);
             this.tabPageDelete.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageDelete.Name = "tabPageDelete";
             this.tabPageDelete.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageDelete.Size = new System.Drawing.Size(893, 401);
+            this.tabPageDelete.Size = new System.Drawing.Size(893, 400);
             this.tabPageDelete.TabIndex = 1;
             this.tabPageDelete.Text = "Видалення записів";
             this.tabPageDelete.UseVisualStyleBackColor = true;
@@ -468,7 +475,7 @@
             this.comboBoxDeleteLesson.Location = new System.Drawing.Point(164, 88);
             this.comboBoxDeleteLesson.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.comboBoxDeleteLesson.Name = "comboBoxDeleteLesson";
-            this.comboBoxDeleteLesson.Size = new System.Drawing.Size(140, 22);
+            this.comboBoxDeleteLesson.Size = new System.Drawing.Size(140, 23);
             this.comboBoxDeleteLesson.TabIndex = 32;
             // 
             // buttonDeleteEntry
@@ -518,7 +525,7 @@
             this.textBoxDeleteGroup.Location = new System.Drawing.Point(18, 88);
             this.textBoxDeleteGroup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxDeleteGroup.Name = "textBoxDeleteGroup";
-            this.textBoxDeleteGroup.Size = new System.Drawing.Size(140, 22);
+            this.textBoxDeleteGroup.Size = new System.Drawing.Size(140, 23);
             this.textBoxDeleteGroup.TabIndex = 22;
             // 
             // label14
@@ -575,11 +582,11 @@
             this.tabPageSearch.Controls.Add(this.label15);
             this.tabPageSearch.Controls.Add(this.buttonCheckSchedule4);
             this.tabPageSearch.Controls.Add(this.dataGridView4);
-            this.tabPageSearch.Location = new System.Drawing.Point(4, 23);
+            this.tabPageSearch.Location = new System.Drawing.Point(4, 24);
             this.tabPageSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageSearch.Name = "tabPageSearch";
             this.tabPageSearch.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.tabPageSearch.Size = new System.Drawing.Size(893, 401);
+            this.tabPageSearch.Size = new System.Drawing.Size(893, 400);
             this.tabPageSearch.TabIndex = 3;
             this.tabPageSearch.Text = "Фільтрація записів";
             this.tabPageSearch.UseVisualStyleBackColor = true;
@@ -613,7 +620,7 @@
             this.label8.Location = new System.Drawing.Point(18, 131);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(65, 14);
+            this.label8.Size = new System.Drawing.Size(67, 15);
             this.label8.TabIndex = 28;
             this.label8.Text = "Аудиторія";
             // 
@@ -622,7 +629,7 @@
             this.textBoxClassroomSearch.Location = new System.Drawing.Point(21, 149);
             this.textBoxClassroomSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxClassroomSearch.Name = "textBoxClassroomSearch";
-            this.textBoxClassroomSearch.Size = new System.Drawing.Size(116, 22);
+            this.textBoxClassroomSearch.Size = new System.Drawing.Size(116, 23);
             this.textBoxClassroomSearch.TabIndex = 27;
             // 
             // label10
@@ -631,7 +638,7 @@
             this.label10.Location = new System.Drawing.Point(147, 132);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(62, 14);
+            this.label10.Size = new System.Drawing.Size(67, 15);
             this.label10.TabIndex = 26;
             this.label10.Text = "Викладач";
             // 
@@ -647,7 +654,7 @@
             this.textBoxTeacherSearch.Location = new System.Drawing.Point(150, 149);
             this.textBoxTeacherSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxTeacherSearch.Name = "textBoxTeacherSearch";
-            this.textBoxTeacherSearch.Size = new System.Drawing.Size(151, 22);
+            this.textBoxTeacherSearch.Size = new System.Drawing.Size(151, 23);
             this.textBoxTeacherSearch.TabIndex = 25;
             // 
             // label11
@@ -656,7 +663,7 @@
             this.label11.Location = new System.Drawing.Point(147, 71);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(100, 14);
+            this.label11.Size = new System.Drawing.Size(106, 15);
             this.label11.TabIndex = 24;
             this.label11.Text = "Назва предмету";
             // 
@@ -665,7 +672,7 @@
             this.textBoxSubjectSearch.Location = new System.Drawing.Point(150, 88);
             this.textBoxSubjectSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxSubjectSearch.Name = "textBoxSubjectSearch";
-            this.textBoxSubjectSearch.Size = new System.Drawing.Size(151, 22);
+            this.textBoxSubjectSearch.Size = new System.Drawing.Size(151, 23);
             this.textBoxSubjectSearch.TabIndex = 23;
             // 
             // label12
@@ -674,7 +681,7 @@
             this.label12.Location = new System.Drawing.Point(18, 71);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(47, 14);
+            this.label12.Size = new System.Drawing.Size(49, 15);
             this.label12.TabIndex = 22;
             this.label12.Text = "Группа";
             // 
@@ -690,7 +697,7 @@
             this.textBoxGroupSearch.Location = new System.Drawing.Point(21, 88);
             this.textBoxGroupSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxGroupSearch.Name = "textBoxGroupSearch";
-            this.textBoxGroupSearch.Size = new System.Drawing.Size(116, 22);
+            this.textBoxGroupSearch.Size = new System.Drawing.Size(116, 23);
             this.textBoxGroupSearch.TabIndex = 21;
             // 
             // label15
@@ -734,14 +741,15 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.menuStrip1.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.опціїToolStripMenuItem,
+            this.налаштуванняToolStripMenuItem,
             this.довідкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(3, 64);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(880, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(882, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -752,29 +760,29 @@
             this.нещодавноВідкритіToolStripMenuItem,
             this.зберегтиЯкToolStripMenuItem,
             this.експортВToolStripMenuItem,
-            this.очиститиФайлToolStripMenuItem,
-            this.очиститиФайлToolStripMenuItem1});
+            this.резервнаКопіяToolStripMenuItem,
+            this.очиститиФайлToolStripMenuItem});
             this.опціїToolStripMenuItem.Name = "опціїToolStripMenuItem";
-            this.опціїToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.опціїToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.опціїToolStripMenuItem.Text = "Файл";
             // 
             // обратиФайлБазиДанихToolStripMenuItem
             // 
             this.обратиФайлБазиДанихToolStripMenuItem.Name = "обратиФайлБазиДанихToolStripMenuItem";
-            this.обратиФайлБазиДанихToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.обратиФайлБазиДанихToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.обратиФайлБазиДанихToolStripMenuItem.Text = "Обрати файл";
             this.обратиФайлБазиДанихToolStripMenuItem.Click += new System.EventHandler(this.обратиФайлБазиДанихToolStripMenuItem_Click);
             // 
             // нещодавноВідкритіToolStripMenuItem
             // 
             this.нещодавноВідкритіToolStripMenuItem.Name = "нещодавноВідкритіToolStripMenuItem";
-            this.нещодавноВідкритіToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.нещодавноВідкритіToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.нещодавноВідкритіToolStripMenuItem.Text = "Нещодавно відкриті";
             // 
             // зберегтиЯкToolStripMenuItem
             // 
             this.зберегтиЯкToolStripMenuItem.Name = "зберегтиЯкToolStripMenuItem";
-            this.зберегтиЯкToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.зберегтиЯкToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.зберегтиЯкToolStripMenuItem.Text = "Зберегти як...";
             this.зберегтиЯкToolStripMenuItem.Click += new System.EventHandler(this.зберегтиЯкToolStripMenuItem_Click);
             // 
@@ -783,45 +791,52 @@
             this.експортВToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.excelxlsToolStripMenuItem});
             this.експортВToolStripMenuItem.Name = "експортВToolStripMenuItem";
-            this.експортВToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.експортВToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.експортВToolStripMenuItem.Text = "Експорт в...";
             // 
             // excelxlsToolStripMenuItem
             // 
             this.excelxlsToolStripMenuItem.Name = "excelxlsToolStripMenuItem";
-            this.excelxlsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-            this.excelxlsToolStripMenuItem.Text = "Excel (.xls)";
+            this.excelxlsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.excelxlsToolStripMenuItem.Text = "Excel (.xlsx)";
             this.excelxlsToolStripMenuItem.Click += new System.EventHandler(this.excelxlsToolStripMenuItem_Click);
             // 
-            // очиститиФайлToolStripMenuItem
+            // резервнаКопіяToolStripMenuItem
             // 
-            this.очиститиФайлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.резервнаКопіяToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.створитиРезервнуКопіюToolStripMenuItem,
             this.переглянутиРезервнуКопіюToolStripMenuItem});
-            this.очиститиФайлToolStripMenuItem.Name = "очиститиФайлToolStripMenuItem";
-            this.очиститиФайлToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.очиститиФайлToolStripMenuItem.Text = "Резервна копія";
+            this.резервнаКопіяToolStripMenuItem.Name = "резервнаКопіяToolStripMenuItem";
+            this.резервнаКопіяToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.резервнаКопіяToolStripMenuItem.Text = "Резервна копія";
             // 
             // створитиРезервнуКопіюToolStripMenuItem
             // 
             this.створитиРезервнуКопіюToolStripMenuItem.Name = "створитиРезервнуКопіюToolStripMenuItem";
-            this.створитиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.створитиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
             this.створитиРезервнуКопіюToolStripMenuItem.Text = "Створити резервну копію";
             this.створитиРезервнуКопіюToolStripMenuItem.Click += new System.EventHandler(this.створитиРезервнуКопіюToolStripMenuItem_Click);
             // 
             // переглянутиРезервнуКопіюToolStripMenuItem
             // 
             this.переглянутиРезервнуКопіюToolStripMenuItem.Name = "переглянутиРезервнуКопіюToolStripMenuItem";
-            this.переглянутиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.переглянутиРезервнуКопіюToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
             this.переглянутиРезервнуКопіюToolStripMenuItem.Text = "Переглянути резервну копію";
             this.переглянутиРезервнуКопіюToolStripMenuItem.Click += new System.EventHandler(this.переглянутиРезервнуКопіюToolStripMenuItem_Click);
             // 
-            // очиститиФайлToolStripMenuItem1
+            // очиститиФайлToolStripMenuItem
             // 
-            this.очиститиФайлToolStripMenuItem1.Name = "очиститиФайлToolStripMenuItem1";
-            this.очиститиФайлToolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
-            this.очиститиФайлToolStripMenuItem1.Text = "Очистити файл";
-            this.очиститиФайлToolStripMenuItem1.Click += new System.EventHandler(this.очиститиФайлToolStripMenuItem1_Click);
+            this.очиститиФайлToolStripMenuItem.Name = "очиститиФайлToolStripMenuItem";
+            this.очиститиФайлToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.очиститиФайлToolStripMenuItem.Text = "Очистити файл";
+            this.очиститиФайлToolStripMenuItem.Click += new System.EventHandler(this.очиститиФайлToolStripMenuItem_Click);
+            // 
+            // налаштуванняToolStripMenuItem
+            // 
+            this.налаштуванняToolStripMenuItem.Name = "налаштуванняToolStripMenuItem";
+            this.налаштуванняToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
+            this.налаштуванняToolStripMenuItem.Text = "Налаштування";
+            this.налаштуванняToolStripMenuItem.Click += new System.EventHandler(this.налаштуванняToolStripMenuItem_Click);
             // 
             // довідкаToolStripMenuItem
             // 
@@ -829,20 +844,20 @@
             this.проПрограмуToolStripMenuItem,
             this.гайдКористуванняToolStripMenuItem});
             this.довідкаToolStripMenuItem.Name = "довідкаToolStripMenuItem";
-            this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.довідкаToolStripMenuItem.Text = "Довідка";
             // 
             // проПрограмуToolStripMenuItem
             // 
             this.проПрограмуToolStripMenuItem.Name = "проПрограмуToolStripMenuItem";
-            this.проПрограмуToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.проПрограмуToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.проПрограмуToolStripMenuItem.Text = "Про програму";
             this.проПрограмуToolStripMenuItem.Click += new System.EventHandler(this.проПрограмуToolStripMenuItem_Click);
             // 
             // гайдКористуванняToolStripMenuItem
             // 
             this.гайдКористуванняToolStripMenuItem.Name = "гайдКористуванняToolStripMenuItem";
-            this.гайдКористуванняToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.гайдКористуванняToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.гайдКористуванняToolStripMenuItem.Text = "Гайд користування";
             this.гайдКористуванняToolStripMenuItem.Click += new System.EventHandler(this.гайдКористуванняToolStripMenuItem_Click);
             // 
@@ -852,15 +867,47 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "Розклад: Адмін";
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.переглядЗаписівToolStripMenuItem,
+            this.додаванняЗаписівToolStripMenuItem,
+            this.вийтиЗПрограмиToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 70);
+            // 
+            // переглядЗаписівToolStripMenuItem
+            // 
+            this.переглядЗаписівToolStripMenuItem.Name = "переглядЗаписівToolStripMenuItem";
+            this.переглядЗаписівToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.переглядЗаписівToolStripMenuItem.Text = "Перегляд записів";
+            this.переглядЗаписівToolStripMenuItem.Click += new System.EventHandler(this.переглядЗаписівToolStripMenuItem_Click);
+            // 
+            // додаванняЗаписівToolStripMenuItem
+            // 
+            this.додаванняЗаписівToolStripMenuItem.Name = "додаванняЗаписівToolStripMenuItem";
+            this.додаванняЗаписівToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.додаванняЗаписівToolStripMenuItem.Text = "Додавання записів";
+            this.додаванняЗаписівToolStripMenuItem.Click += new System.EventHandler(this.додаванняЗаписівToolStripMenuItem_Click);
+            // 
+            // вийтиЗПрограмиToolStripMenuItem
+            // 
+            this.вийтиЗПрограмиToolStripMenuItem.Name = "вийтиЗПрограмиToolStripMenuItem";
+            this.вийтиЗПрограмиToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.вийтиЗПрограмиToolStripMenuItem.Text = "Вийти з програми";
+            this.вийтиЗПрограмиToolStripMenuItem.Click += new System.EventHandler(this.вийтиЗПрограмиToolStripMenuItem_Click);
             // 
             // Schedule
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(886, 486);
+            this.ClientSize = new System.Drawing.Size(888, 480);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -887,6 +934,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -946,8 +994,8 @@
         private System.Windows.Forms.ToolStripMenuItem опціїToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem довідкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem обратиФайлБазиДанихToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem резервнаКопіяToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem очиститиФайлToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem очиститиФайлToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem створитиРезервнуКопіюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem переглянутиРезервнуКопіюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem зберегтиЯкToolStripMenuItem;
@@ -959,6 +1007,11 @@
         private System.Windows.Forms.ToolStripMenuItem гайдКористуванняToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem експортВToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem excelxlsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem налаштуванняToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem переглядЗаписівToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem додаванняЗаписівToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem вийтиЗПрограмиToolStripMenuItem;
     }
 }
 

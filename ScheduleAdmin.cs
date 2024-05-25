@@ -23,12 +23,48 @@ namespace ScheduleAdmin
         public Schedule()
         {
             InitializeComponent();
+            LoadSettings();
             // Завантаження списку нещодавно відкритих файлів при запуску програми
-            LoadRecentFilesOnStartup();
+            LoadRecentFilesOnStartup();            
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.EnforceBackcolorOnAllComponents = false;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
+           
+            if (trayIcon)
+            {
+                notifyIcon1.Visible = true;
+            }
+            // Перевірка наявності останньої використаної бази даних
+            if (recentlyOpenedFiles.Count == 0 || string.IsNullOrEmpty(recentlyOpenedFiles[0]))
+            {
+                // Якщо остання база даних відсутня, виводимо повідомлення та пропонуємо користувачеві вибрати файл
+                DialogResult result = MessageBox.Show("Відсутній файл останньої використаної бази даних. Будь ласка, оберіть файл для відкриття.", "Повідомлення", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+
+                if (result == DialogResult.OK)
+                {
+                    // Виклик вікна відкриття файла бази даних
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "SQL DB files(*.db)|*.db";
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedDatabasePath = openFileDialog.FileName;
+                        OpenDatabaseFile(selectedDatabasePath);
+                        UpdateConnectionString(); // Оновлюємо значення підключення до бази даних
+                        CheckBackupFolderExists();
+                    }
+                }
+            }
+            else
+            {
+                if (autoLastConnected)
+                {
+                    // Якщо є остання база даних, відкриваємо її автоматично
+                    OpenDatabaseFile(recentlyOpenedFiles[0]);
+                    CheckBackupFolderExists();
+                }
+            }
+           
         }
 
         private void buttonCheckSchedule1_Click(object sender, EventArgs e)
@@ -91,8 +127,10 @@ namespace ScheduleAdmin
             string teacherName = textBoxAddTeacher.Text;
             string classroom = textBoxAddClassroom.Text;
             string selectedDate = dateTimePickerAdd.Value.ToString("dd.MM.yyyy");
-            string timeStart = GetTimeStartFromPair(comboBoxAddLesson.Text);
-            string timeEnd = GetTimeEndFromPair(comboBoxAddLesson.Text);
+            string pair = comboBoxAddLesson.Text;
+            string timeStart = GetTimeStartFromPair(pair);
+            string timeEnd = GetTimeEndFromPair(pair);
+            int pairIndex = GetPairIndex(pair);
 
             // Перевірка і додавання нової групи, якщо вона не існує
             CheckAndAddGroup(groupName);
@@ -104,7 +142,7 @@ namespace ScheduleAdmin
             CheckAndAddTeacher(teacherName);
 
             // Перевірка наявності запису в таблиці Schedule для заданої групи та пари за розкладом
-            bool recordExists = CheckIfRecordExists(groupName, selectedDate, timeStart);
+            bool recordExists = CheckIfRecordExists(groupName, selectedDate, pairIndex);
 
             if (recordExists)
             {
@@ -115,13 +153,26 @@ namespace ScheduleAdmin
                 {
                     return;
                 }
+                // Якщо користувач погоджується, видалити існуючий запис
+                string deleteQuery = "DELETE FROM Schedule WHERE group_id = (SELECT group_id FROM Groups WHERE group_name = @groupName) " +
+                                     "AND date = @selectedDate AND time_start = @timeStart";
+                using (SQLiteCommand deleteCommand = new SQLiteCommand(deleteQuery, connection))
+                {
+                    deleteCommand.Parameters.AddWithValue("@groupName", groupName);
+                    deleteCommand.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    deleteCommand.Parameters.AddWithValue("@timeStart", timeStart);
+                    connection.Open();
+                    deleteCommand.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
 
             // Додавання нового рядка до таблиці Schedule
-            string query = "INSERT INTO Schedule (group_id, subject_id, teacher_id, classroom, date, time_start, time_end) " +
-                               "VALUES (@group_id, @subject_id, @teacher_id, @classroom, @date, @time_start, @time_end)";
+            string query = "INSERT INTO Schedule (group_id, subject_id, teacher_id, classroom, date, time_start, time_end, pair_index) " +
+                           "VALUES (@group_id, @subject_id, @teacher_id, @classroom, @date, @time_start, @time_end, @pair_index)";
             using (SQLiteCommand command = new SQLiteCommand(query, connection))
-            {                // Отримання group_id для введеної назви групи
+            {
+                // Отримання group_id для введеної назви групи
                 int groupId = GetGroupId(groupName);
 
                 // Отримання subject_id для введеної назви предмету
@@ -137,6 +188,7 @@ namespace ScheduleAdmin
                 command.Parameters.AddWithValue("@date", selectedDate);
                 command.Parameters.AddWithValue("@time_start", timeStart);
                 command.Parameters.AddWithValue("@time_end", timeEnd);
+                command.Parameters.AddWithValue("@pair_index", pairIndex);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -144,8 +196,9 @@ namespace ScheduleAdmin
             }
 
             MessageBox.Show("Дані успішно додано до бази даних.");
-            LoadDataFromDatabase(dateTimePickerAdd, dataGridView1); //Використання функції з наданням вихідних об'єктів в аргументів
+            LoadDataFromDatabase(dateTimePickerAdd, dataGridView1);
         }
+
 
         //Вкладка видалення записів
         private void buttonDeleteEntry_Click(object sender, EventArgs e)
@@ -163,11 +216,11 @@ namespace ScheduleAdmin
             // Отримання значень з полів вибору
             string groupName = textBoxDeleteGroup.Text;
             string selectedDate = dateTimePicker2.Value.ToString("dd.MM.yyyy");
-            string timeStart = GetTimeStartFromPair(comboBoxDeleteLesson.Text);
+            int pairIndex = GetPairIndex(comboBoxDeleteLesson.Text);
 
             // Складання SQL-запиту для видалення записів
             string query = "DELETE FROM Schedule WHERE group_id = (SELECT group_id FROM Groups WHERE group_name = @groupName) " +
-                           "AND date = @selectedDate AND time_start = @timeStart";
+                           "AND date = @selectedDate AND pair_index = @pairIndex";
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -176,7 +229,7 @@ namespace ScheduleAdmin
                 {
                     command.Parameters.AddWithValue("@groupName", groupName);
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
-                    command.Parameters.AddWithValue("@timeStart", timeStart);
+                    command.Parameters.AddWithValue("@pairIndex", pairIndex);
 
                     // Виконання SQL-запиту для видалення записів
                     int rowsAffected = command.ExecuteNonQuery();
@@ -241,7 +294,7 @@ namespace ScheduleAdmin
             LoadDataFromDatabase(dateTimePicker4, dataGridView4);
         }
 
-        //Функції кнопоку меню
+        // Дії кнопок у меню
         // Вибір і відкриття файлу бази даних
         private void обратиФайлБазиДанихToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -252,9 +305,93 @@ namespace ScheduleAdmin
                 OpenDatabaseFile(selectedFilePath);
             }
         }
+        //Зберегти базу даних як окремий файл
+        private void зберегтиЯкToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // Вибір шляху та імені для збереження бази даних
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "SQL DB files(*.db)|*.db";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Копіювання поточного файлу бази даних за обраний шлях та ім'я
+                string sourcePath = selectedDatabasePath;
+                string destinationPath = saveFileDialog.FileName;
+                File.Copy(sourcePath, destinationPath, true);
+                MessageBox.Show("Базу даних успішно збережено.", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        //Створення резервної копії в папці з базою даних
+        private void створитиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевірка, чи обрано файл бази даних
+            if (!string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                try
+                {
+                    // Визначення шляху до папки з резервними копіями
+                    string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
+
+                    // Створення папки для резервних копій, якщо вона не існує
+                    if (!Directory.Exists(backupFolderPath))
+                    {
+                        Directory.CreateDirectory(backupFolderPath);
+                    }
+
+                    // Формування нового шляху для резервної копії
+                    string backupFileName = Path.GetFileNameWithoutExtension(selectedDatabasePath) + "_backup.db";
+                    string backupFilePath = Path.Combine(backupFolderPath, backupFileName);
+
+                    // Копіювання файлу бази даних у папку з резервними копіями
+                    File.Copy(selectedDatabasePath, backupFilePath, true);
+
+                    MessageBox.Show("Резервна копія створена успішно.", "Створення резервної копії", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    резервнаКопіяToolStripMenuItem.Checked = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Сталася помилка при створенні резервної копії: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    резервнаКопіяToolStripMenuItem.Checked = false;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        //Відкриття в провіднику папки з резервною копією
+        private void переглянутиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевірка, чи обрано файл бази даних
+            if (!string.IsNullOrEmpty(selectedDatabasePath))
+            {
+                // Визначення шляху до папки з резервними копіями
+                string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
+
+                // Перевірка, чи існує папка "Copy" у папці бази даних
+                if (!Directory.Exists(backupFolderPath))
+                {
+                    // Якщо папка "Copy" не існує, відкрити папку бази даних
+                    backupFolderPath = Path.GetDirectoryName(selectedDatabasePath);
+                }
+
+                // Відкриття папки з резервними копіями в провіднику
+                System.Diagnostics.Process.Start("explorer.exe", backupFolderPath);
+            }
+            else
+            {
+                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         //Очищення вмісту бази даних
-        private void очиститиФайлToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void очиститиФайлToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try {
                 // Перевірка, чи обрано файл бази даних
@@ -290,105 +427,41 @@ namespace ScheduleAdmin
                 MessageBox.Show($"Сталася помилка під час очищення бази даних: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        //Створення резервної копії в папці з базою даних
-        private void створитиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        // Відкриття вікна налаштувань
+        private void налаштуванняToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Перевірка, чи обрано файл бази даних
-            if (!string.IsNullOrEmpty(selectedDatabasePath))
-            {
-                try
-                {
-                    // Визначення шляху до папки з резервними копіями
-                    string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
-
-                    // Створення папки для резервних копій, якщо вона не існує
-                    if (!Directory.Exists(backupFolderPath))
-                    {
-                        Directory.CreateDirectory(backupFolderPath);
-                    }
-
-                    // Формування нового шляху для резервної копії
-                    string backupFileName = Path.GetFileNameWithoutExtension(selectedDatabasePath) + "_backup.db";
-                    string backupFilePath = Path.Combine(backupFolderPath, backupFileName);
-
-                    // Копіювання файлу бази даних у папку з резервними копіями
-                    File.Copy(selectedDatabasePath, backupFilePath, true);
-
-                    MessageBox.Show("Резервна копія створена успішно.", "Створення резервної копії", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Сталася помилка при створенні резервної копії: {ex.Message}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            Settings settings = new Settings();
+            settings.FormClosed += SettingsForm_FormClosed;
+            settings.Show();
         }
-
-        //Відкриття в провіднику папки з резервною копією
-        private void переглянутиРезервнуКопіюToolStripMenuItem_Click(object sender, EventArgs e)
+        //Закриття вікна налаштувань
+        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Перевірка, чи обрано файл бази даних
-            if (!string.IsNullOrEmpty(selectedDatabasePath))
-            {
-                // Визначення шляху до папки з резервними копіями
-                string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
-
-                // Перевірка, чи існує папка "Copy" у папці бази даних
-                if (!Directory.Exists(backupFolderPath))
-                {
-                    // Якщо папка "Copy" не існує, відкрити папку бази даних
-                    backupFolderPath = Path.GetDirectoryName(selectedDatabasePath);
-                }
-
-                // Відкриття папки з резервними копіями в провіднику
-                System.Diagnostics.Process.Start("explorer.exe", backupFolderPath);
-            }
-            else
-            {
-                MessageBox.Show("Спочатку оберіть файл бази даних.", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Після закриття форми налаштувань оновлюємо налаштування
+            LoadSettings();
         }
-
-        //Зберегти базу даних як окремий файл
-        private void зберегтиЯкToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(selectedDatabasePath))
-            {
-                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            // Вибір шляху та імені для збереження бази даних
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "SQL DB files(*.db)|*.db";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // Копіювання поточного файлу бази даних за обраний шлях та ім'я
-                string sourcePath = selectedDatabasePath;
-                string destinationPath = saveFileDialog.FileName;
-                File.Copy(sourcePath, destinationPath, true);
-                MessageBox.Show("Базу даних успішно збережено.", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
+        //Відкриття вікна "Про програму"
         private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Створення та відображення нової форми для відомостей про програму
             AboutInfo aboutProgram = new AboutInfo();
             aboutProgram.ShowDialog();
         }
-
+        // Відкриття вікна "Гайд"
         private void гайдКористуванняToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Guide guide = new Guide();
             guide.Show();
         }
 
+        // Метод експорту у Еxcel
         private void excelxlsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (selectedDatabasePath=="")
+            {
+                MessageBox.Show("Оберіть базу даних та день для експорту.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             Excel.Application xlApp = new Excel.Application();
             Excel.Workbook xlWorkBook;
             Excel.Worksheet xlWorkSheet;
@@ -399,51 +472,60 @@ namespace ScheduleAdmin
 
             List<string> groupNames = GetAllGroupNames();
             LoadDataFromDatabase(dateTimePicker1, dataGridView1);
-            string currentDate = dateTimePicker1.Value.ToString("dd-MM-yyyy");
-
-            // Додаємо назви груп у перший рядок
-            for (int j = 0; j < dataGridView1.Columns.Count; j++)
+            // Перевірка наявності даних у DataGridView
+            if (hasData(dataGridView1)==false)
             {
-                if (dataGridView1.Columns[j].HeaderText != null)
-                {
-                    xlWorkSheet.Cells[1, j + 2] = dataGridView1.Columns[j].HeaderText;
-                }
+                MessageBox.Show("Немає даних для експорту.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-
-            // Додаємо назви пар за розкладом у перший стовпець
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            else 
             {
-                if (dataGridView1.Rows[i].HeaderCell.Value != null)
-                {
-                    xlWorkSheet.Cells[i + 2, 1] = dataGridView1.Rows[i].HeaderCell.Value.ToString();
-                }
-            }
+                string currentDate = dateTimePicker1.Value.ToString("dd-MM-yyyy");
 
-            // Копіюємо дані з dataGridView1
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
+                // Додаємо назви груп у перший рядок
                 for (int j = 0; j < dataGridView1.Columns.Count; j++)
                 {
-                    if (dataGridView1.Rows[i].Cells[j].Value != null)
+                    if (dataGridView1.Columns[j].HeaderText != null)
                     {
-                        xlWorkSheet.Cells[i + 2, j + 2] = dataGridView1.Rows[i].Cells[j].Value.ToString();
+                        xlWorkSheet.Cells[1, j + 2] = dataGridView1.Columns[j].HeaderText;
                     }
                 }
+
+                // Додаємо назви пар за розкладом у перший стовпець
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if (dataGridView1.Rows[i].HeaderCell.Value != null)
+                    {
+                        xlWorkSheet.Cells[i + 2, 1] = dataGridView1.Rows[i].HeaderCell.Value.ToString();
+                    }
+                }
+
+                // Копіюємо дані з dataGridView1
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dataGridView1.Columns.Count; j++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[j].Value != null)
+                        {
+                            xlWorkSheet.Cells[i + 2, j + 2] = dataGridView1.Rows[i].Cells[j].Value.ToString();
+                        }
+                    }
+                }
+
+                string savePath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), $"ScheduleExport_{currentDate}.xlsx");
+                xlWorkBook.SaveAs(savePath, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                xlWorkBook.Close(true, misValue, misValue);
+                xlApp.Quit();
+
+                releaseObject(xlWorkSheet);
+                releaseObject(xlWorkBook);
+                releaseObject(xlApp);
+
+                MessageBox.Show("Експорт завершено!");
+            }
             }
 
-            string savePath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), $"excelExport_{currentDate}.xlsx");
-            xlWorkBook.SaveAs(savePath, Excel.XlFileFormat.xlOpenXMLWorkbook, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-
-            releaseObject(xlWorkSheet);
-            releaseObject(xlWorkBook);
-            releaseObject(xlApp);
-
-            MessageBox.Show("Експорт завершено!");
-        }
-
-        private void releaseObject(object obj)
+            private void releaseObject(object obj)
         {
             try
             {
@@ -459,11 +541,71 @@ namespace ScheduleAdmin
                 GC.Collect();
             }
         }
+
+        //Іконка в треї
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            // Перевіряємо, чи вікно програми згорнуто
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                // Розгортаємо вікно
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                // Відкриваємо вікно, якщо воно закрито
+                this.Show();
+            }
+
+            // Активуємо вікно
+            this.Activate();
+        }
+
+        private void переглядЗаписівToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевіряємо, чи вікно програми згорнуто
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                // Розгортаємо вікно
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                // Відкриваємо вікно, якщо воно закрито
+                this.Show();
+            }
+
+            // Активуємо вікно
+            this.Activate();
+
+            tabControl1.SelectTab(tabPageCheckSchedule);
+        }
+
+        private void додаванняЗаписівToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Перевіряємо, чи вікно програми згорнуто
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                // Розгортаємо вікно
+                this.WindowState = FormWindowState.Normal;
+            }
+            else
+            {
+                // Відкриваємо вікно, якщо воно закрито
+                this.Show();
+            }
+
+            // Активуємо вікно
+            this.Activate();
+
+            tabControl1.SelectTab(tabPageAdd);
+        }
+
+        private void вийтиЗПрограмиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
-    // Клас для збереження списку нещодавно відкритих файлів
-    public class RecentFilesConfig
-    {
-        public List<string> RecentlyOpenedFiles { get; set; } = new List<string>();
-    }
+
 }
 

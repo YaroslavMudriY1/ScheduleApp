@@ -1,6 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
+using System.Data.SQLite;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScheduleUser
@@ -9,7 +11,7 @@ namespace ScheduleUser
     {
         DateTime currentDate;
 
-        // Метод для встановлення часу та перевірки поточного часу
+        // Метод для встановлення часу таймера та перевірки поточного часу для відправки сповіщення
         private void CheckTime(DateTime currentDate)
         {
             DateTime nextClassStartTime = currentDate.AddDays(1);
@@ -36,7 +38,7 @@ namespace ScheduleUser
             CheckAndSendNotification();
         }
 
-        // Метод для перевірки та відправлення сповіщення
+        // Метод для перевірки умови відправки та відправлення сповіщення
         private void CheckAndSendNotification()
         {
             // Отримання поточної дати

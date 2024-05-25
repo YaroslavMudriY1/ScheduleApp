@@ -14,30 +14,34 @@ using System.Windows.Forms;
 using Windows.Globalization.DateTimeFormatting;
 using MaterialSkin; // Підключення пакету для покращення інтерфейсу
 using MaterialSkin.Controls;
+using Windows.Data.Xml.Dom;
 
 namespace ScheduleUser
 {
     public partial class Schedule : MaterialForm
     {
-        // Збереження шляху до останньої використаної бази даних
-        private string recentlyOpenedDatabase = "";
+
         public Schedule()
         {
             InitializeComponent();
-
+            LoadSettings();
+            // Завантаження списку нещодавно відкритих файлів при запуску програми
+            LoadRecentFilesOnStartup();
             //Налаштування теми форми
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.EnforceBackcolorOnAllComponents = false;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
 
-            // Завантаження останньої використаної бази даних
-            recentlyOpenedDatabase = LoadRecentDatabase();
+            if (trayIcon)
+            {
+                notifyIcon1.Visible = true;
+            }
 
             UpdateDateLabels(DateTime.Now); //Оновлення тексту за поточною датою
 
             // Перевірка наявності останньої використаної бази даних
-            if (string.IsNullOrEmpty(recentlyOpenedDatabase))
+            if (recentlyOpenedFiles.Count == 0 || string.IsNullOrEmpty(recentlyOpenedFiles[0]))
             {
                 // Якщо остання база даних відсутня, виводимо повідомлення та пропонуємо користувачеві вибрати файл
                 DialogResult result = MessageBox.Show("Відсутній файл останньої використаної бази даних. Будь ласка, оберіть файл для відкриття.", "Повідомлення", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
@@ -51,16 +55,17 @@ namespace ScheduleUser
                     {
                         string selectedDatabasePath = openFileDialog.FileName;
                         OpenDatabaseFile(selectedDatabasePath);
-                        UpdateConnectionString();// Оновлюємо значення підключення до бази даних
-                        SaveRecentDatabase(selectedDatabasePath); // Зберігаємо шлях до бази даних
+                        UpdateConnectionString(); // Оновлюємо значення підключення до бази даних
                     }
                 }
-
             }
             else
             {
-                // Якщо є остання база даних, відкриваємо її автоматично
-                OpenDatabaseFile(recentlyOpenedDatabase);
+                if (autoLastConnected)
+                {
+                    // Якщо є остання база даних, відкриваємо її автоматично
+                    OpenDatabaseFile(recentlyOpenedFiles[0]);
+                }
             }
         }
         // Зміна вигляду вкладок
@@ -133,7 +138,6 @@ namespace ScheduleUser
             {
                 string selectedFilePath = openFileDialog1.FileName;
                 OpenDatabaseFile(selectedFilePath);
-                SaveRecentDatabase(selectedFilePath);
             }
         }
 
@@ -330,5 +334,45 @@ namespace ScheduleUser
             Guide guide= new Guide();
             guide.Show();
         }
+
+        private void змінитиНалаштуванняToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.FormClosed += SettingsForm_FormClosed;
+            settings.Show();
+        }
+        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Після закриття форми налаштувань оновлюємо налаштування
+            LoadSettings();
+        }
+        private void Schedule_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Перевірка, чи хоче користувач закрити програму
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                // Вивести діалогове вікно з підтвердженням
+                DialogResult result = MessageBox.Show("Ви впевнені, що хочете закрити програму?", "Закрити програму", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // Якщо користувач підтверджує закриття, 
+                // збережіть дані або виконайте інші дії перед закриттям
+                if (result == DialogResult.Yes)
+                {
+                    // Якщо встановлене налаштування, видалити файл профілю користувача
+                    if (deleteUserProfile)
+                    {
+                        File.Delete("UserProfile.xml");
+                    }
+                    // Закрити програму
+                    Application.Exit();
+                }
+                else
+                {
+                    // Скасувати закриття форми
+                    e.Cancel = true;
+                }
+            }
+        }
+
     };
 }

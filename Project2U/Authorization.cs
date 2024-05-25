@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using System.IO;
 using MaterialSkin;
 using MaterialSkin.Controls;
+using System.Drawing;
 namespace ScheduleUser
 {
     public partial class Authorization : MaterialForm
@@ -12,6 +13,7 @@ namespace ScheduleUser
         public event AuthorizationClosedEventHandler AuthorizationClosed;
 
         private readonly string configFilePath = "userProfile.xml";
+        private bool isUserNameLoaded = false;
         public Authorization()
         {
             InitializeComponent();
@@ -24,7 +26,61 @@ namespace ScheduleUser
             LoadUserProfile();
             // Приховати поле comboBoxGroup на початку
             if (!checkBoxStudent.Checked)
-            { comboBoxGroup.Visible = false; }
+            {
+                comboBoxGroup.Visible = false;
+            }
+
+            if (!isUserNameLoaded)
+            {
+                // Налаштування TextBox
+                textBoxName.Text = "Прізвище та ім'я";
+                textBoxName.ForeColor = Color.Gray;
+                // Налаштування ComboBox
+                comboBoxGroup.Text = "Оберіть групу";
+                comboBoxGroup.ForeColor = Color.Gray;
+
+                // Додавання обробників подій
+                textBoxName.Enter += TextBoxName_Enter;
+                textBoxName.Leave += TextBoxName_Leave;
+                comboBoxGroup.Enter += ComboBoxGroup_Enter;
+                comboBoxGroup.Leave += ComboBoxGroup_Leave;
+
+            }
+        }
+
+        private void TextBoxName_Enter(object sender, EventArgs e)
+        {
+            if (textBoxName.Text == "Прізвище та ім'я")
+            {
+                textBoxName.Text = "";
+                textBoxName.ForeColor = Color.Black;
+            }
+        }
+
+        private void TextBoxName_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBoxName.Text))
+            {
+                textBoxName.Text = "Прізвище та ім'я";
+                textBoxName.ForeColor = Color.Gray;
+            }
+        }
+        private void ComboBoxGroup_Enter(object sender, EventArgs e)
+        {
+            if (comboBoxGroup.Text == "Оберіть групу")
+            {
+                comboBoxGroup.Text = "";
+                comboBoxGroup.ForeColor = Color.Black;
+            }
+        }
+
+        private void ComboBoxGroup_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(comboBoxGroup.Text))
+            {
+                comboBoxGroup.Text = "Оберіть групу";
+                comboBoxGroup.ForeColor = Color.Gray;
+            }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -55,8 +111,16 @@ namespace ScheduleUser
                 // Очищення полів форми
                 checkBoxStudent.Checked = false;
                 checkBoxTeacher.Checked = false;
-                textBoxName.Text = "";
-                comboBoxGroup.SelectedIndex = -1;
+                textBoxName.Text = "Прізвище та ім'я";
+                textBoxName.ForeColor = Color.Gray;
+                comboBoxGroup.Text = "Оберіть групу";
+                comboBoxGroup.ForeColor = Color.Gray;
+
+                // Додавання обробників подій
+                textBoxName.Enter += TextBoxName_Enter;
+                textBoxName.Leave += TextBoxName_Leave;
+                comboBoxGroup.Enter += ComboBoxGroup_Enter;
+                comboBoxGroup.Leave += ComboBoxGroup_Leave;
                 // Повідомлення про успішну дію
                 MessageBox.Show("Дані користувача видалено успішно!", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -125,10 +189,18 @@ namespace ScheduleUser
                     {
                         comboBoxGroup.SelectedItem = profile.Group;
                     }
+
+                    // Встановлення прапорця, якщо ім'я користувача завантажено
+                    if (!string.IsNullOrEmpty(profile.Name))
+                    {
+                        isUserNameLoaded = true;
+                        textBoxName.ForeColor = Color.Black;
+                        comboBoxGroup.ForeColor = Color.Black;
+                    }
                 }
             }
         }
-        private void SaveUserProfile(UserProfile user)
+            private void SaveUserProfile(UserProfile user)
         {
             // Збереження об'єкту користувача в XML файл
             XmlSerializer serializer = new XmlSerializer(typeof(UserProfile));
@@ -158,7 +230,6 @@ namespace ScheduleUser
             public string Name { get; set; }
             public string Group { get; set; }
         }
-
 
     }
 }

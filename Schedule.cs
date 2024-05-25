@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScheduleAdmin;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
@@ -10,11 +11,189 @@ using System.Xml.Serialization;
 
 namespace ScheduleAdmin
 {
+    public class XmlHelper
+    {
+        public static void SerializeToFile<T>(T obj, string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                serializer.Serialize(writer, obj);
+            }
+        }
+
+        public static T DeserializeFromFile<T>(string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+    }
     public partial class Schedule
     {
         // Шлях до файлу конфігурації
-        private string configFilePath = "recentFilesConfig.xml";
-        private List<string> recentlyOpenedFiles;
+        private string configFilePath = "settings.xml";
+        private List<string> recentlyOpenedFiles = new List<string>();
+
+        public bool autoLastConnected;
+        public int recentlyOpenedList;
+        public bool trayIcon;
+        public string time1_start;
+        public string time2_start;
+        public string time3_start;
+        public string time4_start;
+        public string time5_start;
+        public string time6_start;
+        public string time1_end;
+        public string time2_end;
+        public string time3_end;
+        public string time4_end;
+        public string time5_end;
+        public string time6_end;
+
+        private void LoadSettings()
+        {
+            if (File.Exists(configFilePath))
+            {
+                UserSettings settings = XmlHelper.DeserializeFromFile<UserSettings>(configFilePath);
+
+                autoLastConnected = settings.AutoLastConnected;
+                recentlyOpenedList = settings.RecentlyOpenedList;
+                trayIcon = settings.TrayIcon;
+                if (trayIcon)
+                {
+                    notifyIcon1.Visible = true;
+                }
+                else { notifyIcon1.Visible = false; }
+                recentlyOpenedFiles = settings.RecentlyOpenedFiles ?? new List<string>();
+                time1_start = settings.Time1Start;
+                time2_start = settings.Time2Start;
+                time3_start = settings.Time3Start;
+                time4_start = settings.Time4Start;
+                time5_start = settings.Time5Start;
+                time6_start = settings.Time6Start;
+                time1_end = settings.Time1End;
+                time2_end = settings.Time2End;
+                time3_end = settings.Time3End;
+                time4_end = settings.Time4End;
+                time5_end = settings.Time5End;
+                time6_end = settings.Time6End;
+            }
+            else
+            {
+                UseDefaultSettings();
+                SaveSettings();
+                MessageBox.Show("Файл налаштувань не знайдений. Встановлено налаштування за замовчуванням.");
+            }
+        }
+
+        private void UseDefaultSettings()
+        {
+            autoLastConnected = true;
+            recentlyOpenedList = 4;
+            trayIcon = false;
+            notifyIcon1.Visible = false;
+            recentlyOpenedFiles = new List<string>();
+            time1_start = "08:00";
+            time2_start = "09:15";
+            time3_start = "10:30";
+            time4_start = "12:00";
+            time5_start = "13:15";
+            time6_start = "14:30";
+            time1_end = "09:00";
+            time2_end = "10:15";
+            time3_end = "11:30";
+            time4_end = "13:00";
+            time5_end = "14:15";
+            time6_end = "15:30";
+        }
+
+        private void SaveSettings()
+        {
+            UserSettings settings = new UserSettings
+            {
+                AutoLastConnected = autoLastConnected,
+                RecentlyOpenedList = recentlyOpenedList,
+                TrayIcon = trayIcon,
+                RecentlyOpenedFiles = recentlyOpenedFiles,
+                Time1Start = time1_start,
+                Time2Start = time2_start,  
+                Time3Start = time3_start,
+                Time4Start = time4_start,
+                Time5Start = time5_start,
+                Time6Start = time6_start,
+                Time1End = time1_end,
+                Time2End = time2_end,
+                Time3End = time3_end,
+                Time4End = time4_end,
+                Time5End = time5_end,
+                Time6End = time6_end,
+            };
+
+            XmlHelper.SerializeToFile(settings, configFilePath);
+        }
+        private void UpdateRecentlyOpenedFiles(string filePath)
+        {
+            // Перевірка, чи файл вже є у списку
+            if (recentlyOpenedFiles.Contains(filePath))
+            {
+                recentlyOpenedFiles.Remove(filePath); // Видалити файл зі списку
+            }
+            recentlyOpenedFiles.Insert(0, filePath); // Додати файл на початок списку
+            if (recentlyOpenedFiles.Count > recentlyOpenedList)
+            {
+                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1); // Видалити останній елемент, якщо списку більше ліміту
+            }
+
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+            // Зберегти список нещодавно відкритих файлів та останню базу даних
+            SaveSettings();
+        }
+
+        private void UpdateRecentlyOpenedFilesMenu(ToolStripMenuItem menuItem, List<string> recentlyOpenedFiles)
+        {
+            menuItem.DropDownItems.Clear();
+            foreach (string filePath in recentlyOpenedFiles)
+            {
+                ToolStripMenuItem fileItem = new ToolStripMenuItem(Path.GetFileName(filePath));
+                fileItem.Tag = filePath;
+                fileItem.Click += RecentlyOpenedFile_Click;
+                // Перевірка, чи поточний елемент є обраним файлом
+                if (filePath == selectedDatabasePath)
+                {
+                    fileItem.Checked = true;
+                }
+                menuItem.DropDownItems.Add(fileItem);
+            }
+        }
+
+        private void RecentlyOpenedFile_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            string filePath = menuItem.Tag.ToString();
+            OpenDatabaseFile(filePath);
+        }
+
+        private void LoadRecentFilesOnStartup()
+        {
+            LoadSettings();
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+        }
+
+        private void OpenDatabaseFile(string filePath)
+        {
+            // Оновлення вибраного файлу бази даних
+            selectedDatabasePath = filePath;
+            UpdateConnectionString();
+            UpdateRecentlyOpenedFiles(filePath);
+        }
+
+        private void UpdateConnectionString()
+        {
+            connectionString = $"Data Source={selectedDatabasePath};Version=3;";
+        }
 
         private static string selectedDatabasePath = "";
         string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
@@ -40,7 +219,7 @@ namespace ScheduleAdmin
             return groupNames;
         }
 
-        //Фунція читання бази даних
+        // Метод читання бази даних
 
         private void LoadDataFromDatabase(DateTimePicker dateTimePicker, DataGridView dataGridView)
         {
@@ -73,6 +252,7 @@ namespace ScheduleAdmin
             if (dataGridView.Columns.Count == 0)
             {
                 MessageBox.Show("База даних порожня.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
             else
             {
@@ -89,7 +269,7 @@ namespace ScheduleAdmin
 
 
                 // Запит до бази даних для отримання розкладу на обрану дату
-                string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
+                string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY pair_index";
                 SQLiteCommand command = new SQLiteCommand(query, connection);
                 command.Parameters.AddWithValue("@selectedDate", selectedDate);
                 SQLiteDataReader reader = command.ExecuteReader();
@@ -110,7 +290,7 @@ namespace ScheduleAdmin
                         int subjectId = Convert.ToInt32(reader["subject_id"]);
                         int teacherId = Convert.ToInt32(reader["teacher_id"]);
                         string classroom = reader["classroom"].ToString();
-                        string timeStart = reader["time_start"].ToString();
+                        int pairIndex = Convert.ToInt32(reader["pair_index"]);
 
                         // Отримати індекс стовпця, в який буде додана інформація
                         int columnIndex = GetColumnIndex(dataGridView, groupName);
@@ -122,28 +302,26 @@ namespace ScheduleAdmin
                             string subject = GetSubjectName(subjectId);
                             string teacher = GetTeacherName(teacherId);
 
-                            int rowIndex = GetRowIndex(timeStart);
-                            if (rowIndex >= 0)
+                            if (dataGridView.Rows.Count <= pairIndex)
                             {
-                                if (dataGridView.Rows.Count <= rowIndex)
-                                {
-                                    dataGridView.Rows.Add();
-                                    dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
-                                }
-
-                                if (dataGridView.Columns.Count <= columnIndex)
-                                {
-                                    dataGridView.Columns.Add(groupName, groupName);
-                                }
-
-                                dataGridView.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                                dataGridView.Rows.Add();
+                                dataGridView.Rows[pairIndex].HeaderCell.Value = GetTimeHeader(pairIndex);
                             }
-                        }
+
+                            if (dataGridView.Columns.Count <= columnIndex)
+                            {
+                                dataGridView.Columns.Add(groupName, groupName);
+                            }
+
+                            dataGridView.Rows[pairIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                        
+                    }
                     }
                 }
                 else
                 {
                     MessageBox.Show("За вказаною датою відсутні записи", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
             }
             // Закриття підключення до бази даних
@@ -153,9 +331,10 @@ namespace ScheduleAdmin
         private bool CheckSixthPairAvailability(string selectedDate)
         {
             bool hasSixthPair = false;
+            int sixthPairIndex = 5;
 
             // SQL-запит для перевірки наявності шостої пари
-            string query = "SELECT COUNT(*) FROM Schedule WHERE date = @selectedDate AND time_start = '14:30'";
+            string query = "SELECT COUNT(*) FROM Schedule WHERE date = @selectedDate AND pair_index = @sixthPairIndex";
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -164,16 +343,43 @@ namespace ScheduleAdmin
                 using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    command.Parameters.AddWithValue("@sixthPairIndex", sixthPairIndex);
                     int count = Convert.ToInt32(command.ExecuteScalar());
 
-                    // Якщо є записи з часом початку "13:30", то шоста пара доступна
+                    // Якщо є записи що належать до шостої пари, то шоста пара доступна
                     hasSixthPair = count > 0;
                 }
             }
 
             return hasSixthPair;
         }
+        bool hasData(DataGridView dataGridView)
+        {
+            bool hasData = false;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    for (int i = 0; i < row.Cells.Count; i++)
+                    {
+                        if (row.Cells[i].Value != null)
+                        {
+                            hasData = true;
+                            break;
+                        }
+                    }
+                }
 
+                if (hasData)
+                    break;
+            }
+
+            if (!hasData)
+            {
+                return false;
+            }
+            return hasData;
+        }
         // Метод, який встановлює значення DateTimePicker на інших вкладках
         private void SyncDateTimePickers(DateTime dateTime)
         {
@@ -238,28 +444,16 @@ namespace ScheduleAdmin
                 }
             }
         }
-
-        // Метод для отримання індексу рядка за часом початку пари
+        // Метод для отримання індексу рядка
         private int GetRowIndex(string timeStart)
         {
-            // Реалізація з урахуванням розкладу
-            switch (timeStart)
-            {
-                case "08:00":
-                    return 0;
-                case "09:15":
-                    return 1;
-                case "10:30":
-                    return 2;
-                case "12:00":
-                    return 3;
-                case "13:15":
-                    return 4;
-                case "14:30":
-                    return 5;
-                default:
-                    throw new ArgumentException("Invalid time start: " + timeStart);
-            }
+            if (timeStart == time1_start) return 0;
+            if (timeStart == time2_start) return 1;
+            if (timeStart == time3_start) return 2;
+            if (timeStart == time4_start) return 3;
+            if (timeStart == time5_start) return 4;
+            if (timeStart == time6_start) return 5;
+            throw new ArgumentException("Invalid time start: " + timeStart);
         }
 
         // Метод для визначення значення рядкового заголовку для заданого індексу часу
@@ -267,20 +461,27 @@ namespace ScheduleAdmin
         {
             switch (rowIndex)
             {
-                case 0:
-                    return "1 пара";
-                case 1:
-                    return "2 пара";
-                case 2:
-                    return "3 пара";
-                case 3:
-                    return "4 пара";
-                case 4:
-                    return "5 пара";
-                case 5:
-                    return "6 пара"; // Додано рядок для шостої пари
-                default:
-                    throw new ArgumentException("Invalid time row index: " + rowIndex);
+                case 0: return "1 пара";
+                case 1: return "2 пара";
+                case 2: return "3 пара";
+                case 3: return "4 пара";
+                case 4: return "5 пара";
+                case 5: return "6 пара";
+                default: throw new ArgumentException("Invalid time row index: " + rowIndex);
+            }
+        }
+        // Метод для визначення заняття за розкладом
+        private int GetPairIndex(string text)
+        {
+            switch (text)
+            {
+                case "Перша пара": return 0;
+                case "Друга пара": return 1;
+                case "Третя пара": return 2;
+                case "Четверта пара": return 3;
+                case "П'ята пара": return 4;
+                case "Шоста пара": return 5;
+                default: throw new ArgumentException("Invalid time: " + text);
             }
         }
 
@@ -289,20 +490,13 @@ namespace ScheduleAdmin
         {
             switch (text)
             {
-                case "Перша пара":
-                    return "08:00";
-                case "Друга пара":
-                    return "09:15";
-                case "Третя пара":
-                    return "10:30";
-                case "Четверта пара":
-                    return "12:00";
-                case "П'ята пара":
-                    return "13:15";
-                case "Шоста пара":
-                    return "14:30";
-                default:
-                    throw new ArgumentException("Invalid time: " + text);
+                case "Перша пара": return time1_start;
+                case "Друга пара": return time2_start;
+                case "Третя пара": return time3_start;
+                case "Четверта пара": return time4_start;
+                case "П'ята пара": return time5_start;
+                case "Шоста пара": return time6_start;
+                default: throw new ArgumentException("Invalid time: " + text);
             }
         }
 
@@ -311,20 +505,13 @@ namespace ScheduleAdmin
         {
             switch (text)
             {
-                case "Перша пара":
-                    return "09:00";
-                case "Друга пара":
-                    return "10:15";
-                case "Третя пара":
-                    return "11:30";
-                case "Четверта пара":
-                    return "13:00";
-                case "П'ята пара":
-                    return "14:15";
-                case "Шоста пара":
-                    return "15:30";
-                default:
-                    throw new ArgumentException("Invalid time: " + text);
+                case "Перша пара": return time1_end;
+                case "Друга пара": return time2_end;
+                case "Третя пара": return time3_end;
+                case "Четверта пара": return time4_end;
+                case "П'ята пара": return time5_end;
+                case "Шоста пара": return time6_end;
+                default: throw new ArgumentException("Invalid time: " + text);
             }
         }
 
@@ -454,12 +641,12 @@ namespace ScheduleAdmin
             }
         }
         //Метод перевірки чи є вже запис за вказаними параметрами 
-        private bool CheckIfRecordExists(string groupName, string selectedDate, string timeStart)
+        private bool CheckIfRecordExists(string groupName, string selectedDate, int pairIndex)
         {
             bool recordExists = false;
             int groupId = GetGroupId(groupName);
             string query = "SELECT COUNT(*) FROM Schedule " +
-                           "WHERE group_id = @groupId AND date = @selectedDate AND time_start = @timeStart";
+                           "WHERE group_id = @groupId AND date = @selectedDate AND pair_index = @pairIndex";
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -468,7 +655,7 @@ namespace ScheduleAdmin
                 {
                     command.Parameters.AddWithValue("@groupId", groupId);
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
-                    command.Parameters.AddWithValue("@timeStart", timeStart);
+                    command.Parameters.AddWithValue("@pairIndex", pairIndex);
 
                     int count = Convert.ToInt32(command.ExecuteScalar());
                     recordExists = count > 0;
@@ -679,93 +866,23 @@ namespace ScheduleAdmin
             int count = Convert.ToInt32(command.ExecuteScalar());
             return count > 0;
         }
-        // Відкриття файлу бази даних
-        private void OpenDatabaseFile(string filePath)
+
+        // Перевірка наявності резервних копій
+        private void CheckBackupFolderExists()
         {
-            // Оновлення вибраного файлу бази даних
-            selectedDatabasePath = filePath;
-            connectionString = $"Data Source={selectedDatabasePath};Version=3;";
-            // Оновити меню нещодавно відкритих файлів
-            UpdateRecentlyOpenedFiles(filePath);
-        }
-        // Оновлення списку нещодавно відкритих файлів
-        private void UpdateRecentlyOpenedFiles(string filePath)
-        {
-            // Перевірка, чи файл вже є у списку
-            if (recentlyOpenedFiles.Contains(filePath))
+            // Визначення шляху до папки з резервними копіями
+            string backupFolderPath = Path.Combine(Path.GetDirectoryName(selectedDatabasePath), "Copy");
+
+            // Перевірка, чи існує папка "Copy" у папці бази даних та встановлення маркеру
+            if (Directory.Exists(backupFolderPath))
             {
-                recentlyOpenedFiles.Remove(filePath); // Видалити файл зі списку
+                резервнаКопіяToolStripMenuItem.Checked = true;
             }
-            recentlyOpenedFiles.Insert(0, filePath); // Додати файл на початок списку
-            if (recentlyOpenedFiles.Count > 4)
+            else
             {
-                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1); // Видалити останній елемент, якщо списку більше 4 файлів
+                резервнаКопіяToolStripMenuItem.Checked = false;
             }
-
-            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
-            // Зберегти список нещодавно відкритих файлів
-            SaveRecentFiles(recentlyOpenedFiles);
-        }
-
-        // Завантаження списку нещодавно відкритих файлів
-        private List<string> LoadRecentFiles()
-        {
-            if (File.Exists(configFilePath))
-            {
-                using (StreamReader reader = new StreamReader(configFilePath))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
-                    RecentFilesConfig config = (RecentFilesConfig)serializer.Deserialize(reader);
-                    return config.RecentlyOpenedFiles;
-                }
-            }
-            return new List<string>();
-        }
-
-        // Збереження списку нещодавно відкритих файлів
-        private void SaveRecentFiles(List<string> recentlyOpenedFiles)
-        {
-            RecentFilesConfig config = new RecentFilesConfig();
-            config.RecentlyOpenedFiles = recentlyOpenedFiles;
-            using (StreamWriter writer = new StreamWriter(configFilePath))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(RecentFilesConfig));
-                serializer.Serialize(writer, config);
-            }
-        }
-
-        // Оновлення меню нещодавно відкритих файлів
-        private void UpdateRecentlyOpenedFilesMenu(ToolStripMenuItem нещодавноВідкритіToolStripMenuItem, List<string> recentlyOpenedFiles)
-        {
-            нещодавноВідкритіToolStripMenuItem.DropDownItems.Clear();
-            foreach (string filePath in recentlyOpenedFiles)
-            {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(Path.GetFileName(filePath));
-                menuItem.Tag = filePath;
-                menuItem.Click += RecentlyOpenedFile_Click;
-                // Перевірка, чи поточний елемент є обраним файлом
-                if (filePath == selectedDatabasePath)
-                {
-                    menuItem.Checked = true;
-                }
-                нещодавноВідкритіToolStripMenuItem.DropDownItems.Add(menuItem);
-            }
-        }
-
-        // Обробник подій для пунктів меню нещодавно відкритих файлів
-        private void RecentlyOpenedFile_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            string filePath = menuItem.Tag.ToString();
-            OpenDatabaseFile(filePath);
-        }
-
-        // Метод для завантаження списку нещодавно відкритих файлів при запуску програми
-        private void LoadRecentFilesOnStartup()
-        {
-            recentlyOpenedFiles = LoadRecentFiles();
-            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
-        }
+        }      
 
         // Метод для отримання імен усіх таблиць в базі даних
         private string[] GetAllTableNames(SQLiteConnection connection)

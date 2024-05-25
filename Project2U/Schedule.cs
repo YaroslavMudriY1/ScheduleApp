@@ -13,71 +13,150 @@ using static ScheduleUser.Authorization;
 
 namespace ScheduleUser
 {
-    // Клас для збереження списку нещодавно відкритих файлів
-    [Serializable]
-    public class RecentDatabaseConfig
+    public class XmlHelper
     {
-        public string RecentlyOpenedDatabase { get; set; }
-    }
-    public partial class Schedule
-    {
-        // Шлях до файлу конфігурації
-        private readonly string configFilePath = "recentDatabaseConfig.xml";
-
-        // Завантаження списку нещодавно відкритих файлів
-        private string LoadRecentDatabase()
+        public static void SerializeToFile<T>(T obj, string filePath)
         {
-            if (File.Exists(configFilePath))
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
-                using (StreamReader reader = new StreamReader(configFilePath))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(RecentDatabaseConfig));
-                    RecentDatabaseConfig config = (RecentDatabaseConfig)serializer.Deserialize(reader);
-
-                    // Повний шлях до бази даних
-                    string databasePath = config.RecentlyOpenedDatabase;
-
-                    // Перевірка наявності файлу бази даних
-                    if (File.Exists(databasePath))
-                    {
-                        // Назначити значення selectedDatabasePath
-                        selectedDatabasePath = databasePath;
-                        UpdateConnectionString();
-                        return databasePath;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Файл бази даних не існує за зазначеним шляхом.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Файл конфігурації не існує.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            return null;
-        }  
-
-
-    // Збереження списку нещодавно відкритих файлів
-    private void SaveRecentDatabase(string recentlyOpenedDatabase)
-        {
-            RecentDatabaseConfig config = new RecentDatabaseConfig();
-            config.RecentlyOpenedDatabase = recentlyOpenedDatabase;
-            using (StreamWriter writer = new StreamWriter(configFilePath))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(RecentDatabaseConfig));
-                serializer.Serialize(writer, config);
+                serializer.Serialize(writer, obj);
             }
         }
 
-        private static string selectedDatabasePath = "";
-        string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
+        public static T DeserializeFromFile<T>(string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+    }
+
+    public partial class Schedule
+    {
+        // Шлях до файлу конфігурації
+        private readonly string configFilePath = "settings.xml";
+        private List<string> recentlyOpenedFiles = new List<string>();
+
+        public bool autoLastConnected;
+        public int recentlyOpenedList;
+        public bool deleteUserProfile;
+        public bool trayIcon;
+        private void LoadSettings()
+        {
+            if (File.Exists(configFilePath))
+            {
+                UserSettings settings = XmlHelper.DeserializeFromFile<UserSettings>(configFilePath);
+
+                autoLastConnected = settings.AutoLastConnected;
+                recentlyOpenedList = settings.RecentlyOpenedList;
+                deleteUserProfile = settings.DeleteUserProfile;
+                trayIcon = settings.TrayIcon;
+                if (trayIcon)
+                {
+                    notifyIcon1.Visible = true;
+                }
+                else { notifyIcon1.Visible = false; }
+                recentlyOpenedFiles = settings.RecentlyOpenedFiles ?? new List<string>();
+            }
+            else
+            {
+                UseDefaultSettings();
+                SaveSettings();
+                MessageBox.Show("Файл налаштувань не знайдений. Встановлено налаштування за замовчуванням.");
+            }
+        }
+
+        private void UseDefaultSettings()
+        {
+            autoLastConnected = true;
+            recentlyOpenedList = 4;
+            deleteUserProfile = false;
+            trayIcon = false;
+            notifyIcon1.Visible=false;
+            recentlyOpenedFiles = new List<string>();
+            selectedDatabasePath = string.Empty;
+        }
+
+        private void SaveSettings()
+        {
+            UserSettings settings = new UserSettings
+            {
+                AutoLastConnected = autoLastConnected,
+                RecentlyOpenedList = recentlyOpenedList,
+                DeleteUserProfile = deleteUserProfile,
+                TrayIcon = trayIcon,
+                RecentlyOpenedFiles = recentlyOpenedFiles,
+            };
+
+            XmlHelper.SerializeToFile(settings, configFilePath);
+        }
+        private void UpdateRecentlyOpenedFiles(string filePath)
+        {
+            // Перевірка, чи файл вже є у списку
+            if (recentlyOpenedFiles.Contains(filePath))
+            {
+                recentlyOpenedFiles.Remove(filePath); // Видалити файл зі списку
+            }
+            recentlyOpenedFiles.Insert(0, filePath); // Додати файл на початок списку
+            if (recentlyOpenedFiles.Count > recentlyOpenedList)
+            {
+                recentlyOpenedFiles.RemoveAt(recentlyOpenedFiles.Count - 1); // Видалити останній елемент, якщо списку більше ліміту
+            }
+
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+            // Зберегти список нещодавно відкритих файлів та останню базу даних
+            SaveSettings();
+        }
+
+        private void UpdateRecentlyOpenedFilesMenu(ToolStripMenuItem menuItem, List<string> recentlyOpenedFiles)
+        {
+            menuItem.DropDownItems.Clear();
+            foreach (string filePath in recentlyOpenedFiles)
+            {
+                ToolStripMenuItem fileItem = new ToolStripMenuItem(Path.GetFileName(filePath));
+                fileItem.Tag = filePath;
+                fileItem.Click += RecentlyOpenedFile_Click;
+                // Перевірка, чи поточний елемент є обраним файлом
+                if (filePath == selectedDatabasePath)
+                {
+                    fileItem.Checked = true;
+                }
+                menuItem.DropDownItems.Add(fileItem);
+            }
+        }
+
+        private void RecentlyOpenedFile_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            string filePath = menuItem.Tag.ToString();
+            OpenDatabaseFile(filePath);
+        }
+
+        private void LoadRecentFilesOnStartup()
+        {
+            LoadSettings();
+            UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedFiles);
+        }
+
+        private void OpenDatabaseFile(string filePath)
+        {
+            // Оновлення вибраного файлу бази даних
+            selectedDatabasePath = filePath;
+            UpdateConnectionString();
+            UpdateRecentlyOpenedFiles(filePath);
+            LoadScheduleForDate(dateTimePicker1.Value);
+        }
 
         private void UpdateConnectionString()
         {
             connectionString = $"Data Source={selectedDatabasePath};Version=3;";
         }
+
+        private static string selectedDatabasePath = "";
+        string connectionString = $"Data Source={selectedDatabasePath};Version=3;";
         // Метод для отримання всіх доступних назв груп з бази даних
         private List<string> GetAllGroupNames()
         {
@@ -100,7 +179,7 @@ namespace ScheduleUser
                 return groupNames;
         }
 
-        //Фунція читання бази даних
+        // Метод читання бази даних
 
         private void LoadScheduleForDate(DateTime Value)
         {
@@ -210,6 +289,7 @@ namespace ScheduleUser
             }
 
         }
+        //Перевірка на наявність шостої пари
         private bool CheckSixthPairAvailability(string selectedDate)
         {
             bool hasSixthPair = false;
@@ -544,14 +624,14 @@ namespace ScheduleUser
             int count = Convert.ToInt32(command.ExecuteScalar());
             return count > 0;
         }
-
+        //Метод для завантаження персонального розкладу
         private void LoadPersonalSchedule(string selectedDate, bool IsNotify)
         {
 
                 // Перевірка, чи користувач перейшов на вкладку "Мій розклад"
                 if (tabControl1.SelectedTab != tabPage3)
                     return;
-                // Перевірка наявності бази даних та користувача
+                // Перевірка наявності бази даних
                 if (string.IsNullOrEmpty(selectedDatabasePath))
                 {
                     MessageBox.Show("Будь ласка, перевірте обрану базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -577,12 +657,6 @@ namespace ScheduleUser
         // Метод для завантаження персонального розкладу студента
         private void LoadStudentSchedule(string selectedDate, bool IsNotify)
         {
-            // Перевірка наявності бази даних
-            if (string.IsNullOrEmpty(selectedDatabasePath))
-            {
-                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
             // Отримання назви групи користувача з XML файлу
             string userGroupName = GetUserGroupName();
 
@@ -671,13 +745,7 @@ namespace ScheduleUser
 
         // Метод для завантаження персонального розкладу вчителя
         private void LoadTeacherSchedule(string selectedDate, bool IsNotify)
-        {
-            // Перевірка наявності бази даних
-            if (string.IsNullOrEmpty(selectedDatabasePath))
-            {
-                MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+        {     
             // Отримання імені вчителя з XML файлу
             UserProfile userProfile = GetUserProfile();
             string userTeacherName = userProfile != null ? userProfile.Name : "";
@@ -843,10 +911,9 @@ namespace ScheduleUser
                 return null;
             }
         }
-
+        // Перевірка, чи є розклад на сьогоднішній день
         private bool hasScheduleForToday(DateTime currentDate)
         {
-            // Перевірка, чи є розклад на сьогоднішній день
             bool hasScheduleForToday = false;
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -868,51 +935,15 @@ namespace ScheduleUser
             return hasScheduleForToday;
         }
 
-        // Відкриття файлу бази даних
-        private void OpenDatabaseFile(string filePath)
-        {
-            // Оновлення вибраного файлу бази даних
-            selectedDatabasePath = filePath;
-            UpdateConnectionString();
-            LoadScheduleForDate(dateTimePicker1.Value);
-            //LoadPersonalSchedule(dateTimePicker1.Value);
-            // Оновити меню нещодавно відкритих файлів
-            //AddRecentlyOpenedFile(selectedDatabasePath);
-        }
+
         [Serializable]
-        public class UserProfile
+        public class UserProfile //Клас для отримання та зберігання даних користувача 
         {
             public bool IsStudent { get; set; } // Тип користувача (Студент)
             public bool IsTeacher { get; set; } // Тип користувача (Вчитель)
             public string Name { get; set; } // Прізвище та Ім'я користувача (якщо вчитель то використовується для виведення розкладу).
             public string Group { get; set; } // Назва групи користувача (лише для студентів)
         }
-
-        // Додати файл до списку нещодавно відкритих файлів
-        /*        private void AddRecentlyOpenedFile(string filePath)
-                {
-                    recentlyOpenedDatabase.Insert(0, filePath);
-                    if (recentlyOpenedDatabase.Count > 3)
-                    {
-                        recentlyOpenedDatabase.RemoveAt(recentlyOpenedDatabase.Count - 1);
-                    }
-                    UpdateRecentlyOpenedFilesMenu(нещодавноВідкритіToolStripMenuItem, recentlyOpenedDatabase);
-                    // Зберегти список нещодавно відкритих файлів
-                    SaveRecentDatabase(recentlyOpenedDatabase);
-                }
-
-                // Оновлення меню нещодавно відкритих файлів
-                private void UpdateRecentlyOpenedFilesMenu(ToolStripMenuItem нещодавноВідкритіToolStripMenuItem, List<string> recentlyOpenedFiles)
-                {
-                    нещодавноВідкритіToolStripMenuItem.DropDownItems.Clear();
-                    foreach (string filePath in recentlyOpenedFiles)
-                    {
-                        ToolStripMenuItem menuItem = new ToolStripMenuItem(Path.GetFileName(filePath));
-                        menuItem.Tag = filePath;
-                        menuItem.Click += нещодавноВідкритіToolStripMenuItem_Click;
-                        нещодавноВідкритіToolStripMenuItem.DropDownItems.Add(menuItem);
-                    }
-                }*/
 
     }
 }

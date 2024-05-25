@@ -50,7 +50,7 @@
             this.labelAbout.Name = "labelAbout";
             this.labelAbout.Size = new System.Drawing.Size(226, 15);
             this.labelAbout.TabIndex = 0;
-            this.labelAbout.Text = "Schedule v.0.9. Користувацька версія";
+            this.labelAbout.Text = "Schedule v.1.0. Користувацька версія";
             // 
             // buttonOK
             // 

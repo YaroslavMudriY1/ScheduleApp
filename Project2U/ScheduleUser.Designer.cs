@@ -39,12 +39,14 @@ namespace ScheduleUser
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.обратиФайлБазиДанихToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.нещодавноВідкритіToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.налаштуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.профільКористувачаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.сповіщенняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.темаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.стандартнаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.чорнаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.змінитиНалаштуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.довідкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.проПрограмуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.гайдКористуванняToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,7 +108,8 @@ namespace ScheduleUser
             // файлToolStripMenuItem
             // 
             this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.обратиФайлБазиДанихToolStripMenuItem});
+            this.обратиФайлБазиДанихToolStripMenuItem,
+            this.нещодавноВідкритіToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.файлToolStripMenuItem.Text = "Файл";
@@ -118,12 +121,19 @@ namespace ScheduleUser
             this.обратиФайлБазиДанихToolStripMenuItem.Text = "Обрати файл бази даних";
             this.обратиФайлБазиДанихToolStripMenuItem.Click += new System.EventHandler(this.обратиФайлБазиДанихToolStripMenuItem_Click);
             // 
+            // нещодавноВідкритіToolStripMenuItem
+            // 
+            this.нещодавноВідкритіToolStripMenuItem.Name = "нещодавноВідкритіToolStripMenuItem";
+            this.нещодавноВідкритіToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.нещодавноВідкритіToolStripMenuItem.Text = "Нещодавно відкриті";
+            // 
             // налаштуванняToolStripMenuItem
             // 
             this.налаштуванняToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.профільКористувачаToolStripMenuItem,
             this.сповіщенняToolStripMenuItem,
-            this.темаToolStripMenuItem});
+            this.темаToolStripMenuItem,
+            this.змінитиНалаштуванняToolStripMenuItem});
             this.налаштуванняToolStripMenuItem.Name = "налаштуванняToolStripMenuItem";
             this.налаштуванняToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
             this.налаштуванняToolStripMenuItem.Text = "Налаштування";
@@ -131,7 +141,7 @@ namespace ScheduleUser
             // профільКористувачаToolStripMenuItem
             // 
             this.профільКористувачаToolStripMenuItem.Name = "профільКористувачаToolStripMenuItem";
-            this.профільКористувачаToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.профільКористувачаToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.профільКористувачаToolStripMenuItem.Text = "Профіль користувача";
             this.профільКористувачаToolStripMenuItem.Click += new System.EventHandler(this.профільКористувачаToolStripMenuItem_Click);
             // 
@@ -139,7 +149,7 @@ namespace ScheduleUser
             // 
             this.сповіщенняToolStripMenuItem.CheckOnClick = true;
             this.сповіщенняToolStripMenuItem.Name = "сповіщенняToolStripMenuItem";
-            this.сповіщенняToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.сповіщенняToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.сповіщенняToolStripMenuItem.Text = "Сповіщення";
             this.сповіщенняToolStripMenuItem.Click += new System.EventHandler(this.сповіщенняToolStripMenuItem_Click);
             // 
@@ -149,7 +159,7 @@ namespace ScheduleUser
             this.стандартнаToolStripMenuItem,
             this.чорнаToolStripMenuItem});
             this.темаToolStripMenuItem.Name = "темаToolStripMenuItem";
-            this.темаToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.темаToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.темаToolStripMenuItem.Text = "Тема";
             // 
             // стандартнаToolStripMenuItem
@@ -167,6 +177,13 @@ namespace ScheduleUser
             this.чорнаToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.чорнаToolStripMenuItem.Text = "Чорна";
             this.чорнаToolStripMenuItem.Click += new System.EventHandler(this.чорнаToolStripMenuItem_Click);
+            // 
+            // змінитиНалаштуванняToolStripMenuItem
+            // 
+            this.змінитиНалаштуванняToolStripMenuItem.Name = "змінитиНалаштуванняToolStripMenuItem";
+            this.змінитиНалаштуванняToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.змінитиНалаштуванняToolStripMenuItem.Text = "Змінити налаштування";
+            this.змінитиНалаштуванняToolStripMenuItem.Click += new System.EventHandler(this.змінитиНалаштуванняToolStripMenuItem_Click);
             // 
             // довідкаToolStripMenuItem
             // 
@@ -326,8 +343,7 @@ namespace ScheduleUser
             this.textBoxTeacherSearch.AutoCompleteCustomSource.AddRange(new string[] {
             "Сухойваненко Ю.М.",
             "Суровицький М.М.",
-            "Суровицька О.І.",
-            "В\'юненко О.Б."});
+            "Суровицька О.І."});
             this.textBoxTeacherSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.textBoxTeacherSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBoxTeacherSearch.Location = new System.Drawing.Point(133, 131);
@@ -448,7 +464,6 @@ namespace ScheduleUser
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "Розклад";
-            this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // contextMenuStrip1
@@ -537,6 +552,7 @@ namespace ScheduleUser
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Schedule";
             this.Text = "Розклад: Користувач";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Schedule_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -599,6 +615,8 @@ namespace ScheduleUser
         private ToolStripMenuItem toolStripMenuItem4;
         private ToolStripMenuItem проПрограмуToolStripMenuItem;
         private ToolStripMenuItem гайдКористуванняToolStripMenuItem;
+        private ToolStripMenuItem нещодавноВідкритіToolStripMenuItem;
+        private ToolStripMenuItem змінитиНалаштуванняToolStripMenuItem;
     }
 }
 
