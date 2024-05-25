@@ -229,7 +229,7 @@ namespace ScheduleUser
 
 
                     // Запит до бази даних для отримання розкладу на обрану дату
-                    string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY time_start";
+                    string query = "SELECT * FROM Schedule WHERE date = @selectedDate ORDER BY pair_index";
                     SQLiteCommand command = new SQLiteCommand(query, connection);
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
                     SQLiteDataReader reader = command.ExecuteReader();
@@ -250,11 +250,10 @@ namespace ScheduleUser
                             int subjectId = Convert.ToInt32(reader["subject_id"]);
                             int teacherId = Convert.ToInt32(reader["teacher_id"]);
                             string classroom = reader["classroom"].ToString();
-                            string timeStart = reader["time_start"].ToString();
+                            int pairIndex = Convert.ToInt32(reader["pair_index"]);
 
                             // Отримати індекс стовпця, в який буде додана інформація
                             int columnIndex = GetColumnIndex(dataGridView1, groupName);
-
 
                             // Отримати інформацію про предмет та викладача з відповідних таблиць
                             if (columnIndex >= 0)
@@ -262,13 +261,12 @@ namespace ScheduleUser
                                 string subject = GetSubjectName(subjectId);
                                 string teacher = GetTeacherName(teacherId);
 
-                                int rowIndex = GetRowIndex(timeStart);
-                                if (rowIndex >= 0)
+                                if (dataGridView1.Rows.Count <= pairIndex)
                                 {
-                                    if (dataGridView1.Rows.Count <= rowIndex)
+                                    if (dataGridView1.Rows.Count <= pairIndex)
                                     {
                                         dataGridView1.Rows.Add();
-                                        dataGridView1.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
+                                        dataGridView1.Rows[pairIndex].HeaderCell.Value = GetTimeHeader(pairIndex);
                                     }
 
                                     if (dataGridView1.Columns.Count <= columnIndex)
@@ -276,7 +274,7 @@ namespace ScheduleUser
                                         dataGridView1.Columns.Add(groupName, groupName);
                                     }
 
-                                    dataGridView1.Rows[rowIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
+                                    dataGridView1.Rows[pairIndex].Cells[columnIndex].Value = subject + "\n" + teacher + "\n" + classroom;
                                 }
                             }
                         }
@@ -293,9 +291,10 @@ namespace ScheduleUser
         private bool CheckSixthPairAvailability(string selectedDate)
         {
             bool hasSixthPair = false;
+            int sixthPairIndex = 5;
 
             // SQL-запит для перевірки наявності шостої пари
-            string query = "SELECT COUNT(*) FROM Schedule WHERE date = @selectedDate AND time_start = '14:30'";
+            string query = "SELECT COUNT(*) FROM Schedule WHERE date = @selectedDate AND pair_index = @sixthPairIndex";
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
@@ -304,9 +303,10 @@ namespace ScheduleUser
                 using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@selectedDate", selectedDate);
+                    command.Parameters.AddWithValue("@sixthPairIndex", sixthPairIndex);
                     int count = Convert.ToInt32(command.ExecuteScalar());
 
-                    // Якщо є записи з часом початку "14:30", то шоста пара доступна
+                    // Якщо є записи що належать до шостої пари, то шоста пара доступна
                     hasSixthPair = count > 0;
                 }
             }
@@ -437,8 +437,8 @@ namespace ScheduleUser
 
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
-                    connection.Open();            // Відкриття підключення до бази даних
-
+                    // Відкриття підключення до бази даних    
+                    connection.Open(); 
                     // Отримання всіх доступних назв груп з бази даних
                     List<string> groupNames = GetAllGroupNames();
                     // Зберігаємо групи, які вже мають розклад з потрібним вчителем або предметом
@@ -545,10 +545,10 @@ namespace ScheduleUser
                             int subjectId = Convert.ToInt32(reader["subject_id"]);
                             int teacherId = Convert.ToInt32(reader["teacher_id"]);
                             string classroom = reader["classroom"].ToString();
-                            string timeStart = reader["time_start"].ToString();
+                            int pairIndex = Convert.ToInt32(reader["pair_index"]);
 
-                            // Отримати індекс стовпця, в який буде додана інформація
-                            int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : -1;
+                        // Отримати індекс стовпця, в який буде додана інформація
+                        int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : -1;
 
                             // Якщо стовпець не знайдено, додати новий
                             if (columnIndex == -1)
@@ -556,21 +556,20 @@ namespace ScheduleUser
                                 columnIndex = dataGridView.Columns.Add(groupName, groupName);
                             }
 
-                            // Отримати індекс рядка або додати новий, якщо не існує
-                            int rowIndex = GetRowIndex(timeStart);
-                            if (rowIndex >= 0)
+                        // Отримати індекс рядка або додати новий, якщо не існує
+                        if (dataGridView1.Rows.Count <= pairIndex)
+                        {
+                            if (dataGridView.Rows.Count <= pairIndex)
                             {
-                                if (dataGridView.Rows.Count <= rowIndex)
-                                {
-                                    dataGridView.Rows.Add();
-                                    dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
-                                }
-
-                                dataGridView.Rows[rowIndex].Cells[columnIndex].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+                                dataGridView.Rows.Add();
+                                dataGridView.Rows[pairIndex].HeaderCell.Value = GetTimeHeader(pairIndex);
                             }
 
+                            dataGridView.Rows[pairIndex].Cells[columnIndex].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+                        }
 
-                            else
+
+                        else
                             {
                                 MessageBox.Show("За вказаною датою відсутні записи", "Повідомлення", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -666,8 +665,8 @@ namespace ScheduleUser
 
             dataGridView3.Columns.Add("Час початку", "Час початку");
             dataGridView3.Columns[0].Width = 55;
-            // Зробити заголовок жирним лише для стовпця "Час початку"
-
+            dataGridView3.Columns.Add("Час закінчення", "Час закінчення");
+            dataGridView3.Columns[1].Width = 55;
             // Додавання стовпця до DataGridView з ім'ям групи студента
             dataGridView3.Columns.Add(userGroupName, userGroupName);
 
@@ -699,27 +698,29 @@ namespace ScheduleUser
                     int subjectId = Convert.ToInt32(reader["subject_id"]);
                     int teacherId = Convert.ToInt32(reader["teacher_id"]);
                     string classroom = reader["classroom"].ToString();
+                    int pairIndex = Convert.ToInt32(reader["pair_index"]);
                     string timeStart = reader["time_start"].ToString();
+                    string timeEnd = reader["time_end"].ToString();
 
-                        int rowIndex = GetRowIndex(timeStart);
-
-                        if (rowIndex >= 0)
+                    if (pairIndex >= 0)
+                    {
+                        if (dataGridView3.Rows.Count <= pairIndex)
                         {
-                            if (dataGridView3.Rows.Count <= rowIndex)
-                            {
-                                dataGridView3.Rows.Add();
-                            }
+                            dataGridView3.Rows.Add();
+                        }
 
                         // Перевірка, чи є інформація про пару
                         if (!string.IsNullOrEmpty(classroom))
                         {
                             if (IsNotify)
                             {
-                                dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Викладач: " + GetTeacherName(teacherId) + ", Аудиторія: " + classroom;
+                                dataGridView3.Rows[pairIndex].Cells[userGroupName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Викладач: " + GetTeacherName(teacherId) + ", Аудиторія: " + classroom;
                             }
-                            dataGridView3.Rows[rowIndex].Cells[userGroupName].Value = "Предмет: "+GetSubjectName(subjectId) + "\nВикладач: " + GetTeacherName(teacherId) + "\nАудиторія: " + classroom;
+                            dataGridView3.Rows[pairIndex].Cells[userGroupName].Value = "Предмет: " + GetSubjectName(subjectId) + "\nВикладач: " + GetTeacherName(teacherId) + "\nАудиторія: " + classroom;
 
-                            dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
+                            // Встановлення значення часу початку та закінчення у відповідних колонках
+                            dataGridView3.Rows[pairIndex].Cells["Час початку"].Value = timeStart;
+                            dataGridView3.Rows[pairIndex].Cells["Час закінчення"].Value = timeEnd;
                         }
                         else
                         {
@@ -756,6 +757,8 @@ namespace ScheduleUser
             dataGridView3.Columns.Clear();
             dataGridView3.Columns.Add("Час початку", "Час початку");
             dataGridView3.Columns[0].Width = 55;
+            dataGridView3.Columns.Add("Час закінчення", "Час закінчення");
+            dataGridView3.Columns[1].Width = 55;
 
             // Додавання стовпця до DataGridView з ім'ям вчителя
             dataGridView3.Columns.Add(userTeacherName, userTeacherName);
@@ -788,15 +791,14 @@ namespace ScheduleUser
                     int subjectId = Convert.ToInt32(reader["subject_id"]);
                     string groupName = GetGroupName(Convert.ToInt32(reader["group_id"]));
                     string classroom = reader["classroom"].ToString();
+                    int pairIndex = Convert.ToInt32(reader["pair_index"]);
                     string timeStart = reader["time_start"].ToString();
-                    // Отримання індексу рядка
-                    int rowIndex = GetRowIndex(timeStart);
-                    if (rowIndex >= 0)
+                    string timeEnd = reader["time_end"].ToString();
+                   
+                    if (pairIndex >= 0)
                     {
-                        // Перевірка, чи індекс рядка не виходить за межі доступних рядків
-                        while (rowIndex >= dataGridView3.Rows.Count)
+                        if (dataGridView3.Rows.Count <= pairIndex)
                         {
-                            // Додавання нового рядка
                             dataGridView3.Rows.Add();
                         }
 
@@ -805,12 +807,14 @@ namespace ScheduleUser
                         {
                             if (IsNotify)
                             {
-                                dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Група: " + groupName + ", Аудиторія: " + classroom;
+                                dataGridView3.Rows[pairIndex].Cells[userTeacherName].Value = "Предмет: " + GetSubjectName(subjectId) + ", Група: " + groupName + ", Аудиторія: " + classroom;
                             }
                             // Заповнення комірки з інформацією про пару
-                            dataGridView3.Rows[rowIndex].Cells[userTeacherName].Value ="Предмет: "+ GetSubjectName(subjectId) +"\nГрупа: " + groupName + "\nАудиторія: " + classroom;
+                            dataGridView3.Rows[pairIndex].Cells[userTeacherName].Value ="Предмет: "+ GetSubjectName(subjectId) +"\nГрупа: " + groupName + "\nАудиторія: " + classroom;
 
-                            dataGridView3.Rows[rowIndex].Cells["Час початку"].Value = GetTimeBeginHeader(rowIndex);
+                            // Встановлення значення часу початку та закінчення у відповідних колонках
+                            dataGridView3.Rows[pairIndex].Cells["Час початку"].Value = timeStart;
+                            dataGridView3.Rows[pairIndex].Cells["Час закінчення"].Value = timeEnd;
 
                         }
                         else
@@ -832,28 +836,6 @@ namespace ScheduleUser
             if (dataGridView3.Rows.Count == 0)
             {
                 SendNotification("Помилка", "Неможливо завантажити персональний розклад. Система сповіщень працює некоректно.");
-            }
-        }
-
-        // Метод для визначення значення рядкового заголовку для заданого індексу часу
-        private string GetTimeBeginHeader(int rowIndex)
-        {
-            switch (rowIndex)
-            {
-                case 0:
-                    return "08:00";
-                case 1:
-                    return "09:15";
-                case 2:
-                    return "10:30";
-                case 3:
-                    return "12:00";
-                case 4:
-                    return "13:15";
-                case 5:
-                    return "14:30"; 
-                default:
-                    throw new ArgumentException("Invalid time row index: " + rowIndex);
             }
         }
 

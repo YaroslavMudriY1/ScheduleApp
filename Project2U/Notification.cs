@@ -19,8 +19,8 @@ namespace ScheduleUser
 
             foreach (DataGridViewRow row in dataGridView3.Rows)
             {
-                string timeBeginHeader = GetTimeBeginHeader(row.Index);
-                DateTime classStartTime = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
+                string timeBegin = row.Cells["Час початку"].Value.ToString();
+                DateTime classStartTime = DateTime.ParseExact(timeBegin, "HH:mm", CultureInfo.InvariantCulture);
 
                 // Знаходимо час початку наступної пари
                 if (classStartTime > DateTime.Now && classStartTime < nextClassStartTime)
@@ -47,15 +47,15 @@ namespace ScheduleUser
             // Перевірка часу початку пари
             for (int i = 0; i < dataGridView3.Rows.Count; i++)
             {
-                // Отримання часу початку пари з першого стовпця
-                string timeBeginHeader = GetTimeBeginHeader(i); // Отримання часу початку пари
-                DateTime timeBegin = DateTime.ParseExact(timeBeginHeader, "HH:mm", CultureInfo.InvariantCulture);
+                string timeBegin = dataGridView3.Rows[i].Cells["Час початку"].Value.ToString();
+                DateTime classStartTime = DateTime.ParseExact(timeBegin, "HH:mm", CultureInfo.InvariantCulture);
+
                 // Якщо поточний час співпадає з часом початку пари, відправити сповіщення
-                if (DateTime.Now.AddMinutes(5) >= timeBegin && DateTime.Now <= timeBegin.AddMinutes(5))
+                if (DateTime.Now.AddMinutes(5) >= classStartTime && DateTime.Now <= classStartTime.AddMinutes(5))
                 {
                     UserProfile userProfile = GetUserProfile();
-                    string notificationTitle = $"{GetTimeHeader(i)}";// Отримання пари за порядком для сповіщення
-                    LoadPersonalSchedule(currentDate.ToString("dd.MM.yyyy"),true);
+                    string notificationTitle = $"{GetTimeHeader(i)}"; // Отримання пари за порядком для сповіщення
+                    LoadPersonalSchedule(currentDate.ToString("dd.MM.yyyy"), true);
                     if (!String.IsNullOrEmpty(dataGridView3.Rows[i].Cells[1].Value as String))
                     {
                         // Отримання інформації про предмет, викладача та аудиторію з відповідних стовпців dataGridView3

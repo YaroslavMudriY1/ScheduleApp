@@ -742,7 +742,7 @@ namespace ScheduleAdmin
                 query += " AND subject_id IN (SELECT subject_id FROM Subjects WHERE subject_name LIKE @subjectFilter)";
             }
 
-            query += " ORDER BY time_start";
+            query += " ORDER BY pair_index";
 
             SQLiteCommand command = new SQLiteCommand(query, connection);
             command.Parameters.AddWithValue("@selectedDate", selectedDate);
@@ -787,7 +787,7 @@ namespace ScheduleAdmin
                     int subjectId = Convert.ToInt32(reader["subject_id"]);
                     int teacherId = Convert.ToInt32(reader["teacher_id"]);
                     string classroom = reader["classroom"].ToString();
-                    string timeStart = reader["time_start"].ToString();
+                    int pairIndex = Convert.ToInt32(reader["pair_index"]);
 
                     // Отримати індекс стовпця, в який буде додана інформація
                     int columnIndex = dataGridView.Columns.Contains(groupName) ? dataGridView.Columns[groupName].Index : -1;
@@ -799,16 +799,15 @@ namespace ScheduleAdmin
                     }
 
                     // Отримати індекс рядка або додати новий, якщо не існує
-                    int rowIndex = GetRowIndex(timeStart);
-                    if (rowIndex >= 0)
+                    if (pairIndex >=0)
                     {
-                        if (dataGridView.Rows.Count <= rowIndex)
+                        if (dataGridView.Rows.Count <= pairIndex)
                         {
                             dataGridView.Rows.Add();
-                            dataGridView.Rows[rowIndex].HeaderCell.Value = GetTimeHeader(rowIndex);
+                            dataGridView.Rows[pairIndex].HeaderCell.Value = GetTimeHeader(pairIndex);
                         }
 
-                        dataGridView.Rows[rowIndex].Cells[columnIndex].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
+                        dataGridView.Rows[pairIndex].Cells[columnIndex].Value = GetSubjectName(subjectId) + "\n" + GetTeacherName(teacherId) + "\n" + classroom;
                     }
 
 
