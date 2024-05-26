@@ -195,24 +195,33 @@ namespace ScheduleUser
 
         //Налаштування кольорових тем
         MaterialSkinManager ThemeManager = MaterialSkinManager.Instance;
+        private bool isDarkTheme=false;
 
         private void стандартнаToolStripMenuItem_Click(object sender, EventArgs e)
         {
             стандартнаToolStripMenuItem.Checked = true;
             чорнаToolStripMenuItem.Checked = false;
+            isDarkTheme = false;
             // Зміна кольорової теми на стандартну
             ChangeTheme(SystemColors.Control, SystemColors.ControlText);
             ThemeManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            this.файлToolStripMenuItem.ForeColor = SystemColors.ControlText;
+            this.налаштуванняToolStripMenuItem.ForeColor = SystemColors.ControlText;
+            this.довідкаToolStripMenuItem.ForeColor = SystemColors.ControlText;
         }
 
         private void чорнаToolStripMenuItem_Click(object sender, EventArgs e)
         {
             стандартнаToolStripMenuItem.Checked = false;
             чорнаToolStripMenuItem.Checked ^= true;
+            isDarkTheme = true;
             // Зміна кольорової теми на темну
             System.Drawing.Color dark = System.Drawing.Color.FromArgb(255, 48, 48, 48);
             ChangeTheme(dark, SystemColors.ControlLightLight);
             ThemeManager.Theme = MaterialSkinManager.Themes.DARK;
+            this.файлToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
+            this.налаштуванняToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
+            this.довідкаToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
         }
 
         private void ChangeTheme(Color backgroundColor, Color textColor)
@@ -245,6 +254,38 @@ namespace ScheduleUser
                 dataGridView.RowHeadersDefaultCellStyle.ForeColor = textColor;
             }
 
+        }
+
+        // Зміна кольорів тексту меню при відкритті
+        private void dropDownOpenedItemClick1(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+            this.файлToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+        }
+        private void dropDownClosedItemClick1(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+                this.файлToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
+        }
+        private void dropDownOpenedItemClick2(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+                this.налаштуванняToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+        }
+        private void dropDownClosedItemClick2(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+                this.налаштуванняToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
+        }
+        private void dropDownOpenedItemClick3(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+                this.довідкаToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+        }
+        private void dropDownClosedItemClick3(object sender, EventArgs e)
+        {
+            if (чорнаToolStripMenuItem.Checked == true)
+                this.довідкаToolStripMenuItem.ForeColor = SystemColors.ControlLightLight;
         }
 
         //Іконка в треї
@@ -324,7 +365,7 @@ namespace ScheduleUser
         private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Створення та відображення нової форми для відомостей про програму
-            AboutInfo aboutProgram = new AboutInfo();
+            AboutInfo aboutProgram = new AboutInfo(isDarkTheme);
             aboutProgram.ShowDialog();
         }
 

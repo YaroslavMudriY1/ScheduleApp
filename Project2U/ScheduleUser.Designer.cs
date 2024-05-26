@@ -32,9 +32,9 @@ namespace ScheduleUser
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Schedule));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,6 +113,8 @@ namespace ScheduleUser
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.файлToolStripMenuItem.Text = "Файл";
+            this.файлToolStripMenuItem.DropDownClosed += new System.EventHandler(this.dropDownClosedItemClick1);
+            this.файлToolStripMenuItem.DropDownOpening += new System.EventHandler(this.dropDownOpenedItemClick1);
             // 
             // обратиФайлБазиДанихToolStripMenuItem
             // 
@@ -137,6 +139,8 @@ namespace ScheduleUser
             this.налаштуванняToolStripMenuItem.Name = "налаштуванняToolStripMenuItem";
             this.налаштуванняToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
             this.налаштуванняToolStripMenuItem.Text = "Налаштування";
+            this.налаштуванняToolStripMenuItem.DropDownClosed += new System.EventHandler(this.dropDownClosedItemClick2);
+            this.налаштуванняToolStripMenuItem.DropDownOpening += new System.EventHandler(this.dropDownOpenedItemClick2);
             // 
             // профільКористувачаToolStripMenuItem
             // 
@@ -193,12 +197,15 @@ namespace ScheduleUser
             this.довідкаToolStripMenuItem.Name = "довідкаToolStripMenuItem";
             this.довідкаToolStripMenuItem.Size = new System.Drawing.Size(68, 20);
             this.довідкаToolStripMenuItem.Text = "Довідка";
+            this.довідкаToolStripMenuItem.DropDownClosed += new System.EventHandler(this.dropDownClosedItemClick3);
+            this.довідкаToolStripMenuItem.DropDownOpening += new System.EventHandler(this.dropDownOpenedItemClick3);
             // 
             // проПрограмуToolStripMenuItem
             // 
             this.проПрограмуToolStripMenuItem.Name = "проПрограмуToolStripMenuItem";
             this.проПрограмуToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.проПрограмуToolStripMenuItem.Text = "Про програму";
+            this.проПрограмуToolStripMenuItem.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
             this.проПрограмуToolStripMenuItem.Click += new System.EventHandler(this.проПрограмуToolStripMenuItem_Click);
             // 
             // гайдКористуванняToolStripMenuItem
@@ -261,8 +268,8 @@ namespace ScheduleUser
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView1.RowHeadersWidth = 70;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dataGridView1.Size = new System.Drawing.Size(780, 407);
             this.dataGridView1.TabIndex = 21;
             // 
@@ -414,8 +421,8 @@ namespace ScheduleUser
             this.dataGridView2.Location = new System.Drawing.Point(271, 33);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 70;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView2.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dataGridView2.Size = new System.Drawing.Size(507, 405);
             this.dataGridView2.TabIndex = 31;
             // 
@@ -455,8 +462,8 @@ namespace ScheduleUser
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView3.RowHeadersWidth = 70;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView3.RowsDefaultCellStyle = dataGridViewCellStyle9;
             this.dataGridView3.Size = new System.Drawing.Size(470, 400);
             this.dataGridView3.TabIndex = 32;
             // 
@@ -552,6 +559,7 @@ namespace ScheduleUser
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Schedule";
+            this.Sizable = false;
             this.Text = "Розклад: Користувач";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Schedule_FormClosing);
             this.menuStrip1.ResumeLayout(false);

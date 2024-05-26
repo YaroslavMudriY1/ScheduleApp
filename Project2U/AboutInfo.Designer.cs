@@ -54,6 +54,7 @@
             // 
             // buttonOK
             // 
+            this.buttonOK.BackColor = System.Drawing.Color.Transparent;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonOK.Font = new System.Drawing.Font("Roboto", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.buttonOK.Location = new System.Drawing.Point(440, 258);
@@ -61,7 +62,7 @@
             this.buttonOK.Size = new System.Drawing.Size(84, 35);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.UseVisualStyleBackColor = false;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
             // labelAboutProgram1
@@ -174,6 +175,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutInfo";
+            this.Sizable = false;
             this.Text = "Про програму";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

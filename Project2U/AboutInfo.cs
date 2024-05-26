@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -14,13 +15,19 @@ namespace ScheduleUser
 {
     public partial class AboutInfo : MaterialForm
     {
-        public AboutInfo()
+        public AboutInfo(bool isDarkTheme)
         {
             InitializeComponent();
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.EnforceBackcolorOnAllComponents = false;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.ColorScheme = new ColorScheme(Primary.Green800, Primary.Green900, Primary.Green500, Accent.LightGreen200, TextShade.WHITE);
+
+            if (isDarkTheme)
+            {
+                buttonOK.BackColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+                buttonOK.ForeColor = SystemColors.ControlLightLight; // Встановлення білого кольору тексту для темної теми
+            }
 
         }
 

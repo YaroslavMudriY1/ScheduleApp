@@ -135,7 +135,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Roboto", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(11, 149);
+            this.label1.Location = new System.Drawing.Point(11, 150);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(386, 30);
             this.label1.TabIndex = 11;
@@ -174,6 +174,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutInfo";
+            this.Sizable = false;
             this.Text = "Про програму";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -336,6 +336,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Settings";
+            this.Sizable = false;
             this.Text = "Налаштування програми";
             this.ResumeLayout(false);
             this.PerformLayout();
