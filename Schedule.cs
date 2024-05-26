@@ -444,17 +444,6 @@ namespace ScheduleAdmin
                 }
             }
         }
-        // Метод для отримання індексу рядка
-        private int GetRowIndex(string timeStart)
-        {
-            if (timeStart == time1_start) return 0;
-            if (timeStart == time2_start) return 1;
-            if (timeStart == time3_start) return 2;
-            if (timeStart == time4_start) return 3;
-            if (timeStart == time5_start) return 4;
-            if (timeStart == time6_start) return 5;
-            throw new ArgumentException("Invalid time start: " + timeStart);
-        }
 
         // Метод для визначення значення рядкового заголовку для заданого індексу часу
         private string GetTimeHeader(int rowIndex)
