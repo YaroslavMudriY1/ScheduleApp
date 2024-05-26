@@ -261,7 +261,7 @@ namespace ScheduleUser
                                 string subject = GetSubjectName(subjectId);
                                 string teacher = GetTeacherName(teacherId);
 
-                                if (dataGridView1.Rows.Count <= pairIndex)
+                                if (pairIndex>=0)
                                 {
                                     if (dataGridView1.Rows.Count <= pairIndex)
                                     {
@@ -371,28 +371,6 @@ namespace ScheduleUser
             }
         }
 
-        // Метод для отримання індексу рядка за часом початку пари
-        private int GetRowIndex(string timeStart)
-        {
-            // Реалізація з урахуванням розкладу
-            switch (timeStart)
-            {
-                case "08:00":
-                    return 0;
-                case "09:15":
-                    return 1;
-                case "10:30":
-                    return 2;
-                case "12:00":
-                    return 3;
-                case "13:15":
-                    return 4;
-                case "14:30":
-                    return 5;
-                default:
-                    throw new ArgumentException("Invalid time start: " + timeStart);
-            }
-        }
 
         // Метод для визначення значення рядкового заголовку для заданого індексу часу
         private string GetTimeHeader(int rowIndex)
@@ -557,7 +535,7 @@ namespace ScheduleUser
                             }
 
                         // Отримати індекс рядка або додати новий, якщо не існує
-                        if (dataGridView1.Rows.Count <= pairIndex)
+                        if (pairIndex>=0)
                         {
                             if (dataGridView.Rows.Count <= pairIndex)
                             {
@@ -664,9 +642,9 @@ namespace ScheduleUser
             dataGridView3.Columns.Clear();
 
             dataGridView3.Columns.Add("Час початку", "Час початку");
-            dataGridView3.Columns[0].Width = 55;
+            dataGridView3.Columns[0].FillWeight = 50;
             dataGridView3.Columns.Add("Час закінчення", "Час закінчення");
-            dataGridView3.Columns[1].Width = 55;
+            dataGridView3.Columns[1].FillWeight = 50;
             // Додавання стовпця до DataGridView з ім'ям групи студента
             dataGridView3.Columns.Add(userGroupName, userGroupName);
 
@@ -756,9 +734,9 @@ namespace ScheduleUser
             dataGridView3.Rows.Clear();
             dataGridView3.Columns.Clear();
             dataGridView3.Columns.Add("Час початку", "Час початку");
-            dataGridView3.Columns[0].Width = 55;
+            dataGridView3.Columns[0].FillWeight = 50;
             dataGridView3.Columns.Add("Час закінчення", "Час закінчення");
-            dataGridView3.Columns[1].Width = 55;
+            dataGridView3.Columns[1].FillWeight = 50;
 
             // Додавання стовпця до DataGridView з ім'ям вчителя
             dataGridView3.Columns.Add(userTeacherName, userTeacherName);
