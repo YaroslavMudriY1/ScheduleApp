@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Data.SQLite;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -19,22 +20,36 @@ namespace ScheduleUser
 
             foreach (DataGridViewRow row in dataGridView3.Rows)
             {
-                string timeBegin = row.Cells["Час початку"].Value.ToString();
-                DateTime classStartTime = DateTime.ParseExact(timeBegin, "HH:mm", CultureInfo.InvariantCulture);
+                if (row.Cells["Час початку"].Value == null)
+                {
+                    continue; // Пропустити рядки з пустим значенням
+                }
 
-                // Знаходимо час початку наступної пари
-                if (classStartTime > DateTime.Now && classStartTime < nextClassStartTime)
-                {
-                    nextClassStartTime = classStartTime;
+                string timeBegin = row.Cells["Час початку"].Value.ToString();
+
+                    DateTime classStartTime = DateTime.ParseExact(timeBegin, "HH:mm", CultureInfo.InvariantCulture);
+
+                    // Знаходимо час початку наступної пари
+                    if (classStartTime > DateTime.Now && classStartTime < nextClassStartTime)
+                    {
+                        nextClassStartTime = classStartTime;
+                    }
+                    // Знаходимо час початку поточної пари
+                    if (classStartTime < DateTime.Now && DateTime.Now < nextClassStartTime)
+                    {
+                        currentClassStartTime = classStartTime;
+                    }
                 }
-                // Знаходимо час початку поточної пари
-                if (classStartTime < DateTime.Now && DateTime.Now < nextClassStartTime)
-                {
-                    currentClassStartTime = classStartTime;
-                }
+                
+                TimeSpan timeUntilNextClass = nextClassStartTime - DateTime.Now;
+            if (timeUntilNextClass.TotalMilliseconds > 0)
+            {
+                timer1.Interval = (int)timeUntilNextClass.TotalMilliseconds; // Оновлення інтервалу таймера
             }
-            TimeSpan timeUntilNextClass = nextClassStartTime - DateTime.Now;
-            timer1.Interval = (int)timeUntilNextClass.TotalMilliseconds; //Оновлення інтервалу таймера
+            else
+            {
+                timer1.Interval = 60000; // Встановлення інтервалу за замовчуванням, наприклад, 1 хвилина
+            }
             CheckAndSendNotification();
         }
 
@@ -47,6 +62,10 @@ namespace ScheduleUser
             // Перевірка часу початку пари
             for (int i = 0; i < dataGridView3.Rows.Count; i++)
             {
+                if (dataGridView3.Rows[i].Cells["Час початку"].Value == null)
+                {
+                    continue; // Пропустити рядки з пустим значенням
+                }
                 string timeBegin = dataGridView3.Rows[i].Cells["Час початку"].Value.ToString();
                 DateTime classStartTime = DateTime.ParseExact(timeBegin, "HH:mm", CultureInfo.InvariantCulture);
 
@@ -56,10 +75,10 @@ namespace ScheduleUser
                     UserProfile userProfile = GetUserProfile();
                     string notificationTitle = $"{GetTimeHeader(i)}"; // Отримання пари за порядком для сповіщення
                     LoadPersonalSchedule(currentDate.ToString("dd.MM.yyyy"), true);
-                    if (!String.IsNullOrEmpty(dataGridView3.Rows[i].Cells[1].Value as String))
+                    if (!String.IsNullOrEmpty(dataGridView3.Rows[i].Cells[2].Value as String))
                     {
                         // Отримання інформації про предмет, викладача та аудиторію з відповідних стовпців dataGridView3
-                        string schedule = dataGridView3.Rows[i].Cells[1].Value.ToString();
+                        string schedule = dataGridView3.Rows[i].Cells[2].Value.ToString();
                         string notificationBody = $"{userProfile.Name}, початок {i + 1} пари.\n{schedule}";
                         SendNotification(notificationTitle, notificationBody);
                         break;

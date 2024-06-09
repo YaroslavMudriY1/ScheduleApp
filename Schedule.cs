@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 
 namespace ScheduleAdmin
 {
+    //Класс для зберігання та виведення параметрів в .xml
     public class XmlHelper
     {
         public static void SerializeToFile<T>(T obj, string filePath)
@@ -31,10 +32,12 @@ namespace ScheduleAdmin
             }
         }
     }
+
     public partial class Schedule
     {
         // Шлях до файлу конфігурації
         private string configFilePath = "settings.xml";
+        //Створення змінних для налаштувань
         private List<string> recentlyOpenedFiles = new List<string>();
 
         public bool autoLastConnected;
@@ -53,8 +56,10 @@ namespace ScheduleAdmin
         public string time5_end;
         public string time6_end;
 
+        //Метод для завантаження налаштувнаь
         private void LoadSettings()
-        {
+        { 
+            //Якщо файл налаштувань є, використати його
             if (File.Exists(configFilePath))
             {
                 UserSettings settings = XmlHelper.DeserializeFromFile<UserSettings>(configFilePath);
@@ -81,6 +86,7 @@ namespace ScheduleAdmin
                 time5_end = settings.Time5End;
                 time6_end = settings.Time6End;
             }
+            // Якщо не існує, використати налаштування за замовчуванням
             else
             {
                 UseDefaultSettings();
@@ -88,7 +94,7 @@ namespace ScheduleAdmin
                 MessageBox.Show("Файл налаштувань не знайдений. Встановлено налаштування за замовчуванням.");
             }
         }
-
+        //Метод використання налаштувань за замовчуванням
         private void UseDefaultSettings()
         {
             autoLastConnected = true;
@@ -109,7 +115,7 @@ namespace ScheduleAdmin
             time5_end = "14:15";
             time6_end = "15:30";
         }
-
+        //Метод зберігання налаштувань
         private void SaveSettings()
         {
             UserSettings settings = new UserSettings
@@ -219,11 +225,10 @@ namespace ScheduleAdmin
             return groupNames;
         }
 
-        // Метод читання бази даних
-
+        // Метод читання бази даних та виведення записів за обрану дату в таблицю
         private void LoadDataFromDatabase(DateTimePicker dateTimePicker, DataGridView dataGridView)
         {
-
+            //Якщо база даних не обрана, вивести повідомлення про це
             if (string.IsNullOrEmpty(selectedDatabasePath))
             {
                 MessageBox.Show("Будь ласка, оберіть базу даних.", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -231,8 +236,7 @@ namespace ScheduleAdmin
             }
 
             string selectedDate = dateTimePicker.Value.ToString("dd.MM.yyyy"); // Отримуємо дату у форматі день.місяць.рік
-                                                                               // Отримання всіх доступних назв груп з бази даних
-            List<string> groupNames = GetAllGroupNames();
+            List<string> groupNames = GetAllGroupNames();                      // Отримання всіх доступних назв груп з бази даних
 
             var connection = new SQLiteConnection(connectionString);
             // Відкриття підключення до бази даних
@@ -353,7 +357,8 @@ namespace ScheduleAdmin
 
             return hasSixthPair;
         }
-        bool hasData(DataGridView dataGridView)
+        // Метод для перевірки на наявність даних
+        private bool hasData(DataGridView dataGridView)
         {
             bool hasData = false;
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -380,7 +385,8 @@ namespace ScheduleAdmin
             }
             return hasData;
         }
-        // Метод, який встановлює значення DateTimePicker на інших вкладках
+
+        // Метод, який синхронізує значення DateTimePicker на всіх вкладках
         private void SyncDateTimePickers(DateTime dateTime)
         {
             dateTimePicker1.Value = dateTime;
@@ -401,18 +407,6 @@ namespace ScheduleAdmin
                     return command.ExecuteScalar()?.ToString();
                 }
             }
-        }
-        // Метод для отримання індексу стовпця за назвою групи
-        private int GetColumnIndex(DataGridView dataGridView, string groupName)
-        {
-            // Перевірка, чи наданий dataGridView не є нульовим
-            if (dataGridView == null)
-            {
-                return -1; // Повертаємо -1 у випадку, якщо dataGridView нульовий
-            }
-
-            // Припустимо, що у dataGridView стовпці названі як групи
-            return dataGridView.Columns.Cast<DataGridViewColumn>().ToList().FindIndex(column => column.HeaderText == groupName);
         }
 
         // Метод для отримання назви предмету за його ідентифікатором
@@ -443,6 +437,19 @@ namespace ScheduleAdmin
                     return command.ExecuteScalar()?.ToString();
                 }
             }
+        }
+
+        // Метод для отримання індексу стовпця за назвою групи
+        private int GetColumnIndex(DataGridView dataGridView, string groupName)
+        {
+            // Перевірка, чи наданий dataGridView не є нульовим
+            if (dataGridView == null)
+            {
+                return -1; // Повертаємо -1 у випадку, якщо dataGridView нульовий
+            }
+
+            // Припустимо, що у dataGridView стовпці названі як групи
+            return dataGridView.Columns.Cast<DataGridViewColumn>().ToList().FindIndex(column => column.HeaderText == groupName);
         }
 
         // Метод для визначення значення рядкового заголовку для заданого індексу часу
