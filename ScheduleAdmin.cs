@@ -23,7 +23,7 @@ namespace ScheduleAdmin
         public Schedule()
         {
             InitializeComponent();
-            LoadSettings();
+            //LoadSettings();
             // Завантаження списку нещодавно відкритих файлів при запуску програми
             LoadRecentFilesOnStartup();            
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -51,7 +51,6 @@ namespace ScheduleAdmin
                         string selectedDatabasePath = openFileDialog.FileName;
                         OpenDatabaseFile(selectedDatabasePath);
                         UpdateConnectionString(); // Оновлюємо значення підключення до бази даних
-                        CheckBackupFolderExists();
                     }
                 }
             }
@@ -61,10 +60,11 @@ namespace ScheduleAdmin
                 {
                     // Якщо є остання база даних, відкриваємо її автоматично
                     OpenDatabaseFile(recentlyOpenedFiles[0]);
-                    CheckBackupFolderExists();
+                    
                 }
+                this.Show();
             }
-           
+
         }
 
         private void buttonCheckSchedule1_Click(object sender, EventArgs e)
@@ -432,7 +432,7 @@ namespace ScheduleAdmin
         {
             Settings settings = new Settings();
             settings.FormClosed += SettingsForm_FormClosed;
-            settings.Show();
+            settings.ShowDialog();
         }
         //Закриття вікна налаштувань
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -450,8 +450,29 @@ namespace ScheduleAdmin
         // Відкриття вікна "Гайд"
         private void гайдКористуванняToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Guide guide = new Guide();
-            guide.Show();
+            // Перевірити, чи існує вже вікно "Гайд"
+            Guide guideInstance = null;
+
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is Guide)
+                {
+                    guideInstance = openForm as Guide;
+                    break;
+                }
+            }
+
+            // Якщо вікно не існує, створити нове
+            if (guideInstance == null)
+            {
+                Guide guide = new Guide();
+                guide.Show();
+            }
+            // Інакше, активувати існуюче вікно
+            else
+            {
+                guideInstance.Activate();
+            }
         }
 
         // Метод експорту у Еxcel

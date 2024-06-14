@@ -194,6 +194,7 @@ namespace ScheduleAdmin
             selectedDatabasePath = filePath;
             UpdateConnectionString();
             UpdateRecentlyOpenedFiles(filePath);
+            CheckBackupFolderExists();
         }
 
         private void UpdateConnectionString()

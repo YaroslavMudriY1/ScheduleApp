@@ -371,16 +371,36 @@ namespace ScheduleUser
 
         private void гайдКористуванняToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Створення та відображення нової форми дляперегляду гайду
-            Guide guide= new Guide();
-            guide.Show();
+            // Перевірити, чи існує вже вікно "Гайд"
+            Guide guideInstance = null;
+
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm is Guide)
+                {
+                    guideInstance = openForm as Guide;
+                    break;
+                }
+            }
+
+            // Якщо вікно не існує, створити нове
+            if (guideInstance == null)
+            {
+                Guide guide = new Guide();
+                guide.Show();
+            }
+            // Інакше, активувати існуюче вікно
+            else
+            {
+                guideInstance.Activate();
+            }
         }
 
         private void змінитиНалаштуванняToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings settings = new Settings();
+            Settings settings = new Settings(isDarkTheme);
             settings.FormClosed += SettingsForm_FormClosed;
-            settings.Show();
+            settings.ShowDialog();
         }
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {

@@ -41,7 +41,7 @@ namespace ScheduleUser
             }
         }
 
-        public Settings()
+        public Settings(bool isDarkTheme)
         {
 
             InitializeComponent();
@@ -53,6 +53,14 @@ namespace ScheduleUser
 
             // Завантажити налаштування
             LoadSettings();
+
+            if (isDarkTheme)
+            {
+                buttonSave.BackColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+                buttonSave.ForeColor = SystemColors.ControlLightLight; // Встановлення білого кольору тексту для кнопки "зберегти зміни"
+                buttonDefault.BackColor = System.Drawing.Color.FromArgb(255, 48, 48, 48);
+                buttonDefault.ForeColor = SystemColors.ControlLightLight; // Встановлення білого кольору тексту для кнопки "за замовчуванням"
+            }
         }
 
         public bool autoLastConnected;
